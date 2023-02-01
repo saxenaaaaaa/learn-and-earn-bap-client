@@ -1,8 +1,24 @@
-import { Response, Request } from "express";
-import { getJob } from "./services";
+import express, { Response, Request } from "express";
+import { getJob, getJobConfirm, getJobOnSearch } from "./services";
+const router = express.Router();
 
 export const jobSearchController = async (req: Request, res: Response) => {
-  const response = await getJob(req.body);
-  console.log(">>Res from protocol server is::\n", response);
-  res.send(response);
+  let resp;
+  resp = await getJob(req.body);
+
+  res.send(resp);
+};
+
+export const jobOnSearchController = async (req: Request, res: Response) => {
+  let resp;
+  resp = await getJobOnSearch(req.body);
+
+  res.send(resp);
+};
+
+export const jobConfirmController = async (req: Request, res: Response) => {
+  let resp;
+  resp = await getJobConfirm(req.body);
+
+  res.send(resp);
 };

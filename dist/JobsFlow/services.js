@@ -12,17 +12,50 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getJob = void 0;
+exports.getJob = exports.getJobConfirm = exports.getJobOnSearch = void 0;
 const axios_1 = __importDefault(require("axios"));
 const flatted_1 = require("flatted");
-function getJob(jobDTO) {
+function getJobOnSearch(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let result = yield axios_1.default.post("http://localhost:5001/jobSearch", jobDTO);
+            let bppResp = yield axios_1.default.post("http://localhost:5001/jobOnSearch", body);
+            bppResp = (0, flatted_1.stringify)(bppResp);
+            return bppResp;
+        }
+        catch (error) {
+            console.error(error);
+            return {
+                error: error,
+                errorOccured: true,
+            };
+        }
+    });
+}
+exports.getJobOnSearch = getJobOnSearch;
+function getJobConfirm(body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let result = yield axios_1.default.post("http://localhost:5001/jobConfirm", body);
             result = (0, flatted_1.stringify)(result);
-            console.log(result["message"]);
-            ///
-            ///
+            console.log(result);
+            return result;
+        }
+        catch (error) {
+            console.error(error);
+            return {
+                error: error,
+                errorOccured: true,
+            };
+        }
+    });
+}
+exports.getJobConfirm = getJobConfirm;
+function getJob(body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let result = yield axios_1.default.post("http://localhost:5001/jobSearch", body);
+            result = (0, flatted_1.stringify)(result);
+            console.log(result);
             return result;
         }
         catch (error) {

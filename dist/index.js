@@ -15,7 +15,9 @@ app.get("/", (req, res) => {
 const router = express_1.default.Router();
 app.use(router);
 app.use(express_1.default.json());
-app.use("/jobs", controller_1.jobSearchController);
+app.use("/jobs/search", controller_1.jobSearchController);
+app.use("/jobs/onSearch", controller_1.jobOnSearchController);
+app.use("/jobs/confirmSearch", controller_1.jobConfirmController);
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

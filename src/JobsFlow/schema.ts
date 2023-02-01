@@ -25,6 +25,21 @@ export interface JobContextDTO {
   timestamp: String;
 }
 
+export interface JobContextBPPDTO {
+  domain: String;
+  country: String;
+  city: String;
+  action: String;
+  core_version: String;
+  bap_id: String;
+  bap_uri: String;
+  bpp_id: string;
+  bpp_uri: string;
+  transaction_id: String;
+  message_id: String;
+  timestamp: String;
+}
+
 export interface JobResponseFulFillmentDTO {
   id: string;
   start: {

@@ -8,12 +8,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.jobSearchController = void 0;
+exports.jobConfirmController = exports.jobOnSearchController = exports.jobSearchController = void 0;
+const express_1 = __importDefault(require("express"));
 const services_1 = require("./services");
+const router = express_1.default.Router();
 const jobSearchController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield (0, services_1.getJob)(req.body);
-    console.log(">>Res from protocol server is::\n", response);
-    res.send(response);
+    let resp;
+    resp = yield (0, services_1.getJob)(req.body);
+    res.send(resp);
 });
 exports.jobSearchController = jobSearchController;
+const jobOnSearchController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let resp;
+    resp = yield (0, services_1.getJobOnSearch)(req.body);
+    res.send(resp);
+});
+exports.jobOnSearchController = jobOnSearchController;
+const jobConfirmController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let resp;
+    resp = yield (0, services_1.getJobConfirm)(req.body);
+    res.send(resp);
+});
+exports.jobConfirmController = jobConfirmController;
