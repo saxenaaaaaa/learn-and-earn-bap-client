@@ -1,6 +1,5 @@
 export interface JobRequestDto {
   context: JobContextDTO;
-
   message: {
     intent: {
       item: {

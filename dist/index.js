@@ -9,6 +9,8 @@ const controller_1 = require("./JobsFlow/controller");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
+app.use(express_1.default.urlencoded()); // To parse URL-encoded bodies
+app.use(express_1.default.json());
 app.get("/", (req, res) => {
     res.send("dsep unified bap client is working");
 });

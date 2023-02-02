@@ -11,6 +11,9 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.urlencoded()); // To parse URL-encoded bodies
+app.use(express.json());
+
 app.get("/", (req: Request, res: Response) => {
   res.send("dsep unified bap client is working");
 });

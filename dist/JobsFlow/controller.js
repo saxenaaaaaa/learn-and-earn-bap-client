@@ -19,18 +19,18 @@ const router = express_1.default.Router();
 const jobSearchController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let resp;
     resp = yield (0, services_1.getJob)(req.body);
-    res.send(resp);
+    res.json(resp);
 });
 exports.jobSearchController = jobSearchController;
 const jobOnSearchController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let resp;
     resp = yield (0, services_1.getJobOnSearch)(req.body);
-    res.send(resp);
+    res.json(resp);
 });
 exports.jobOnSearchController = jobOnSearchController;
 const jobConfirmController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let resp;
     resp = yield (0, services_1.getJobConfirm)(req.body);
-    res.send(resp);
+    res.json(resp);
 });
 exports.jobConfirmController = jobConfirmController;
