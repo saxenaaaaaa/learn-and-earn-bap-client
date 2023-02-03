@@ -1,0 +1,521 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: DSEP Client API
+  description: Client API to manage DSEP categories.
+paths:
+  /job/search:
+    post:
+      tags:
+        - searchJobs
+      summary: Seach jobs
+      requestBody:
+        description: Job search criteria
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchJob'
+      responses:
+        '200':
+          description: Job search request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Job search request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "Application error"
+                code: "404"
+                path: "/job/search"
+                message: "Job search request could not be created"
+        '500':
+          description: Job search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "System error"
+                code: "500"
+                path: "/job/search"
+                message: "Error processing request {specific error log from exception/error}"
+  /job/select:
+    post:
+      tags:
+        - selectJob
+      summary: Select jobs
+      requestBody:
+        description: Select specific job
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectJob'
+      responses:
+        '200':
+          description: Job select request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Job select request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "Application error"
+                code: "404"
+                path: "/job/select"
+                message: "Job select request could not be created"
+        '500':
+          description: Job search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "System error"
+                code: "500"
+                path: "/job/select"
+                message: "Error processing request {specific error log from exception/error}"
+  /job/confirm:
+    post:
+      tags:
+        - confirmJob
+      summary: Confirm jobs
+      requestBody:
+        description: Job confirmation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmJob'
+      responses:
+        '200':
+          description: Job confirmation request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Job confirm request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "Application error"
+                code: "404"
+                path: "/job/confirm"
+                message: "Job confirm could not be created"
+        '500':
+          description: Job confirmation request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "System error"
+                code: "500"
+                path: "/job/confirm"
+                message: "Error processing request {specific error log from exception/error}"
+  /job/onSearch:
+    post:
+      tags:
+        - onSearchJobs
+      summary: onSeach jobs
+      requestBody:
+        description: Job Search context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Job on_search request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchedJobs'
+        '404':
+          description: Job on_search request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "Application error"
+                code: "404"
+                path: "/job/onSearch"
+                message: "Job on_search request could not be created"
+        '500':
+          description: Job on_search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "System error"
+                code: "500"
+                path: "/job/onSearch"
+                message: "Error processing request {specific error log from exception/error}"
+  /job/onSelect:
+    post:
+      tags:
+        - onSelectJob
+      summary: onSelect jobs
+      requestBody:
+        description: Job on_select context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Job on_select request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectedJob'
+        '404':
+          description: Job on_select request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "Application error"
+                code: "404"
+                path: "/job/onSelect"
+                message: "Job on_select request could not be created"
+        '500':
+          description: Job on_Select request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "System error"
+                code: "500"
+                path: "/job/onSelect"
+                message: "Error processing request {specific error log from exception/error}"
+  /job/onConfirm:
+    post:
+      tags:
+        - onConfirmJob
+      summary: onConfirm job
+      requestBody:
+        description: Job on_confirm context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Job on_confirm request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Job on_confirm request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "Application error"
+                code: "404"
+                path: "/job/onConfirm"
+                message: "Job on_confirm request could not be created"
+        '500':
+          description: Job on_Select request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "System error"
+                code: "500"
+                path: "/job/onConfirm"
+                message: "Error processing request {specific error log from exception/error}"
+components:
+  schemas:
+    SearchJob:
+      description: Schema for Job search object
+      type: object
+      properties:
+        titles:
+          type: array
+          items:
+            type: object
+            properties: 
+              key:
+                type: string
+        companies:
+          type: array
+          items:
+            type: object
+            properties: 
+              name:
+                type: string
+              locations:
+                type: array
+                items:
+                  type: object
+                  properties: 
+                    city:
+                      type: string
+        skills:
+          type: array
+          items:
+            type: object
+            properties: 
+              skill:
+                type: string
+    SelectJob:
+      description: Schema for Job selection
+      type: object
+      required:
+        - jobId
+        - context
+      properties:
+        jobId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    ConfirmJob:
+      description: Schema for Job selection
+      type: object
+      required:
+        - jobId
+      properties:
+        jobId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        userProfile:
+          $ref: '#/components/schemas/UserProfile'
+    UserProfile:
+      description: Schema for User Profile
+      type: object
+      required:
+        - email
+      properties:
+        name:
+          type: string
+          description: User full name
+        dob:
+          type: string
+          description: User dob
+        gender:
+          type: string
+          description: User gender
+        contact:
+          type: object
+          properties:
+            phone:
+              type: string
+              description: User mobile number
+            email:
+              type: string
+              description: User email
+        resume:
+          type: string
+          description: link to resume
+    SearchedJobs:
+      description: Schema for searched job results/response
+      type: object
+      required:
+        - jobId
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        jobs:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobSummary'
+    JobSummary:
+      description: Schema for Job summary
+      type: object
+      required:
+        - jobId
+      properties:
+        jobId:
+          type: string
+        jobProvider:
+          type: string
+        company:
+          type: string
+          description: Company name
+        city:
+          type: string
+          description: Job location (city)
+        country:
+          type: string
+          description: Job location (country)
+        role:
+          type: string
+          description: Job role
+        type:
+          type: array
+          items:
+            type: string
+            enum:
+              - senior
+              - fulltime
+              - remote
+        compensation:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Compensation'
+    Compensation:
+      description: compensation object
+      type: object
+      required:
+        - type
+        - amount
+        - currency
+        - frequency
+      properties:
+        type:        
+          type: string
+          enum: 
+            - fixed
+            - variable
+            - commission
+            - allowance
+        amount:
+          type: number
+        currency:
+          type: string
+        frequency:
+          type: string
+    SelectedJob:
+      description: Schema for selected job response
+      type: object
+      required:
+        - context
+        - jobSummary
+        - jobDetails
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        jobSummary:
+          $ref: '#/components/schemas/JobSummary'
+        jobDetails:
+          $ref: '#/components/schemas/JobDetails'
+    JobDetails:
+      description: Schema for Job summary
+      type: object
+      required:
+        - jobId
+      properties:
+        role:
+          type: string
+          description: Job role
+        jobDescription:
+          type: string
+          description: Job description
+        requirements:
+          type: array
+          description: Job requirements/skills requirements
+          items:
+            type: string
+        responsibilities:
+          type: array
+          description: Job responsibilities
+          items:
+            type: string
+        company:
+          type: string
+          description: Company name
+        companyInfo:
+          type: string
+          description: Company Info
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        type:
+          description: Type of error
+          type: string
+        code:
+          description: DSEP specific error code
+          type: string
+        path:
+          description: Path to json schema generating the error. Used only during json schema validation errors
+          type: string
+        message:
+          description: Human readable error message from dsep API
+          type: string
+    Context:
+      description: schema context object
+      type: object
+      required:
+        - transactionId
+        - messageId
+      properties:
+        transactionId:
+          type: string
+        messageId:
+          type: string
+    Acknowledgement:
+      type: object
+      required:
+        - message
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        message:
+          description: Acknowledgement message
+          type: object
+          properties:
+            ack:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - ACK
+                    - NACK
+        error:
+          description: Error message
+          type: object
+          properties:
+            code:
+              description: Error code
+              type: integer
+            message:
+              description: Error message
+              type: string
+            data:
+              description: Additional error data
+              type: object
+            type:
+              description: Error type
+              type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+security:
+  - ApiKey: []
+servers:
+  - url: https://api.dsep.client.becknprotocol.io/v1
+    variables: {}
