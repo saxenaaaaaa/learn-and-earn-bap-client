@@ -1,11 +1,11 @@
 import express, { Response, Request } from "express";
-import { getJob, getJobConfirm, getJobOnSearch } from "./services";
+import { searchJob, getJobConfirm, getJobOnSearch } from "./services";
 const router = express.Router();
 
 export const jobSearchController = async (req: Request, res: Response) => {
-  let resp;
-  resp = await getJob(req.body);
 
+  const body = req.body
+  const resp = await searchJob(req.body);
   res.json(resp);
 };
 
@@ -22,3 +22,10 @@ export const jobConfirmController = async (req: Request, res: Response) => {
 
   res.json(resp);
 };
+
+
+
+// title: ["Tester", "UI Testing"],
+// company: ["Tata", "Google"],
+// city: ["Pune", "Delhi"],
+// skills: ["flutter", "kotlin", "architecture"]

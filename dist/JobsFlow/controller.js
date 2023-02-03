@@ -17,8 +17,8 @@ const express_1 = __importDefault(require("express"));
 const services_1 = require("./services");
 const router = express_1.default.Router();
 const jobSearchController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let resp;
-    resp = yield (0, services_1.getJob)(req.body);
+    const body = req.body;
+    const resp = yield (0, services_1.searchJob)(req.body);
     res.json(resp);
 });
 exports.jobSearchController = jobSearchController;
@@ -34,3 +34,7 @@ const jobConfirmController = (req, res) => __awaiter(void 0, void 0, void 0, fun
     res.json(resp);
 });
 exports.jobConfirmController = jobConfirmController;
+// title: ["Tester", "UI Testing"],
+// company: ["Tata", "Google"],
+// city: ["Pune", "Delhi"],
+// skills: ["flutter", "kotlin", "architecture"]

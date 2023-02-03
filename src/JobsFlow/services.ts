@@ -3,22 +3,18 @@ import { parse } from "dotenv";
 import { response } from "express";
 import { stringify } from "flatted";
 import { JobContextDTO, JobRequestDto } from "./schema";
+import { searchContextBuilder, contextOnSearch } from "../helper";
+import dotenv from "dotenv";
+import { messageBuilder } from "../helper/message-builder";
 
+dotenv.config();
+const gatewayUrl = process.env.GATEWAY_URL || "";
+console.log(gatewayUrl, 'urlll')
 export async function getJobOnSearch(postBody: any): Promise<any> {
   try {
+    const context = contextOnSearch('jobs', 'on_search', postBody.transaction_id, postBody.message_id)
     const jobSchemaConstructer: JobRequestDto = {
-      context: {
-        domain: "dsep:" + postBody.category,
-        country: "IND",
-        city: "std:080",
-        action: "on_search",
-        core_version: "1.0.0",
-        bap_id: "dev.bap.faiz.protocol-server.com.dsep:jobs:BAP",
-        bap_uri: "localhost:3000/jobs/search",
-        transaction_id: "a9aaecca-10b7-4d19-b640-b047a7c62195",
-        message_id: "${{$randomUUID}}",
-        timestamp: "2022-10-11T09:55:41.161Z",
-      },
+      context,
       message: {
         intent: {
           item: {
@@ -29,30 +25,16 @@ export async function getJobOnSearch(postBody: any): Promise<any> {
         },
       },
     };
-    let body = JSON.stringify(jobSchemaConstructer);
 
     const config = {
       headers: {
         "Content-Type": "application/JSON",
       },
     };
-    let bppResp: any = await axios.post("http://localhost:5001/jobOnSearch", {
-      body,
-      config,
-    });
-    bppResp = stringify(bppResp);
-    console.log("bpp ka repsonse hai yeh ---- ");
-    console.log(bppResp);
-
-    const jobs: any = {};
-
-    // jobs["numberOfJobs"] = bppResp.message.catalog.fulfillments.length;
-    // for (let i = 0; i < bppResp.message.catalog.providers.length; i++) {
-    //   jobs["providers"].push(bppResp.message.catalog.providers.descriptor.name);
-    // }
-
-    // console.log(jobs);
-
+    let bppResp: any = await axios.post(gatewayUrl, jobSchemaConstructer, config);
+    console.log(bppResp)
+    bppResp = JSON.stringify(bppResp.data);
+    console.log(bppResp)
     return bppResp;
   } catch (error) {
     console.error(error);
@@ -74,9 +56,11 @@ export async function getJobConfirm(postBody: any): Promise<any> {
         core_version: "1.0.0",
         bap_id: "dev.bap.faiz.protocol-server.com.dsep:jobs:BAP",
         bap_uri: "localhost:3000/jobs/search",
+        bpp_id: "https://gateway.becknprotocol.io/bg/search",
+        bpp_uri: "localhost:3000/jobs/search",
         transaction_id: "a9aaecca-10b7-4d19-b640-b047a7c62195",
         message_id: "${{$randomUUID}}",
-        timestamp: "2022-10-11T09:55:41.161Z",
+        timestamp: Date.now(),
       },
       message: {
         intent: {
@@ -88,21 +72,14 @@ export async function getJobConfirm(postBody: any): Promise<any> {
         },
       },
     };
-    let body = JSON.stringify(jobSchemaConstructer);
 
     const config = {
       headers: {
         "Content-Type": "application/JSON",
       },
     };
-
-    let bppResp: any = await axios.post("http://localhost:5001/jobOnSearch", {
-      body,
-      config,
-    });
-    bppResp = stringify(bppResp);
-    console.log("bpp ka repsonse hai yeh ---- ");
-    console.log(bppResp.serverReply);
+    let bppResp: any = await axios.post(gatewayUrl, jobSchemaConstructer, config);
+    bppResp = JSON.stringify(bppResp.data);
     return bppResp;
   } catch (error) {
     console.error(error);
@@ -113,58 +90,24 @@ export async function getJobConfirm(postBody: any): Promise<any> {
   }
 }
 
-export async function getJob(postBody: any): Promise<any> {
+export async function searchJob(postBody: any): Promise<any> {
   try {
-    if (postBody.onSearch == true) {
-      return await getJobOnSearch(postBody);
-    }
-
-    const jobSchemaConstructer: JobRequestDto = {
-      context: {
-        domain: "dsep:" + postBody.category,
-        country: "IND",
-        city: "std:080",
-        action: "search",
-        core_version: "1.0.0",
-        bap_id: "dev.bap.faiz.protocol-server.com.dsep:jobs:BAP",
-        bap_uri: "localhost:3000/jobs/search",
-        transaction_id: "a9aaecca-10b7-4d19-b640-b047a7c62195",
-        message_id: "${{$randomUUID}}",
-        timestamp: "2022-10-11T09:55:41.161Z",
-      },
-      message: {
-        intent: {
-          item: {
-            descriptor: {
-              name: postBody.title,
-            },
-          },
-        },
-      },
+    const context = searchContextBuilder("jobs", "search")
+    const message = messageBuilder(postBody.title)
+    const jobSchemaConstructer: any = {
+      context,
+      message,
     };
-    let body = JSON.stringify(jobSchemaConstructer);
-
     const config = {
       headers: {
         "Content-Type": "application/JSON",
       },
     };
-
-    let bppResp: any = await axios.post("http://localhost:5001/jobOnSearch", {
-      body,
-      config,
-    });
-    bppResp = stringify(bppResp);
-    // console.log("bpp ka repsonse hai yeh ---- ");
-    console.log(bppResp);
-
-    const jobs: any = {};
-
-    // jobs["numberOfJobs"] = bppResp.message.catalog.fulfillments.length;
-    // for (let i = 0; i < bppResp.message.catalog.providers.length; i++) {
-    //   jobs["providers"].push(bppResp.message.catalog.providers.descriptor.name);
-    // }
-    return bppResp;
+    console.log(JSON.stringify(jobSchemaConstructer))
+    let bppResp: any = await axios.post(gatewayUrl, jobSchemaConstructer, config);
+    bppResp = JSON.stringify(bppResp.data);
+    console.log(bppResp, 'bppresppp')
+    return { bppResp, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
   } catch (error) {
     console.error(error);
     return {

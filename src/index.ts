@@ -3,13 +3,14 @@ import dotenv from "dotenv";
 import {
   jobConfirmController,
   jobOnSearchController,
-  jobSearchController,
+  jobSearchController
 } from "./JobsFlow/controller";
+import { jobRoutes } from "./JobsFlow";
 
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 app.use(express.urlencoded()); // To parse URL-encoded bodies
 app.use(express.json());
@@ -22,9 +23,7 @@ const router = express.Router();
 app.use(router);
 app.use(express.json());
 
-app.use("/jobs/search", jobSearchController);
-app.use("/jobs/onSearch", jobOnSearchController);
-app.use("/jobs/confirmSearch", jobConfirmController);
+app.use("/job", jobRoutes());
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
