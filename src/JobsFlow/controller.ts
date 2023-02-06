@@ -2,7 +2,6 @@ import { Response, Request } from "express";
 import { searchJob, getJobConfirm, getJobOnSearch, selectJob, initJob } from "./services";
 
 export const search = async (req: Request, res: Response) => {
-  const body = req.body
   const resp = await searchJob(req.body);
   res.json(resp);
 };
@@ -10,7 +9,6 @@ export const search = async (req: Request, res: Response) => {
 export const onSearch = async (req: Request, res: Response) => {
   const body = req.body
   const resp = await getJobOnSearch(body);
-
   res.json(resp);
 };
 

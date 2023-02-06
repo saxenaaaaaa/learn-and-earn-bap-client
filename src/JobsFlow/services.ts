@@ -1,7 +1,7 @@
 import axios from "axios";
 import { searchContextBuilder, contextOnSearch } from "../helper";
 import dotenv from "dotenv";
-import { searchJobMessageBuilder, selectJobMessageBuilder, initJobMessageBuilder, confirmMessageBuilder } from "./schema_helper";
+import { searchJobMessageBuilder, selectJobMessageBuilder, initJobMessageBuilder, confirmMessageBuilder, onSearchResponseBuilder, selectRequestBuilder, buildSelectRequest } from "./schema_helper";
 
 dotenv.config();
 const gatewayUrl = process.env.GATEWAY_URL || "";
@@ -66,8 +66,9 @@ export async function searchJob(postBody: any): Promise<any> {
         "Content-Type": "application/JSON",
       },
     };
+
     let bppResp: any = await axios.post(`${gatewayUrl}/search`, jobSchemaConstructer, config);
-    return { context: { transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id }, network: bppResp.data, };
+    return { context: { transaction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id }, network: bppResp.data, };
   } catch (error) {
     console.error(error);
     return {
@@ -79,21 +80,15 @@ export async function searchJob(postBody: any): Promise<any> {
 
 export async function selectJob(body: any) {
   try {
-    const context = searchContextBuilder("jobs", "search")
-    const message = selectJobMessageBuilder(body)
-
-    const jobSchemaConstructer: any = {
-      context,
-      message,
-    };
+    const requestBody = buildSelectRequest(body);
     const config = {
       headers: {
         "Content-Type": "application/JSON",
       },
     };
 
-    let bppResp: any = await axios.post(`${gatewayUrl}/select`, jobSchemaConstructer, config);
-    return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+    let bppResp: any = await axios.post(`${gatewayUrl}/select`, requestBody, config);
+    return { network: bppResp.data, context: body?.context };
   }
   catch (error) {
     return {
