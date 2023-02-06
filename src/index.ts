@@ -1,10 +1,5 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import {
-  jobConfirmController,
-  jobOnSearchController,
-  jobSearchController
-} from "./JobsFlow/controller";
 import { jobRoutes } from "./JobsFlow";
 
 dotenv.config();
