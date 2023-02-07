@@ -1215,19 +1215,10 @@ components:
             oneOf:
             - $ref: '#/components/schemas/JobFulfillment'
         educationalQualifications:
-          type: object
-          required:
-            - category
-            - qualification
-          properties:
-            category:
-              description: qualification category ie Minimum Educational Qualifications
-              type: string
-            qualification:
-              type: array
-              items:
-                oneOf:
-                - $ref: '#/components/schemas/EducationalQualification'
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/EducationalQualification'
         workExperience:
           type: object
           required:
@@ -1237,7 +1228,7 @@ components:
             key:
               description: key will be Work Experience
               type: string
-            qualification:
+            experience:
               type: array
               items:
                 oneOf:
@@ -1282,6 +1273,9 @@ components:
               items:
                 oneOf:
                 - $ref: '#/components/schemas/SalaryInformation'
+        additionalFormUrl:
+          type: string
+          description: Additional form from job provider
     AdditionalDesc:
       description: Additional Desc object
       type: object
@@ -1306,7 +1300,21 @@ components:
           description: example IN-PERSON, VIRTUAL
           type: string
     EducationalQualification:
-      description: Educational Qualification object
+          type: object
+          required:
+            - category
+            - qualification
+          properties:
+            category:
+              description: qualification category ie Minimum Educational Qualifications
+              type: string
+            qualification:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/Qualification'
+    Qualification:
+      description: Job education Qualification object
       type: object
       required:
         - value
