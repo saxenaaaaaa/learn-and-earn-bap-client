@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.onConfirm = exports.onInit = exports.onSelect = exports.confirm = exports.init = exports.select = exports.onSearch = exports.search = void 0;
 const services_1 = require("./services");
 const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const body = req.body;
     const resp = yield (0, services_1.searchJob)(req.body);
     res.json(resp);
 });
@@ -46,6 +45,7 @@ const onSelect = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.onSelect = onSelect;
 const onInit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let body = req.body;
+    (0, services_1.onInitJob)(body);
     res.json("res from on Init");
 });
 exports.onInit = onInit;

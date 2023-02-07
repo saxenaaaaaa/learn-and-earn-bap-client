@@ -1,7 +1,7 @@
 import axios from "axios";
 import { searchContextBuilder, contextOnSearch } from "../helper";
 import dotenv from "dotenv";
-import { searchJobMessageBuilder, selectJobMessageBuilder, initJobMessageBuilder, confirmMessageBuilder, OnInitJobMessageBuilder, OnSelectJobMessageBuilder, OnConfirmJobMessageBuilder } from "./schema_helper";
+import { searchJobMessageBuilder, initJobMessageBuilder, confirmMessageBuilder, onSearchResponseBuilder, buildSelectRequest, onInitJobMessageBuilder, onSelectJobMessageBuilder, onConfirmMessageBuilder } from "./schema_helper";
 
 dotenv.config();
 const gatewayUrl = process.env.GATEWAY_URL || "";
@@ -19,7 +19,7 @@ export async function getJobOnSearch(postBody: any): Promise<any> {
       },
     };
     let bppResp: any = await axios.post(`${gatewayUrl}/on_search`, jobSchemaConstructer, config);
-    return bppResp.data;
+    return onSearchResponseBuilder(bppResp);
   } catch (error) {
     return {
       error: error,
@@ -66,8 +66,9 @@ export async function searchJob(postBody: any): Promise<any> {
         "Content-Type": "application/JSON",
       },
     };
+
     let bppResp: any = await axios.post(`${gatewayUrl}/search`, jobSchemaConstructer, config);
-    return { context: { transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id }, network: bppResp.data, };
+    return { context: { transaction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id }, network: bppResp.data, };
   } catch (error) {
     console.error(error);
     return {
@@ -79,21 +80,15 @@ export async function searchJob(postBody: any): Promise<any> {
 
 export async function selectJob(body: any) {
   try {
-    const context = searchContextBuilder("jobs", "select")
-    const message = selectJobMessageBuilder(body)
-
-    const jobSchemaConstructer: any = {
-      context,
-      message,
-    };
+    const requestBody = buildSelectRequest(body);
     const config = {
       headers: {
         "Content-Type": "application/JSON",
       },
     };
 
-    let bppResp: any = await axios.post(`${gatewayUrl}/select`, jobSchemaConstructer, config);
-    return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+    let bppResp: any = await axios.post(`${gatewayUrl}/select`, requestBody, config);
+    return { network: bppResp.data, context: requestBody?.context };
   }
   catch (error) {
     return {
@@ -132,7 +127,7 @@ export async function initJob(body: any) {
 export async function onInitJob(body: any) {
   try {
     const context = searchContextBuilder("jobs", "on_init")
-    const message = OnInitJobMessageBuilder(body)
+    const message = onInitJobMessageBuilder(body)
 
     const jobSchemaConstructer: any = {
       context,
@@ -158,7 +153,7 @@ export async function onInitJob(body: any) {
 export async function onSelectJob(body: any) {
   try {
     const context = searchContextBuilder("jobs", "on_select")
-    const message = OnSelectJobMessageBuilder(body)
+    const message = onSelectJobMessageBuilder(body)
 
     const jobSchemaConstructer: any = {
       context,
@@ -184,7 +179,7 @@ export async function onSelectJob(body: any) {
 export async function onConfirmJob(body: any) {
   try {
     const context = searchContextBuilder("jobs", "on_confirm")
-    const message = OnConfirmJobMessageBuilder(body)
+    const message = onConfirmMessageBuilder(body)
 
     const jobSchemaConstructer: any = {
       context,
