@@ -1,61 +1,26 @@
 import axios from "axios";
-import { parse } from "dotenv";
-import { response } from "express";
-import { stringify } from "flatted";
-import { JobContextDTO, JobRequestDto } from "./schema";
+import { searchContextBuilder, contextOnSearch } from "../helper";
+import dotenv from "dotenv";
+import { searchJobMessageBuilder, initJobMessageBuilder, confirmMessageBuilder, onSearchResponseBuilder, buildSelectRequest, onInitJobMessageBuilder, onSelectJobMessageBuilder, onConfirmMessageBuilder } from "./schema_helper";
 
+dotenv.config();
+const gatewayUrl = process.env.GATEWAY_URL || "";
 export async function getJobOnSearch(postBody: any): Promise<any> {
   try {
-    const jobSchemaConstructer: JobRequestDto = {
-      context: {
-        domain: "dsep:" + postBody.category,
-        country: "IND",
-        city: "std:080",
-        action: "on_search",
-        core_version: "1.0.0",
-        bap_id: "dev.bap.faiz.protocol-server.com.dsep:jobs:BAP",
-        bap_uri: "localhost:3000/jobs/search",
-        transaction_id: "a9aaecca-10b7-4d19-b640-b047a7c62195",
-        message_id: "${{$randomUUID}}",
-        timestamp: "2022-10-11T09:55:41.161Z",
-      },
-      message: {
-        intent: {
-          item: {
-            descriptor: {
-              name: postBody.title,
-            },
-          },
-        },
-      },
+    const context = contextOnSearch('jobs', 'on_search', postBody.transaction_id, postBody.message_id)
+    const jobSchemaConstructer = {
+      context,
+      message: {},
     };
-    let body = JSON.stringify(jobSchemaConstructer);
 
     const config = {
       headers: {
         "Content-Type": "application/JSON",
       },
     };
-    let bppResp: any = await axios.post("http://localhost:5001/jobOnSearch", {
-      body,
-      config,
-    });
-    bppResp = stringify(bppResp);
-    console.log("bpp ka repsonse hai yeh ---- ");
-    console.log(bppResp);
-
-    const jobs: any = {};
-
-    // jobs["numberOfJobs"] = bppResp.message.catalog.fulfillments.length;
-    // for (let i = 0; i < bppResp.message.catalog.providers.length; i++) {
-    //   jobs["providers"].push(bppResp.message.catalog.providers.descriptor.name);
-    // }
-
-    // console.log(jobs);
-
-    return bppResp;
+    let bppResp: any = await axios.post(`${gatewayUrl}/on_search`, jobSchemaConstructer, config);
+    return onSearchResponseBuilder(bppResp);
   } catch (error) {
-    console.error(error);
     return {
       error: error,
       errorOccured: true,
@@ -65,44 +30,19 @@ export async function getJobOnSearch(postBody: any): Promise<any> {
 
 export async function getJobConfirm(postBody: any): Promise<any> {
   try {
-    const jobSchemaConstructer: JobRequestDto = {
-      context: {
-        domain: "dsep:" + postBody.category,
-        country: "IND",
-        city: "std:080",
-        action: "search",
-        core_version: "1.0.0",
-        bap_id: "dev.bap.faiz.protocol-server.com.dsep:jobs:BAP",
-        bap_uri: "localhost:3000/jobs/search",
-        transaction_id: "a9aaecca-10b7-4d19-b640-b047a7c62195",
-        message_id: "${{$randomUUID}}",
-        timestamp: "2022-10-11T09:55:41.161Z",
-      },
-      message: {
-        intent: {
-          item: {
-            descriptor: {
-              name: postBody.title,
-            },
-          },
-        },
-      },
+    const context = contextOnSearch('jobs', 'confirm', postBody.transaction_id, postBody.message_id)
+    const message = confirmMessageBuilder(postBody)
+    const jobSchemaConstructer = {
+      context,
+      message
     };
-    let body = JSON.stringify(jobSchemaConstructer);
 
     const config = {
       headers: {
         "Content-Type": "application/JSON",
       },
     };
-
-    let bppResp: any = await axios.post("http://localhost:5001/jobOnSearch", {
-      body,
-      config,
-    });
-    bppResp = stringify(bppResp);
-    console.log("bpp ka repsonse hai yeh ---- ");
-    console.log(bppResp.serverReply);
+    let bppResp: any = await axios.post(`${gatewayUrl}/confirm`, jobSchemaConstructer, config);
     return bppResp;
   } catch (error) {
     console.error(error);
@@ -113,60 +53,148 @@ export async function getJobConfirm(postBody: any): Promise<any> {
   }
 }
 
-export async function getJob(postBody: any): Promise<any> {
+export async function searchJob(postBody: any): Promise<any> {
   try {
-    if (postBody.onSearch == true) {
-      return await getJobOnSearch(postBody);
-    }
-
-    const jobSchemaConstructer: JobRequestDto = {
-      context: {
-        domain: "dsep:" + postBody.category,
-        country: "IND",
-        city: "std:080",
-        action: "search",
-        core_version: "1.0.0",
-        bap_id: "dev.bap.faiz.protocol-server.com.dsep:jobs:BAP",
-        bap_uri: "localhost:3000/jobs/search",
-        transaction_id: "a9aaecca-10b7-4d19-b640-b047a7c62195",
-        message_id: "${{$randomUUID}}",
-        timestamp: "2022-10-11T09:55:41.161Z",
-      },
-      message: {
-        intent: {
-          item: {
-            descriptor: {
-              name: postBody.title,
-            },
-          },
-        },
-      },
+    const context = searchContextBuilder("jobs", "search")
+    const message = searchJobMessageBuilder(postBody)
+    const jobSchemaConstructer: any = {
+      context,
+      message,
     };
-    let body = JSON.stringify(jobSchemaConstructer);
-
     const config = {
       headers: {
         "Content-Type": "application/JSON",
       },
     };
 
-    let bppResp: any = await axios.post("http://localhost:5001/jobOnSearch", {
-      body,
-      config,
-    });
-    bppResp = stringify(bppResp);
-    // console.log("bpp ka repsonse hai yeh ---- ");
-    console.log(bppResp);
-
-    const jobs: any = {};
-
-    // jobs["numberOfJobs"] = bppResp.message.catalog.fulfillments.length;
-    // for (let i = 0; i < bppResp.message.catalog.providers.length; i++) {
-    //   jobs["providers"].push(bppResp.message.catalog.providers.descriptor.name);
-    // }
-    return bppResp;
+    let bppResp: any = await axios.post(`${gatewayUrl}/search`, jobSchemaConstructer, config);
+    return { context: { transaction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id }, network: bppResp.data, };
   } catch (error) {
     console.error(error);
+    return {
+      error: error,
+      errorOccured: true,
+    };
+  }
+}
+
+export async function selectJob(body: any) {
+  try {
+    const requestBody = buildSelectRequest(body);
+    const config = {
+      headers: {
+        "Content-Type": "application/JSON",
+      },
+    };
+
+    let bppResp: any = await axios.post(`${gatewayUrl}/select`, requestBody, config);
+    return { network: bppResp.data, context: requestBody?.context };
+  }
+  catch (error) {
+    return {
+      error: error,
+      errorOccured: true,
+    };
+  }
+}
+
+export async function initJob(body: any) {
+  try {
+    const context = searchContextBuilder("jobs", "init")
+    const message = initJobMessageBuilder(body)
+
+    const jobSchemaConstructer: any = {
+      context,
+      message,
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/JSON",
+      },
+    };
+
+    let bppResp: any = await axios.post(`${gatewayUrl}/init`, jobSchemaConstructer, config);
+    return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+  }
+  catch (error) {
+    return {
+      error: error,
+      errorOccured: true,
+    };
+  }
+}
+
+export async function onInitJob(body: any) {
+  try {
+    const context = searchContextBuilder("jobs", "on_init")
+    const message = onInitJobMessageBuilder(body)
+
+    const jobSchemaConstructer: any = {
+      context,
+      message,
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/JSON",
+      },
+    };
+
+    let bppResp: any = await axios.post(`${gatewayUrl}/on_init`, jobSchemaConstructer, config);
+    return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+  }
+  catch (error) {
+    return {
+      error: error,
+      errorOccured: true,
+    };
+  }
+}
+
+export async function onSelectJob(body: any) {
+  try {
+    const context = searchContextBuilder("jobs", "on_select")
+    const message = onSelectJobMessageBuilder(body)
+
+    const jobSchemaConstructer: any = {
+      context,
+      message,
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/JSON",
+      },
+    };
+
+    let bppResp: any = await axios.post(`${gatewayUrl}/on_select`, jobSchemaConstructer, config);
+    return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+  }
+  catch (error) {
+    return {
+      error: error,
+      errorOccured: true,
+    };
+  }
+}
+
+export async function onConfirmJob(body: any) {
+  try {
+    const context = searchContextBuilder("jobs", "on_confirm")
+    const message = onConfirmMessageBuilder(body)
+
+    const jobSchemaConstructer: any = {
+      context,
+      message,
+    };
+    const config = {
+      headers: {
+        "Content-Type": "application/JSON",
+      },
+    };
+
+    let bppResp: any = await axios.post(`${gatewayUrl}/on_confirm`, jobSchemaConstructer, config);
+    return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+  }
+  catch (error) {
     return {
       error: error,
       errorOccured: true,

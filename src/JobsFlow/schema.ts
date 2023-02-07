@@ -19,9 +19,11 @@ export interface JobContextDTO {
   core_version: String;
   bap_id: String;
   bap_uri: String;
+  bpp_id: String;
+  bpp_uri: String;
   transaction_id: String;
   message_id: String;
-  timestamp: String;
+  timestamp: number;
 }
 
 export interface JobContextBPPDTO {

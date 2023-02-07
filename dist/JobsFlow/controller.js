@@ -8,29 +8,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.jobConfirmController = exports.jobOnSearchController = exports.jobSearchController = void 0;
-const express_1 = __importDefault(require("express"));
+exports.onConfirm = exports.onInit = exports.onSelect = exports.confirm = exports.init = exports.select = exports.onSearch = exports.search = void 0;
 const services_1 = require("./services");
-const router = express_1.default.Router();
-const jobSearchController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let resp;
-    resp = yield (0, services_1.getJob)(req.body);
+const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const resp = yield (0, services_1.searchJob)(req.body);
     res.json(resp);
 });
-exports.jobSearchController = jobSearchController;
-const jobOnSearchController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let resp;
-    resp = yield (0, services_1.getJobOnSearch)(req.body);
+exports.search = search;
+const onSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    const resp = yield (0, services_1.getJobOnSearch)(body);
     res.json(resp);
 });
-exports.jobOnSearchController = jobOnSearchController;
-const jobConfirmController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.onSearch = onSearch;
+const select = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const resp = yield (0, services_1.selectJob)(req.body);
+    res.json(resp);
+});
+exports.select = select;
+const init = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const resp = yield (0, services_1.initJob)(req.body);
+    res.json(resp);
+});
+exports.init = init;
+const confirm = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let resp;
     resp = yield (0, services_1.getJobConfirm)(req.body);
     res.json(resp);
 });
-exports.jobConfirmController = jobConfirmController;
+exports.confirm = confirm;
+const onSelect = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let body = req.body;
+    res.json("res from on select");
+});
+exports.onSelect = onSelect;
+const onInit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let body = req.body;
+    (0, services_1.onInitJob)(body);
+    res.json("res from on Init");
+});
+exports.onInit = onInit;
+const onConfirm = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let body = req.body;
+    res.json("res from on confirm ");
+});
+exports.onConfirm = onConfirm;
