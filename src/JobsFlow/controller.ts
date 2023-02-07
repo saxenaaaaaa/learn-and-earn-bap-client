@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { searchJob, getJobConfirm, getJobOnSearch, selectJob, initJob } from "./services";
+import { searchJob, getJobConfirm, getJobOnSearch, selectJob, initJob, onInitJob } from "./services";
 
 export const search = async (req: Request, res: Response) => {
   const body = req.body
@@ -37,6 +37,7 @@ export const onSelect = async (req: Request, res: Response) => {
 
 export const onInit = async (req: Request, res: Response) => {
   let body = req.body
+  onInitJob(body)
   res.json("res from on Init")
 }
 

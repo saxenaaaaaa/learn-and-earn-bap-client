@@ -45,58 +45,14 @@ export const confirmMessageBuilder = (body: any) => {
     return {}
 }
 
-export const onSearchResponseBuilder = (resp: any) => {
+export const OnInitJobMessageBuilder = (body: any) => {
+    return {}
+}
 
-    const data = resp.message.catalog.provider.map((provider: any) => {
-        return {
-            providerId: provider,
-            providerName: provider.descriptor.name,
-            providerImgUrl: provider.descriptor.images.url,
-            jobid: provider.item.id
-        }
-    })
-    return {
-        "jobs": [
-            {
-                "jobProvider": resp.message.catalog.descriptor.name,
-                "company": {
-                    "id": data.providerId,
-                    "name": data.providerName,
-                    "imageLink": [
-                        {
-                            "url": data.providerImgUrl,
-                            "size": "string"
-                        }
-                    ]
-                },
-                "jobId": "string",
-                "role": "string",
-                "description": "string",
-                "locations": [
-                    {
-                        "id": "string",
-                        "city": "string",
-                        "cityCode": "string",
-                        "state": "string",
-                        "country": "string",
-                        "countryCode": "string"
-                    }
-                ],
-                "categories": [
-                    {
-                        "id": "string",
-                        "code": "string"
-                    }
-                ],
-                "compensation": [
-                    {
-                        "type": "fixed",
-                        "amount": 0,
-                        "currency": "string",
-                        "frequency": "string"
-                    }
-                ]
-            }
-        ]
-    }
+export const OnSelectJobMessageBuilder = (body: any) => {
+    return {}
+}
+
+export const OnConfirmJobMessageBuilder = (body: any) => {
+    return {}
 }
