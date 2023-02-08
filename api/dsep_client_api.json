@@ -1141,8 +1141,11 @@ components:
       properties:
         companyId:
           type: string
-        jobId:
-          type: string
+        jobs:
+          type: object
+          properties:
+            jobId:
+              type: string
         context:
           $ref: '#/components/schemas/Context'
     InitJob:
