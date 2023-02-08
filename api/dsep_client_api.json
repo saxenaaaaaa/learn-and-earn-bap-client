@@ -151,7 +151,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SelectedJobRequest'
+                $ref: '#/components/schemas/SelectedJobResponse'
         '404':
           description: Job on_select request failed
           content:
@@ -1108,6 +1108,17 @@ components:
           items:
             oneOf:
             - $ref: '#/components/schemas/Location'
+    AdditionalDesc:
+      description: Additional Desc object
+      type: object
+      required:
+        - url
+        - contentType
+      properties:
+        url:        
+          type: string
+        contentType:
+          type: string
     Location:
       description: Location object
       type: object
@@ -1148,6 +1159,198 @@ components:
               type: string
         context:
           $ref: '#/components/schemas/Context'
+    SelectedJobResponse:
+      description: Schema for selected job response
+      type: object
+      required:
+        - context
+        - selectedJobs
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        company:
+          $ref: '#/components/schemas/Company'
+        selectedJobs:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/SelectedJob'
+    SelectedJob:
+      description: Schema for Selected Job
+      type: object
+      required:
+        - jobId
+        - role
+        - city
+      properties:
+        jobId:
+          type: string
+        role:
+          type: string
+          description: Job role
+        description:
+          type: string
+          description: Job description
+        additionalDesc:
+          $ref: '#/components/schemas/AdditionalDesc' 
+        locations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Location'
+        fulfillments:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobFulfillment'
+        educationalQualifications:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/EducationalQualification'
+        workExperience:
+          type: object
+          required:
+            - key
+            - qualification
+          properties:
+            key:
+              description: key will be Work Experience
+              type: string
+            experience:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/WorkExperience'
+        responsibilities:
+          type: array
+          items:
+            type: string
+        employmentInformation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be employment-info
+              type: string
+            name:
+              description: name will be Employment Information
+              type: string
+            employmentInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/EmploymentInformation'
+        compensation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be salary-info
+              type: string
+            name:
+              description: name will be Salary Compensation
+              type: string
+            salaryInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/SalaryInformation'
+        additionalFormUrl:
+          type: string
+          description: Additional form from job provider
+    JobFulfillment:
+      description: Job Fulfillment object
+      type: object
+      required:
+        - id
+        - type
+      properties:
+        id:        
+          type: string
+        type:
+          description: example IN-PERSON, VIRTUAL
+          type: string
+    EducationalQualification:
+          type: object
+          required:
+            - category
+            - qualification
+          properties:
+            category:
+              description: qualification category ie Minimum Educational Qualifications
+              type: string
+            qualification:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/Qualification'
+    Qualification:
+      description: Job education Qualification object
+      type: object
+      required:
+        - value
+      properties:
+        code:      
+          description: qualification code ie degree
+          type: string
+        name:
+          description: qualification name ie Degree
+          type: string
+        value:      
+          description: qualification name ie Masters
+          type: string
+    WorkExperience:
+      description: Work Experience object
+      type: object
+      required:
+        - value
+      properties:
+        code:      
+          description: work experience code ie exp-in-years
+          type: string
+        name:
+          description: work experience name ie Minimum Work Experience
+          type: string
+        value:      
+          description: work experience name ie 8 Years
+          type: string
+    EmploymentInformation:
+      description: Employment Information object
+      type: object
+      required:
+        - value
+      properties:
+        code:      
+          description: code example emp-duration-type
+          type: string
+        name:
+          description: name ie Employment Duration Type
+          type: string
+        value:      
+          description: ie Full Time
+          type: string
+    SalaryInformation:
+      description: Salary Information object
+      type: object
+      required:
+        - value
+      properties:
+        code:      
+          description: code example emp-duration-type
+          type: string
+        name:
+          description: name ie Salary Range
+          type: string
+        value:      
+          description: ie 35 LPA to 65 LPA
+          type: string
     InitJob:
       description: Schema for Job initialization
       type: object
@@ -1285,207 +1488,6 @@ components:
         currency:
           type: string
         frequency:
-          type: string
-    SelectedJobRequest:
-      description: Schema for selected job response
-      type: object
-      required:
-        - context
-        - selectedJob
-      properties:
-        context:
-          $ref: '#/components/schemas/Context'
-        selectedJob:
-          $ref: '#/components/schemas/SelectedJob'
-    SelectedJob:
-      description: Schema for Selected Job
-      type: object
-      required:
-        - company
-        - jobId
-        - role
-        - city
-      properties:
-        company:
-          $ref: '#/components/schemas/Company'
-        jobId:
-          type: string
-        role:
-          type: string
-          description: Job role
-        description:
-          type: string
-          description: Job description
-        additionalDesc:
-          $ref: '#/components/schemas/AdditionalDesc' 
-        locations:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/Location'
-        fulfillments:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobFulfillment'
-        educationalQualifications:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/EducationalQualification'
-        workExperience:
-          type: object
-          required:
-            - key
-            - qualification
-          properties:
-            key:
-              description: key will be Work Experience
-              type: string
-            experience:
-              type: array
-              items:
-                oneOf:
-                - $ref: '#/components/schemas/WorkExperience'
-        responsibilities:
-          type: array
-          items:
-            type: string
-        employmentInformation:
-          type: object
-          required:
-            - code
-            - name
-            - employmentInfo
-          properties:
-            code:
-              description: code will be employment-info
-              type: string
-            name:
-              description: name will be Employment Information
-              type: string
-            employmentInfo:
-              type: array
-              items:
-                oneOf:
-                - $ref: '#/components/schemas/EmploymentInformation'
-        compensation:
-          type: object
-          required:
-            - code
-            - name
-            - employmentInfo
-          properties:
-            code:
-              description: code will be salary-info
-              type: string
-            name:
-              description: name will be Salary Compensation
-              type: string
-            salaryInfo:
-              type: array
-              items:
-                oneOf:
-                - $ref: '#/components/schemas/SalaryInformation'
-        additionalFormUrl:
-          type: string
-          description: Additional form from job provider
-    AdditionalDesc:
-      description: Additional Desc object
-      type: object
-      required:
-        - url
-        - contentType
-      properties:
-        url:        
-          type: string
-        contentType:
-          type: string
-    JobFulfillment:
-      description: Job Fulfillment object
-      type: object
-      required:
-        - id
-        - type
-      properties:
-        id:        
-          type: string
-        type:
-          description: example IN-PERSON, VIRTUAL
-          type: string
-    EducationalQualification:
-          type: object
-          required:
-            - category
-            - qualification
-          properties:
-            category:
-              description: qualification category ie Minimum Educational Qualifications
-              type: string
-            qualification:
-              type: array
-              items:
-                oneOf:
-                - $ref: '#/components/schemas/Qualification'
-    Qualification:
-      description: Job education Qualification object
-      type: object
-      required:
-        - value
-      properties:
-        code:      
-          description: qualification code ie degree
-          type: string
-        name:
-          description: qualification name ie Degree
-          type: string
-        value:      
-          description: qualification name ie Masters
-          type: string
-    WorkExperience:
-      description: Work Experience object
-      type: object
-      required:
-        - value
-      properties:
-        code:      
-          description: work experience code ie exp-in-years
-          type: string
-        name:
-          description: work experience name ie Minimum Work Experience
-          type: string
-        value:      
-          description: work experience name ie 8 Years
-          type: string
-    EmploymentInformation:
-      description: Employment Information object
-      type: object
-      required:
-        - value
-      properties:
-        code:      
-          description: code example emp-duration-type
-          type: string
-        name:
-          description: name ie Employment Duration Type
-          type: string
-        value:      
-          description: ie Full Time
-          type: string
-    SalaryInformation:
-      description: Salary Information object
-      type: object
-      required:
-        - value
-      properties:
-        code:      
-          description: code example emp-duration-type
-          type: string
-        name:
-          description: name ie Salary Range
-          type: string
-        value:      
-          description: ie 35 LPA to 65 LPA
           type: string
     SearchMentorship:
       description: Schema for Mentorship search object
