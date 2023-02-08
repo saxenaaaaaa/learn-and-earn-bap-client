@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { searchJob, getJobConfirm, getJobOnSearch, selectJob, initJob, onInitJob } from "./services";
+import { confirmJob, initJob, onConfirmJob, onInitJob, onSearchJob, onSelectJob, searchJob, selectJob } from "./services";
 
 export const search = async (req: Request, res: Response) => {
   const resp = await searchJob(req.body);
@@ -8,7 +8,7 @@ export const search = async (req: Request, res: Response) => {
 
 export const onSearch = async (req: Request, res: Response) => {
   const body = req.body
-  const resp = await getJobOnSearch(body);
+  const resp = await onSearchJob(body);
   res.json(resp);
 };
 
@@ -17,29 +17,28 @@ export const select = async (req: Request, res: Response) => {
   res.json(resp);
 }
 
+export const onSelect = async (req: Request, res: Response) => {
+  const resp = await onSelectJob(req.body);
+  res.json(resp);
+}
+
 export const init = async (req: Request, res: Response) => {
   const resp = await initJob(req.body)
   res.json(resp)
 }
 
+export const onInit = async (req: Request, res: Response) => {
+  const resp = await onInitJob(req.body)
+  res.json(resp)
+}
+
 export const confirm = async (req: Request, res: Response) => {
-  let resp;
-  resp = await getJobConfirm(req.body);
+  const resp = await confirmJob(req.body);
   res.json(resp);
 };
 
-export const onSelect = async (req: Request, res: Response) => {
-  let body = req.body
-  res.json("res from on select")
-}
-
-export const onInit = async (req: Request, res: Response) => {
-  let body = req.body
-  onInitJob(body)
-  res.json("res from on Init")
-}
 
 export const onConfirm = async (req: Request, res: Response) => {
-  let body = req.body
-  res.json("res from on confirm ")
+  const resp = await onConfirmJob(req.body);
+  res.json(resp);
 }
