@@ -1198,11 +1198,11 @@ components:
           items:
             oneOf:
             - $ref: '#/components/schemas/Location'
-        fulfillments:
+        fulfillmentCategory:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/JobFulfillment'
+            - $ref: '#/components/schemas/JobFulfillmentCategory'
         educationalQualifications:
           type: array
           items:
@@ -1265,8 +1265,8 @@ components:
         additionalFormUrl:
           type: string
           description: Additional form from job provider
-    JobFulfillment:
-      description: Job Fulfillment object
+    JobFulfillmentCategory:
+      description: Job Fulfillment category object
       type: object
       required:
         - id
@@ -1364,8 +1364,26 @@ components:
           $ref: '#/components/schemas/Context'
         companyId:
           type: string
-        jobId:
+        jobs:
+          type: object
+          properties:
+            jobId:
+              type: string
+              description: jobId
+        jobFulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobFulfillment' 
+    JobFulfillment:
+      description: Schema for Job Fulfillment object
+      type: object
+      required:
+        - JobFulfillmentCategoryId
+        - jobApplicantProfile
+      properties:
+        JobFulfillmentCategoryId:
           type: string
+          description: JobFulfillmentCategoryId
         jobApplicantProfile:
           $ref: '#/components/schemas/JobApplicantProfile'
     JobApplicantProfile:
