@@ -1021,7 +1021,9 @@ components:
           items:
             type: object
             properties: 
-              skill:
+              name:
+                type: string
+              code:
                 type: string
     SearchJobsResponse:
       description: Schema for searched job results/response
