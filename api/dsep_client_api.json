@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.0.6
+  version: 0.0.7
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -305,6 +305,92 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/job/onConfirm"
+  /job/status:
+    post:
+      tags:
+        - Jobs & Internships
+      summary: Job Status
+      requestBody:
+        description: Status of specific job
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobStatusRequest'
+      responses:
+        '200':
+          description: Job status request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Job status request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Job status request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/job/status"
+        '500':
+          description: Job status request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/job/status"
+  /job/onStatus:
+    post:
+      tags:
+        - Jobs & Internships
+      summary: onStatus jobs
+      requestBody:
+        description: Job onStatus context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Job on_Status request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatusResponse'
+        '404':
+          description: Job on_Status request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Job on_Status request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/job/onStatus"
+        '500':
+          description: Job on_Status request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/job/onStatus"
   /mentorship/search:
     post:
       tags:
@@ -1563,6 +1649,76 @@ components:
               items:
                 oneOf:
                 - $ref: '#/components/schemas/SalaryInformation'
+    JobStatusRequest:
+      description: Schema for Job selection
+      type: object
+      required:
+        - applicationId
+        - context
+      properties:
+        applicationId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    JobStatusResponse:
+      description: Schema for job status response
+      type: object
+      required:
+        - context
+        - applicationId
+        - company
+        - confirmedJob
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        applicationId:
+          type: string
+        company:
+          $ref: '#/components/schemas/Company'
+        confirmedJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfirmedJob'
+        jobFulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobStatusFulfillment'
+        additionalFormUrl:
+          type: string
+          description: Additional form from job provider
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobAdditionalFormData'
+    JobStatusFulfillment:
+      description: Schema for Job status Fulfillment object
+      type: object
+      required:
+        - JobFulfillmentCategoryId
+        - jobApplicantProfile
+        - aaa
+      properties:
+        JobFulfillmentCategoryId:
+          type: string
+          description: JobFulfillmentCategoryId
+        jobApplicantProfile:
+          $ref: '#/components/schemas/JobApplicantProfile'
+        jobStatus:
+          $ref: '#/components/schemas/JobStatus'
+    JobStatus:
+      description: Schema for Job status object
+      type: object
+      required:
+        - status
+        - statusCode
+      properties:
+        status:
+          type: string
+          description: status
+        statusCode:
+          type: string
+          description: status code
     UserProfileOLDCONFIRM:
       description: Schema for User Profile
       type: object
