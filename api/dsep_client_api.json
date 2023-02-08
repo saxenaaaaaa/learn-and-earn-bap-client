@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.0.4
+  version: 0.0.5
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -176,6 +176,49 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/job/onSelect"
+  /job/init:
+    post:
+      tags:
+        - Jobs & Internships
+      summary: Initialize job
+      requestBody:
+        description: Initialize specific job
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitJob'
+      responses:
+        '200':
+          description: Job init request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Job init request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Job init request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/job/init"
+        '500':
+          description: Job init request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/job/init"
   /job/confirm:
     post:
       tags:
@@ -994,6 +1037,69 @@ components:
           type: string
         context:
           $ref: '#/components/schemas/Context'
+    InitJob:
+      description: Schema for Job initialization
+      type: object
+      required:
+        - context
+        - companyId
+        - jobId
+        - jobApplicantProfile
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        companyId:
+          type: string
+        jobId:
+          type: string
+        jobApplicantProfile:
+          $ref: '#/components/schemas/JobApplicantProfile'
+    JobApplicantProfile:
+      description: Schema for Job Applicant Profile
+      type: object
+      required:
+        - name
+        - contact
+      properties:
+        name:
+          type: string
+          description: User full name
+        languages:
+          type: array
+          items:
+            type: string
+        profileUrl:
+          type: string
+          description: User full name
+        creds:
+          $ref: '#/components/schemas/UserCredential'
+        skills:
+          type: array
+          items:
+            type: string
+        additionalFormData:
+          type: array
+          items:
+            properties:
+              formInputKey:
+                description: Additional form key
+                type: string
+              formInputValue:
+                description: Additional form value for key
+                type: string
+    UserCredential:
+      description: User Credential object
+      type: object
+      required:
+        - url
+        - type
+      properties:
+        url:     
+          description: Location for user document
+          type: string
+        type:
+          description: Type of document
+          type: string
     ConfirmJob:
       description: Schema for Job selection
       type: object
