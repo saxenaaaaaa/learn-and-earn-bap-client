@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.0.4
+  version: 0.0.5
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -65,7 +65,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchedJobs'
+                $ref: '#/components/schemas/SearchJobsResponse'
         '404':
           description: Job on_search request failed
           content:
@@ -151,7 +151,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SelectedJobRequest'
+                $ref: '#/components/schemas/SelectedJobResponse'
         '404':
           description: Job on_select request failed
           content:
@@ -176,6 +176,49 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/job/onSelect"
+  /job/init:
+    post:
+      tags:
+        - Jobs & Internships
+      summary: Initialize job
+      requestBody:
+        description: Initialize specific job
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitJob'
+      responses:
+        '200':
+          description: Job init request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Job init request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Job init request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/job/init"
+        '500':
+          description: Job init request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/job/init"
   /job/confirm:
     post:
       tags:
@@ -978,65 +1021,11 @@ components:
           items:
             type: object
             properties: 
-              skill:
+              name:
                 type: string
-    SelectJob:
-      description: Schema for Job selection
-      type: object
-      required:
-        - companyId
-        - jobId
-        - context
-      properties:
-        companyId:
-          type: string
-        jobId:
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
-    ConfirmJob:
-      description: Schema for Job selection
-      type: object
-      required:
-        - jobId
-        - context
-        - userProfile
-      properties:
-        jobId:
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
-        userProfile:
-          $ref: '#/components/schemas/UserProfile'
-    UserProfile:
-      description: Schema for User Profile
-      type: object
-      required:
-        - name
-        - contact
-      properties:
-        name:
-          type: string
-          description: User full name
-        dob:
-          type: string
-          description: User dob
-        gender:
-          type: string
-          description: User gender
-        contact:
-          type: object
-          properties:
-            phone:
-              type: string
-              description: User mobile number
-            email:
-              type: string
-              description: User email
-        resume:
-          type: string
-          description: link to resume
-    SearchedJobs:
+              code:
+                type: string
+    SearchJobsResponse:
       description: Schema for searched job results/response
       type: object
       required:
@@ -1045,49 +1034,28 @@ components:
       properties:
         context:
           $ref: '#/components/schemas/Context'
+        jobProviderPlatform:
+          type: string
+          description: Job ProviderPlatform
+        jobResults:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobResult'
+    JobResult:
+      description: Schema for Job result
+      type: object
+      required:
+        - company
+        - jobs
+      properties:
+        company:
+          $ref: '#/components/schemas/Company'
         jobs:
           type: array
           items:
             oneOf:
             - $ref: '#/components/schemas/JobSummary'
-    JobSummary:
-      description: Schema for Job summary
-      type: object
-      required:
-        - jobProvider
-        - company
-        - companyId
-        - jobId
-        - role
-        - city
-      properties:
-        jobProvider:
-          type: string
-        company:
-          $ref: '#/components/schemas/Company'
-        jobId:
-          type: string
-        role:
-          type: string
-          description: Job role
-        description:
-          type: string
-          description: Job description
-        locations:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/Location'
-        categories:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobCategory'
-        compensation:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/Compensation'
     Company:
       description: Company object
       type: object
@@ -1116,6 +1084,41 @@ components:
           type: string
         size:
           type: string
+    JobSummary:
+      description: Schema for Job summary
+      type: object
+      required:
+        - jobId
+        - role
+        - description
+        - additionalDesc
+      properties:
+        jobId:
+          type: string
+        role:
+          type: string
+          description: Job role (Job name)
+        description:
+          type: string
+          description: Job description
+        additionalDesc:
+          $ref: '#/components/schemas/AdditionalDesc' 
+        locations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Location'
+    AdditionalDesc:
+      description: Additional Desc object
+      type: object
+      required:
+        - url
+        - contentType
+      properties:
+        url:        
+          type: string
+        contentType:
+          type: string
     Location:
       description: Location object
       type: object
@@ -1139,61 +1142,47 @@ components:
           type: string
         countryCode:
           type: string
-    JobCategory:
-      description: JobCategory object
+    SelectJob:
+      description: Schema for Job selection
       type: object
       required:
-        - id
-        - code
+        - companyId
+        - jobId
+        - context
       properties:
-        id:        
+        companyId:
           type: string
-        code:
-          type: string
-    Compensation:
-      description: compensation object
-      type: object
-      required:
-        - type
-        - amount
-        - currency
-        - frequency
-      properties:
-        type:        
-          type: string
-          enum: 
-            - fixed
-            - variable
-            - commission
-            - allowance
-        amount:
-          type: number
-        currency:
-          type: string
-        frequency:
-          type: string
-    SelectedJobRequest:
+        jobs:
+          type: object
+          properties:
+            jobId:
+              type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    SelectedJobResponse:
       description: Schema for selected job response
       type: object
       required:
         - context
-        - selectedJob
+        - selectedJobs
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        selectedJob:
-          $ref: '#/components/schemas/SelectedJob'
+        company:
+          $ref: '#/components/schemas/Company'
+        selectedJobs:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/SelectedJob'
     SelectedJob:
       description: Schema for Selected Job
       type: object
       required:
-        - company
         - jobId
         - role
         - city
       properties:
-        company:
-          $ref: '#/components/schemas/Company'
         jobId:
           type: string
         role:
@@ -1209,11 +1198,11 @@ components:
           items:
             oneOf:
             - $ref: '#/components/schemas/Location'
-        fulfillments:
+        fulfillmentCategory:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/JobFulfillment'
+            - $ref: '#/components/schemas/JobFulfillmentCategory'
         educationalQualifications:
           type: array
           items:
@@ -1276,19 +1265,8 @@ components:
         additionalFormUrl:
           type: string
           description: Additional form from job provider
-    AdditionalDesc:
-      description: Additional Desc object
-      type: object
-      required:
-        - url
-        - contentType
-      properties:
-        url:        
-          type: string
-        contentType:
-          type: string
-    JobFulfillment:
-      description: Job Fulfillment object
+    JobFulfillmentCategory:
+      description: Job Fulfillment category object
       type: object
       required:
         - id
@@ -1372,6 +1350,162 @@ components:
           type: string
         value:      
           description: ie 35 LPA to 65 LPA
+          type: string
+    InitJob:
+      description: Schema for Job initialization
+      type: object
+      required:
+        - context
+        - companyId
+        - jobId
+        - jobApplicantProfile
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        companyId:
+          type: string
+        jobs:
+          type: object
+          properties:
+            jobId:
+              type: string
+              description: jobId
+        jobFulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobFulfillment' 
+    JobFulfillment:
+      description: Schema for Job Fulfillment object
+      type: object
+      required:
+        - JobFulfillmentCategoryId
+        - jobApplicantProfile
+      properties:
+        JobFulfillmentCategoryId:
+          type: string
+          description: JobFulfillmentCategoryId
+        jobApplicantProfile:
+          $ref: '#/components/schemas/JobApplicantProfile'
+    JobApplicantProfile:
+      description: Schema for Job Applicant Profile
+      type: object
+      required:
+        - name
+        - contact
+      properties:
+        name:
+          type: string
+          description: User full name
+        languages:
+          type: array
+          items:
+            type: string
+        profileUrl:
+          type: string
+          description: User full name
+        creds:
+          $ref: '#/components/schemas/UserCredential'
+        skills:
+          type: array
+          items:
+            type: string
+        additionalFormData:
+          type: array
+          items:
+            properties:
+              formInputKey:
+                description: Additional form key
+                type: string
+              formInputValue:
+                description: Additional form value for key
+                type: string
+    UserCredential:
+      description: User Credential object
+      type: object
+      required:
+        - url
+        - type
+      properties:
+        url:     
+          description: Location for user document
+          type: string
+        type:
+          description: Type of document
+          type: string
+    ConfirmJob:
+      description: Schema for Job selection
+      type: object
+      required:
+        - jobId
+        - context
+        - userProfile
+      properties:
+        jobId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        userProfile:
+          $ref: '#/components/schemas/UserProfile'
+    UserProfile:
+      description: Schema for User Profile
+      type: object
+      required:
+        - name
+        - contact
+      properties:
+        name:
+          type: string
+          description: User full name
+        dob:
+          type: string
+          description: User dob
+        gender:
+          type: string
+          description: User gender
+        contact:
+          type: object
+          properties:
+            phone:
+              type: string
+              description: User mobile number
+            email:
+              type: string
+              description: User email
+        resume:
+          type: string
+          description: link to resume
+    JobCategory:
+      description: JobCategory object
+      type: object
+      required:
+        - id
+        - code
+      properties:
+        id:        
+          type: string
+        code:
+          type: string
+    Compensation:
+      description: compensation object
+      type: object
+      required:
+        - type
+        - amount
+        - currency
+        - frequency
+      properties:
+        type:        
+          type: string
+          enum: 
+            - fixed
+            - variable
+            - commission
+            - allowance
+        amount:
+          type: number
+        currency:
+          type: string
+        frequency:
           type: string
     SearchMentorship:
       description: Schema for Mentorship search object
