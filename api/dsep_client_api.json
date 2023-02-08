@@ -65,7 +65,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchedJobs'
+                $ref: '#/components/schemas/SearchJobsResponse'
         '404':
           description: Job on_search request failed
           content:
@@ -1023,6 +1023,112 @@ components:
             properties: 
               skill:
                 type: string
+    SearchJobsResponse:
+      description: Schema for searched job results/response
+      type: object
+      required:
+        - context
+        - jobs
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        jobProviderPlatform:
+          type: string
+          description: Job ProviderPlatform
+        jobResults:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobResult'
+    JobResult:
+      description: Schema for Job result
+      type: object
+      required:
+        - company
+        - jobs
+      properties:
+        company:
+          $ref: '#/components/schemas/Company'
+        jobs:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobSummary'
+    Company:
+      description: Company object
+      type: object
+      required:
+        - id
+        - name
+        - imageLink
+      properties:
+        id:        
+          type: string
+        name:
+          type: string
+        imageLink:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Image'
+    Image:
+      description: Image object
+      type: object
+      required:
+        - url
+        - size
+      properties:
+        url:        
+          type: string
+        size:
+          type: string
+    JobSummary:
+      description: Schema for Job summary
+      type: object
+      required:
+        - jobId
+        - role
+        - description
+        - additionalDesc
+      properties:
+        jobId:
+          type: string
+        role:
+          type: string
+          description: Job role (Job name)
+        description:
+          type: string
+          description: Job description
+        additionalDesc:
+          $ref: '#/components/schemas/AdditionalDesc' 
+        locations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Location'
+    Location:
+      description: Location object
+      type: object
+      required:
+        - id
+        - city
+        - cityCode
+        - state
+        - country
+        - countryCode
+      properties:
+        id:        
+          type: string
+        city:
+          type: string
+        cityCode:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        countryCode:
+          type: string
     SelectJob:
       description: Schema for Job selection
       type: object
@@ -1142,109 +1248,6 @@ components:
         resume:
           type: string
           description: link to resume
-    SearchedJobs:
-      description: Schema for searched job results/response
-      type: object
-      required:
-        - context
-        - jobs
-      properties:
-        context:
-          $ref: '#/components/schemas/Context'
-        jobs:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobSummary'
-    JobSummary:
-      description: Schema for Job summary
-      type: object
-      required:
-        - jobProvider
-        - company
-        - companyId
-        - jobId
-        - role
-        - city
-      properties:
-        jobProvider:
-          type: string
-        company:
-          $ref: '#/components/schemas/Company'
-        jobId:
-          type: string
-        role:
-          type: string
-          description: Job role
-        description:
-          type: string
-          description: Job description
-        locations:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/Location'
-        categories:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobCategory'
-        compensation:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/Compensation'
-    Company:
-      description: Company object
-      type: object
-      required:
-        - id
-        - name
-        - imageLink
-      properties:
-        id:        
-          type: string
-        name:
-          type: string
-        imageLink:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/Image'
-    Image:
-      description: Image object
-      type: object
-      required:
-        - url
-        - size
-      properties:
-        url:        
-          type: string
-        size:
-          type: string
-    Location:
-      description: Location object
-      type: object
-      required:
-        - id
-        - city
-        - cityCode
-        - state
-        - country
-        - countryCode
-      properties:
-        id:        
-          type: string
-        city:
-          type: string
-        cityCode:
-          type: string
-        state:
-          type: string
-        country:
-          type: string
-        countryCode:
-          type: string
     JobCategory:
       description: JobCategory object
       type: object
