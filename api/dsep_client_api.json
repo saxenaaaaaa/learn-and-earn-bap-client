@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.0.5
+  version: 0.0.6
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -230,7 +230,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConfirmJob'
+              $ref: '#/components/schemas/ConfirmJobRequest'
       responses:
         '200':
           description: Job confirmation request sent to network
@@ -280,7 +280,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/ConfirmJobResponse'
         '404':
           description: Job on_confirm request failed
           content:
@@ -1374,6 +1374,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobFulfillment' 
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobAdditionalFormData'
     JobFulfillment:
       description: Schema for Job Fulfillment object
       type: object
@@ -1409,16 +1414,6 @@ components:
           type: array
           items:
             type: string
-        additionalFormData:
-          type: array
-          items:
-            properties:
-              formInputKey:
-                description: Additional form key
-                type: string
-              formInputValue:
-                description: Additional form value for key
-                type: string
     UserCredential:
       description: User Credential object
       type: object
@@ -1432,8 +1427,17 @@ components:
         type:
           description: Type of document
           type: string
-    ConfirmJob:
-      description: Schema for Job selection
+    JobAdditionalFormData:
+          type: object
+          properties:
+            formInputKey:
+              description: Additional form key
+              type: string
+            formInputValue:
+              description: Additional form value for key
+              type: string
+    ConfirmJobRequest:
+      description: Schema for Job confirm request
       type: object
       required:
         - jobId
@@ -1444,9 +1448,122 @@ components:
           type: string
         context:
           $ref: '#/components/schemas/Context'
-        userProfile:
-          $ref: '#/components/schemas/UserProfile'
-    UserProfile:
+        confirmation:
+          $ref: '#/components/schemas/JobFulfillment'
+    ConfirmJobResponse:
+      description: Schema for confirmed job response
+      type: object
+      required:
+        - context
+        - applicationId
+        - company
+        - confirmedJob
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        applicationId:
+          type: string
+        company:
+          $ref: '#/components/schemas/Company'
+        confirmedJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfirmedJob'
+        jobFulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobFulfillment'
+        additionalFormUrl:
+          type: string
+          description: Additional form from job provider
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobAdditionalFormData'
+    ConfirmedJob:
+      description: Schema for confirmed Job
+      type: object
+      required:
+        - jobId
+        - role
+        - city
+      properties:
+        jobId:
+          type: string
+        role:
+          type: string
+          description: Job role
+        description:
+          type: string
+          description: Job description
+        additionalDesc:
+          $ref: '#/components/schemas/AdditionalDesc' 
+        locations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Location'
+        educationalQualifications:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/EducationalQualification'
+        workExperience:
+          type: object
+          required:
+            - key
+            - qualification
+          properties:
+            key:
+              description: key will be Work Experience
+              type: string
+            experience:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/WorkExperience'
+        responsibilities:
+          type: array
+          items:
+            type: string
+        employmentInformation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be employment-info
+              type: string
+            name:
+              description: name will be Employment Information
+              type: string
+            employmentInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/EmploymentInformation'
+        compensation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be salary-info
+              type: string
+            name:
+              description: name will be Salary Compensation
+              type: string
+            salaryInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/SalaryInformation'
+    UserProfileOLDCONFIRM:
       description: Schema for User Profile
       type: object
       required:
