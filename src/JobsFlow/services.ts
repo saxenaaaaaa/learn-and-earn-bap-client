@@ -34,7 +34,6 @@ export async function searchJob(body: any): Promise<any> {
   }
 }
 
-
 export async function onSearchJob(body: any): Promise<any> {
   try {
     const { payload } = buildOnSearchRequest(body);
@@ -116,7 +115,7 @@ export async function onConfirmJob(body: any) {
     const headers = { "Content-Type": "application/JSON" };
 
     let response: any = await axios.post(`${gatewayUrl}/on_confirm`, payload, { headers });
-    return buildOnConfirmResponse(response?.data);
+    return buildOnConfirmResponse(response.data);
   }
   catch (error) {
     return { error: error, errorOccured: true };

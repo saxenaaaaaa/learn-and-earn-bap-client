@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onConfirm = exports.onInit = exports.onSelect = exports.confirm = exports.init = exports.select = exports.onSearch = exports.search = void 0;
+exports.onConfirm = exports.confirm = exports.onInit = exports.init = exports.onSelect = exports.select = exports.onSearch = exports.search = void 0;
 const services_1 = require("./services");
 const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const resp = yield (0, services_1.searchJob)(req.body);
@@ -18,7 +18,7 @@ const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.search = search;
 const onSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
-    const resp = yield (0, services_1.getJobOnSearch)(body);
+    const resp = yield (0, services_1.onSearchJob)(body);
     res.json(resp);
 });
 exports.onSearch = onSearch;
@@ -27,30 +27,28 @@ const select = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.json(resp);
 });
 exports.select = select;
+const onSelect = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const resp = yield (0, services_1.onSelectJob)(req.body);
+    res.json(resp);
+});
+exports.onSelect = onSelect;
 const init = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const resp = yield (0, services_1.initJob)(req.body);
     res.json(resp);
 });
 exports.init = init;
+const onInit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const resp = yield (0, services_1.onInitJob)(req.body);
+    res.json(resp);
+});
+exports.onInit = onInit;
 const confirm = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let resp;
-    resp = yield (0, services_1.getJobConfirm)(req.body);
+    const resp = yield (0, services_1.confirmJob)(req.body);
     res.json(resp);
 });
 exports.confirm = confirm;
-const onSelect = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let body = req.body;
-    res.json("res from on select");
-});
-exports.onSelect = onSelect;
-const onInit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let body = req.body;
-    (0, services_1.onInitJob)(body);
-    res.json("res from on Init");
-});
-exports.onInit = onInit;
 const onConfirm = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let body = req.body;
-    res.json("res from on confirm ");
+    const resp = yield (0, services_1.onConfirmJob)(req.body);
+    res.json(resp);
 });
 exports.onConfirm = onConfirm;

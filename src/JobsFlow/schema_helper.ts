@@ -39,7 +39,7 @@ export const buildSearchRequest = (input: any = {}) => {
 
 
     if (input?.skills?.length) {
-        intent.fulfillment.customer.person.skills = input?.skills;
+        intent.fulfillment = { customer: { person: { skills: input?.skills } } };
     }
 
     const message = { intent: intent };
@@ -149,7 +149,48 @@ export const buildOnSelectRequest = (input: any = {}) => {
 }
 
 export const buildOnSelectResponse = (input: any = {}) => {
-    return input;
+    const provider = input?.message?.order?.providers;
+    const items = input?.message?.order?.items;
+    const xinput = input?.message?.order?.xinput;
+
+    const jobs: any[] = [];
+
+
+    items?.forEach((item: any) => {
+        const job: any = {
+            // jobProvider: provider?.descriptor?.name,
+            company: {
+                id: provider?.id,
+                name: provider?.descriptor?.name,
+                image: provider?.descriptor?.images?.map((image: any) => ({ url: image?.url, size: image?.size_type }))
+            },
+            jobId: item?.id,
+            role: item?.descriptor?.name,
+            description: item?.descriptor?.long_desc,
+            locations: provider?.locations
+                ?.filter((location: any) => item?.location_ids?.find((id: any) => id == location?.id))
+                ?.map((location: any) => ({
+                    id: location?.id,
+                    city: location?.city?.name,
+                    cityCode: location?.city?.code,
+                    state: location?.state?.name,
+                    country: location?.country?.name,
+                    countryCode: location?.country?.code
+                })),
+            fulfillments: provider.fulfillments,
+            categories: provider?.categories
+                ?.filter((category: any) => item?.category_ids?.find((id: any) => id == category?.id))
+                ?.map((category: any) => ({ id: category?.id, code: category?.descriptor.code })),
+
+        };
+
+        const compensation: any[] = [];
+        job.compensation = compensation;
+        jobs.push(job);
+    })
+
+    delete input.message;
+    return { ...input, jobs };
 }
 
 export const buildInitRequest = (input: any = {}) => {
@@ -253,5 +294,18 @@ export const buildOnConfirmRequest = (input: any = {}) => {
 }
 
 export const buildOnConfirmResponse = (input: any = {}) => {
-    return input;
+    const context = buildContext({ category: 'jobs', action: 'on_confirm', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input.bppUri });
+    const message = input?.message
+
+    return { payload: { context, message } };
+}
+
+export const buildError = (input: any = {}) => {
+    return {
+        code: "404",
+        message: input.message,
+        data: input.data,
+        type: "Application error",
+        path: input.path
+    }
 }
