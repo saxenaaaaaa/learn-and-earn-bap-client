@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.0.7
+  version: 0.0.8
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -22,7 +22,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/SearchJobsResponse'
         '404':
           description: Job search request failed
           content:
@@ -50,7 +50,7 @@ paths:
   /job/onSearch:
     post:
       tags:
-        - Jobs & Internships
+        - DO NOT USE FOR Synchronous mode - Jobs & Internships
       summary: onSeach jobs
       requestBody:
         description: Job Search context
@@ -108,7 +108,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/SelectedJobResponse'
         '404':
           description: Job select request failed
           content:
@@ -136,7 +136,7 @@ paths:
   /job/onSelect:
     post:
       tags:
-        - Jobs & Internships
+        - DO NOT USE FOR Synchronous mode - Jobs & Internships
       summary: onSelect jobs
       requestBody:
         description: Job on_select context
@@ -237,7 +237,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/ConfirmJobResponse'
         '404':
           description: Job confirm request failed
           content:
@@ -265,7 +265,7 @@ paths:
   /job/onConfirm:
     post:
       tags:
-        - Jobs & Internships
+        - DO NOT USE FOR Synchronous mode - Jobs & Internships
       summary: onConfirm job
       requestBody:
         description: Job on_confirm context
@@ -323,7 +323,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/JobStatusResponse'
         '404':
           description: Job status request failed
           content:
@@ -351,7 +351,7 @@ paths:
   /job/onStatus:
     post:
       tags:
-        - Jobs & Internships
+        - DO NOT USE FOR Synchronous mode - Jobs & Internships
       summary: onStatus jobs
       requestBody:
         description: Job onStatus context
@@ -402,7 +402,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SearchMentorship'
+              $ref: '#/components/schemas/MentorshipResults'
       responses:
         '200':
           description: Mentorship search request sent to network
@@ -437,7 +437,7 @@ paths:
   /mentorship/onSearch:
     post:
       tags:
-        - Mentoring & Coaching
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
       summary: onSeach mentorships
       requestBody:
         description: Mentorship context
@@ -495,7 +495,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/MentorshipProvider'
         '404':
           description: Mentorship select request failed
           content:
@@ -523,7 +523,7 @@ paths:
   /mentorship/onSelect:
     post:
       tags:
-        - Mentoring & Coaching
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
       summary: onSelect mentorship
       requestBody:
         description: Mentorship on_select context
@@ -581,7 +581,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/OnInitMentorship'
         '404':
           description: Mentorship init request failed
           content:
@@ -609,7 +609,7 @@ paths:
   /mentorship/onInit:
     post:
       tags:
-        - Mentoring & Coaching
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
       summary: onInit mentorship
       requestBody:
         description: Mentorship on_init context
@@ -667,7 +667,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/ConfirmedMentorship'
         '404':
           description: Mentorship confirm request failed
           content:
@@ -695,7 +695,7 @@ paths:
   /mentorship/onConfirm:
     post:
       tags:
-        - Mentoring & Coaching
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
       summary: onConfirm mentorship
       requestBody:
         description: Mentorship on_confirm context
@@ -753,7 +753,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/MentorshipProvider'
         '404':
           description: Mentorship status request failed
           content:
@@ -781,7 +781,7 @@ paths:
   /mentorship/onStatus:
     post:
       tags:
-        - Mentoring & Coaching
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
       summary: Mentorship onStatus
       requestBody:
         description: Object for mentorship onStatus
@@ -839,7 +839,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/ScholarshipResults'
         '404':
           description: Scholarship search request failed
           content:
@@ -867,7 +867,7 @@ paths:
   /scholarship/onSearch:
     post:
       tags:
-        - Scholarships & Grants
+        - DO NOT USE FOR Synchronous mode - Scholarships & Grants
       summary: onSeach scholarship
       requestBody:
         description: Scholarship context
