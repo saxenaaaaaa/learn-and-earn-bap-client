@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.0.8
+  version: 0.0.9
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -194,7 +194,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/InitJobResponse'
         '404':
           description: Job init request failed
           content:
@@ -1522,6 +1522,116 @@ components:
             formInputValue:
               description: Additional form value for key
               type: string
+    InitJobResponse:
+      description: Schema for init job response
+      type: object
+      required:
+        - context
+        - company
+        - initiatedJobs
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        company:
+          $ref: '#/components/schemas/Company'
+        initiatedJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/initiatedJobs'
+        jobFulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobFulfillment'
+        additionalFormUrl:
+          type: string
+          description: Additional form from job provider
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobAdditionalFormData'
+    initiatedJobs:
+      description: Schema for initiated Job
+      type: object
+      required:
+        - jobId
+        - role
+        - city
+      properties:
+        jobId:
+          type: string
+        role:
+          type: string
+          description: Job role
+        description:
+          type: string
+          description: Job description
+        additionalDesc:
+          $ref: '#/components/schemas/AdditionalDesc' 
+        locations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Location'
+        educationalQualifications:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/EducationalQualification'
+        workExperience:
+          type: object
+          required:
+            - key
+            - qualification
+          properties:
+            key:
+              description: key will be Work Experience
+              type: string
+            experience:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/WorkExperience'
+        responsibilities:
+          type: array
+          items:
+            type: string
+        employmentInformation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be employment-info
+              type: string
+            name:
+              description: name will be Employment Information
+              type: string
+            employmentInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/EmploymentInformation'
+        compensation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be salary-info
+              type: string
+            name:
+              description: name will be Salary Compensation
+              type: string
+            salaryInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/SalaryInformation'
     ConfirmJobRequest:
       description: Schema for Job confirm request
       type: object
