@@ -1,0 +1,309 @@
+{
+    "context": {
+        "domain": "dsep:jobs",
+        "action": "on_select",
+        "location": {
+            "city": {
+                "code": "std:080"
+            },
+            "country": {
+                "code": "IND"
+            }
+        },
+        "version": "1.0.0",
+        "bap_id": "examplebap.com",
+        "bap_uri": "https://examplebap.com",
+        "bpp_id": "affinidibpp.com",
+        "bpp_uri": "http://DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com",
+        "transaction_id": "a9aaecca-10b7-4d19-b640-b047a7c62195",
+        "message_id": "$3faf9bc5-6107-42a1-add3-c4af6fa3bad6",
+        "timestamp": "2022-10-11T09:55:41.161Z"
+    },
+    "message": {
+        "order": {
+            "provider": {
+                "descriptor": {
+                    "name": "Google India Pvt Ltd",
+                    "images": [
+                        {
+                            "url": "data:image/jpeg;base64,R0lGODlhEAAQAAAAAA******LOGO**OF**GOOGLE**********AAAQABAAAA...jIQA7",
+                            "size_type": "sm"
+                        }
+                    ]
+                },
+                "locations": [
+                    {
+                        "id": "1",
+                        "city": {
+                            "name": "Bangalore",
+                            "code": "std:080"
+                        },
+                        "state": {
+                            "name": "Karnataka"
+                        },
+                        "country": {
+                            "name": "India",
+                            "code": "IND"
+                        }
+                    },
+                    {
+                        "id": "1",
+                        "city": {
+                            "name": "Hyderabad",
+                            "code": "std:040"
+                        },
+                        "state": {
+                            "name": "Telangana"
+                        },
+                        "country": {
+                            "name": "India",
+                            "code": "IND"
+                        }
+                    }
+                ]
+            },
+            "items": [
+                {
+                    "id": "1",
+                    "descriptor": {
+                        "name": "Software Engineering Manager II, Google Cloud",
+                        "long_desc": "Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems",
+                        "additional_desc": {
+                            "url": "https://g.co/kgs/XRj9sH",
+                            "content_type": "text/html"
+                        }
+                    },
+                    "location_ids": [
+                        "1",
+                        "2"
+                    ],
+                    "tags": [
+                        {
+                            "descriptor": {
+                                "name": "Minimum Educational Qualifications",
+                                "list": [
+                                    {
+                                        "descriptor": {
+                                            "code": "degree",
+                                            "name": "Degree"
+                                        },
+                                        "value": "Bachelors",
+                                        "display": "none"
+                                    },
+                                    {
+                                        "value": "Bachelors or Equivalent Practical Experience"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "descriptor": {
+                                "name": "Preferred Educational Qualifications",
+                                "list": [
+                                    {
+                                        "descriptor": {
+                                            "code": "degree",
+                                            "name": "Degree"
+                                        },
+                                        "value": "Masters",
+                                        "display": "none"
+                                    },
+                                    {
+                                        "descriptor": {
+                                            "code": "degree",
+                                            "name": "Degree"
+                                        },
+                                        "value": "PhD",
+                                        "display": "none"
+                                    },
+                                    {
+                                        "value": "Master's degree or PhD in Computer Science or related technical field."
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "descriptor": {
+                                "name": "Work Experience",
+                                "list": [
+                                    {
+                                        "descriptor": {
+                                            "code": "exp-in-years",
+                                            "name": "Minimum Work Experience"
+                                        },
+                                        "value": "8 Years"
+                                    },
+                                    {
+                                        "descriptor": {
+                                            "name": "Software Development Experience"
+                                        },
+                                        "value": "5 Years"
+                                    },
+                                    {
+                                        "descriptor": {
+                                            "name": "Technical Leadership Experience"
+                                        },
+                                        "value": "3 Years"
+                                    },
+                                    {
+                                        "value": "3 years of experience working in a complex, matrixed organization"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "descriptor": {
+                                "name": "Responsibilities",
+                                "list": [
+                                    {
+                                        "value": "Set and communicate team priorities that support the broader organization's goals. Align strategy, processes, and decision-making across teams."
+                                    },
+                                    {
+                                        "value": "Set clear expectations with individuals based on their level and role and aligned to the broader organization's goals. Meet regularly with individuals to discuss performance and development and provide feedback and coaching"
+                                    },
+                                    {
+                                        "value": "Develop the mid-term technical vision and roadmap within the scope of your (often multiple) team(s). Evolve the roadmap to meet anticipated future requirements and infrastructure needs"
+                                    },
+                                    {
+                                        "value": "Design, guide and vet systems designs within the scope of the broader area, and write product or system development code to solve ambiguous problems."
+                                    },
+                                    {
+                                        "value": "Review code developed by other engineers and provide feedback to ensure best practices (e.g., style guidelines, checking code in, accuracy, testability, and efficiency)."
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "descriptor": {
+                                "code": "employment-info",
+                                "name": "Employment Information",
+                                "list": [
+                                    {
+                                        "descriptor": {
+                                            "code": "emp-duration-type",
+                                            "name": "Employment Duration Type"
+                                        },
+                                        "value": "Full Time"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "descriptor": {
+                                "code": "salary-info",
+                                "name": "Salary Compensation",
+                                "list": [
+                                    {
+                                        "descriptor": {
+                                            "name": "Salary Range"
+                                        },
+                                        "value": "35 LPA to 65 LPA"
+                                    },
+                                    {
+                                        "descriptor": {
+                                            "name": "Compensation Unit",
+                                            "code": "comp-unit"
+                                        },
+                                        "value": "LPA",
+                                        "display": "none"
+                                    },
+                                    {
+                                        "descriptor": {
+                                            "name": "Minimum Compensation",
+                                            "code": "min-comp"
+                                        },
+                                        "value": "35",
+                                        "display": "none"
+                                    },
+                                    {
+                                        "descriptor": {
+                                            "name": "Maximum Compensation",
+                                            "code": "max-comp"
+                                        },
+                                        "value": "65",
+                                        "display": "none"
+                                    },
+                                    {
+                                        "descriptor": {
+                                            "name": "Average Compensation",
+                                            "code": "avg-comp"
+                                        },
+                                        "value": "50",
+                                        "display": "none"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ],
+            "fulfillments": [
+                {
+                    "id": "1",
+                    "customer": {
+                        "person": {
+                            "name": "John Doe",
+                            "languages": [
+                                {
+                                    "code": "ENG"
+                                },
+                                {
+                                    "code": "HIN"
+                                }
+                            ],
+                            "url": "https://linkedin.com/john-doe",
+                            "creds": [
+                                {
+                                    "url": "https://cbse.nic.in/link/to/college-marksheet.json",
+                                    "type": "application/vc+json"
+                                },
+                                {
+                                    "url": "https://drive.google.com/link/to/pass-certificate.json",
+                                    "type": "application/vc+json"
+                                },
+                                {
+                                    "url": "https://digilocker.com/link/to/python-skill-certificate.json",
+                                    "type": "application/vc+json"
+                                },
+                                {
+                                    "url": "https://drive.google.com/link/to/python-skill-certificate.pdf",
+                                    "type": "application/pdf"
+                                },
+                                {
+                                    "url": "https://drive.google.com/link/to/experience-certificate.pdf",
+                                    "type": "application/pdf"
+                                }
+                            ],
+                            "skills": [
+                                {
+                                    "name": "NodeJS"
+                                },
+                                {
+                                    "name": "React"
+                                },
+                                {
+                                    "name": "Project Management"
+                                },
+                                {
+                                    "name": "Enterprise Architecture"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
+            "xinput": {
+                "form": {
+                    "url": "https://affinidi.com/path/to/application/form"
+                },
+                "required": true,
+                "data": {
+                    "resume": "data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...",
+                    "work-mode": "hybrid",
+                    "exp-years": "10",
+                    "sop": "I am interested in this job because my prior experience is highly relevant to this role."
+                }
+            }
+        }
+    }
+}

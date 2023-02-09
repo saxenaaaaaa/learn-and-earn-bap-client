@@ -1,7 +1,8 @@
 
 import moment from "moment";
 import { v4 as uuid } from "uuid";
-
+import onsearchResponse from './mock/onSearchResponse.json'
+import initRequest from './mock/initRequest.json'
 export const buildContext = (input: any = {}) => {
     return {
         domain: process.env.DOMAIN + input?.category,
@@ -230,7 +231,8 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
 }
 
 
-export const buildInitRequest = (input: any = {}) => {
+export const buildInitRequest = (input: any = initRequest) => {
+    console.log(initRequest, 'shsh')
     const context = buildContext({
         category: "jobs",
         action: 'init',
@@ -238,32 +240,38 @@ export const buildInitRequest = (input: any = {}) => {
         bppUri: input?.context?.bppUri,
         transactionId: input?.context?.transactionId,
     });
+    console.log(context)
     const message = {
         order: {
             provider: { id: input?.companyId },
             items: [
-                { id: input?.jobId }
+                { id: input?.jobs.jobId }
             ],
-            fulfillments: [{
-                id: input?.jobApplicantProfile.id,
-                customer: {
-                    person: {
-                        name: input.jobApplicantProfile.name,
-                        languages: input.jobApplicantProfile.languages,
-                        URL: input.jobApplicantProfile.url,
-                        creds: input.jobApplicantProfile.creds.map((cred: any) => {
-                            return cred
-                        }),
-                        skills: input.jobApplicantProfile.skills.map((skill: any) => {
-                            return skill
-                        }),
+            fulfillments: input.jobFulfillments.map((data: any) => {
+                return {
+                    id: data?.JobFulfillmentCategoryId,
+                    customer: {
+                        person: {
+                            name: data?.jobApplicantProfile?.name,
+                            languages: data?.jobApplicantProfile?.languages?.map((language: any) => {
+                                return language
+                            }),
+                            URL: data?.jobApplicantProfile?.profileUrl,
+                            creds: {
+                                url: data?.jobApplicantProfile?.creds?.url,
+                                type: data?.jobApplicantProfile?.creds?.type
+                            },
+                            skills: data?.jobApplicantProfile?.skills?.map((skill: any) => {
+                                return skill
+                            }),
+                        }
                     }
                 }
-            }],
+            }),
             xinput: input?.xinput
         },
     }
-
+    console.log(context, message)
     return { payload: { context, message } }
 }
 

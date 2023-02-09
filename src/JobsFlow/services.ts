@@ -73,11 +73,14 @@ export async function onSelectJob(body: any) {
 
 export async function initJob(body: any) {
   try {
-    const { payload } = buildInitRequest(body);
+    console.log('sjsjbsjb')
+    const { payload } = buildInitRequest();
+    console.log(payload)
     const headers = { "Content-Type": "application/JSON" };
 
     let response: any = await axios.post(`${gatewayUrl}/init`, payload, { headers });
-    return buildInitResponse(response?.data);
+    // return buildInitResponse(response?.data);
+    return payload
   }
   catch (error) {
     return { error: error, errorOccured: true };
