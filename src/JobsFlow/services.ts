@@ -24,11 +24,11 @@ const gatewayUrl = process.env.GATEWAY_URL || "";
 
 export async function searchJob(body: any): Promise<any> {
   try {
-    const { payload } = buildSearchRequest(body)
+    const { payload } = buildSearchRequest(body);
     const headers = { "Content-Type": "application/JSON" };
 
     let response: any = await axios.post(`${gatewayUrl}/search`, payload, { headers });
-    return buildSearchResponse(response?.data);
+    return buildSearchResponse(response?.data, body);
   } catch (error) {
     return { error: error, errorOccured: true };
   }
@@ -40,7 +40,7 @@ export async function onSearchJob(body: any): Promise<any> {
     const headers = { "Content-Type": "application/JSON" };
 
     let response: any = await axios.post(`${gatewayUrl}/on_search`, payload, { headers });
-    return buildOnSearchResponse(response?.data);
+    return buildOnSearchResponse(response?.data, body);
   } catch (error) {
     return { error: error, errorOccured: true };
   }
@@ -52,7 +52,7 @@ export async function selectJob(body: any): Promise<any> {
     const headers = { "Content-Type": "application/JSON" };
 
     let response: any = await axios.post(`${gatewayUrl}/search`, payload, { headers });
-    return buildSelectResponse(response?.data);
+    return buildSelectResponse(response?.data, body);
   } catch (error) {
     return { error: error, errorOccured: true };
   }
@@ -64,7 +64,7 @@ export async function onSelectJob(body: any) {
     const headers = { "Content-Type": "application/JSON" };
 
     let response: any = await axios.post(`${gatewayUrl}/on_select`, payload, { headers });
-    return buildOnSelectResponse(response?.data);
+    return buildOnSelectResponse(response?.data, body);
   }
   catch (error) {
     return { error: error, errorOccured: true, };
