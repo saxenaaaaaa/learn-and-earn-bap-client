@@ -34,9 +34,9 @@ export async function searchJob(body: any): Promise<any> {
     if (localNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/search`, payload, { headers });
-      response = res?.data
+      response = res?.data;
     }
-    return buildSearchResponse(response, body);
+    return buildOnSearchResponse(response, body);
   } catch (error) {
     return { error: error, errorOccured: true };
   }
@@ -64,7 +64,7 @@ export async function selectJob(body: any): Promise<any> {
       let res = await axios.post(`${gatewayUrl}/select`, payload, { headers });
       response = res?.data
     }
-    return buildSelectResponse(response, body);
+    return buildOnSelectResponse(response, body);
   } catch (error) {
     return { error: error, errorOccured: true };
   }
@@ -94,7 +94,7 @@ export async function initJob(body: any) {
       let res = await axios.post(`${gatewayUrl}/init`, payload, { headers });
       response = res.data
     }
-    return buildInitResponse(response);
+    return buildOnInitResponse(response);
   }
   catch (error) {
     return { error: error, errorOccured: true };
@@ -121,9 +121,9 @@ export async function confirmJob(body: any): Promise<any> {
     if (localNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/confirm`, payload, { headers });
-      response = res.data
+      response = res?.data
     }
-    return buildConfirmResponse(response);
+    return buildOnConfirmResponse(response);
   } catch (error) {
     return { error: error, errorOccured: true };
   }
