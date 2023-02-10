@@ -1,7 +1,6 @@
 
 import moment from "moment";
 import { v4 as uuid } from "uuid";
-import onsearchResponse from './mock/onSearchResponse.json'
 export const buildContext = (input: any = {}) => {
     return {
         domain: process.env.DOMAIN + input?.category,
@@ -67,25 +66,24 @@ export const buildOnSearchRequest = (input: any = {}) => {
 export const buildOnSearchResponse = (input: any = {}, body: any = {}) => {
 
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input.context;
-    const context = { transactionId, messageId, bppId, bppUri };
+    const context = { transactionId, messageId };
 
     const providers = input?.message?.catalog?.providers;
-    const payments = input?.message?.catalog?.payments;
 
-    const jobs: any[] = [];
+    const jobProviderPlatform = input?.message?.catalog?.descriptor?.name;
 
-    providers?.forEach((provider: any) => {
-        provider?.items?.forEach((item: any) => {
-            const job: any = {
-                jobProvider: provider?.descriptor?.name,
-                company: {
-                    id: provider?.id,
-                    name: provider?.descriptor?.name,
-                    image: provider?.descriptor?.images?.map((image: any) => ({ url: image?.url, size: image?.size_type }))
-                },
+    const jobResults = providers?.map((provider: any) => {
+        return ({
+            company: {
+                id: provider?.id,
+                name: provider?.descriptor?.name,
+                imageLink: provider?.descriptor?.images?.map((image: any) => ({ url: image?.url, size: image?.size_type }))
+            },
+            jobs: provider?.items?.map((item: any) => ({
                 jobId: item?.id,
                 role: item?.descriptor?.name,
                 description: item?.descriptor?.long_desc,
+                additionalDesc: { url: item?.descriptor?.additional_desc?.url, contentType: item?.descriptor?.additional_desc?.content_type },
                 locations: provider?.locations
                     ?.filter((location: any) => item?.location_ids?.find((id: any) => id == location?.id))
                     ?.map((location: any) => ({
@@ -96,32 +94,11 @@ export const buildOnSearchResponse = (input: any = {}, body: any = {}) => {
                         country: location?.country?.name,
                         countryCode: location?.country?.code
                     })),
-                categories: provider?.categories
-                    ?.filter((category: any) => item?.category_ids?.find((id: any) => id == category?.id))
-                    ?.map((category: any) => ({ id: category?.id, code: category?.descriptor.code })),
+            })),
+        });
+    });
 
-            };
-
-            const compensation: any[] = [];
-            payments?.filter((payment: any) => item?.payment_ids?.find((id: any) => payment?.id == id))
-                .forEach((payment: any) => {
-                    payment?.tags?.find((tag: any) => tag?.descriptor?.name == "compensation_type")
-                        ?.list.forEach((li: any) => {
-                            compensation?.push({
-                                type: li?.descriptor?.code,
-                                amount: li?.value,
-                                currency: payment?.params?.currency,
-                                frequency: payment?.time?.schedule?.frequency
-                            });
-                        });
-
-                });
-            job.compensation = compensation;
-            jobs.push(job);
-        })
-    })
-
-    return { data: { context, jobs } };
+    return { data: { context, jobProviderPlatform, jobResults } };
 }
 
 export const buildSelectRequest = (input: any = {}) => {
@@ -161,7 +138,7 @@ export const buildOnSelectRequest = (input: any = {}) => {
 export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
 
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
-    const context = { transactionId, messageId, bppId, bppUri };
+    const context = { transactionId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
@@ -170,7 +147,7 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
     const company = {
         id: provider?.id,
         name: provider?.descriptor?.name,
-        image: provider?.descriptor?.images?.map((image: any) => ({ url: image?.url, size: image?.size_type }))
+        imageLink: provider?.descriptor?.images?.map((image: any) => ({ url: image?.url, size: image?.size_type }))
     }
 
     const selectedJobs: any[] = [];
@@ -179,6 +156,7 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
             jobId: item?.id,
             role: item?.descriptor?.name,
             description: item?.descriptor?.long_desc,
+            additionalDesc: { url: item?.descriptor?.additional_desc?.url, contentType: item?.descriptor?.additional_desc?.content_type },
             locations: provider?.locations
                 ?.filter((location: any) => item?.location_ids?.find((locationId: any) => location.id == locationId))
 
@@ -190,7 +168,7 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
                     country: location?.country?.name,
                     countryCode: location?.country?.code
                 })),
-            fulfillmentCategory: item?.fulfillments
+            fulfillmentCategory: provider.fulfillments
                 ?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillment?.id == fulfillmentId))
                 ?.map((fulfillment: any) => fulfillment),
 
@@ -203,6 +181,7 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
         };
 
         const workExperience = item?.tags?.find((tag: any) => tag?.descriptor?.name?.toLowerCase() == "work experience");
+        const responsibilities = item?.tags?.find((tag: any) => tag?.descriptor?.name?.toLowerCase() == "responsibilities");
         const employmentInformation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "employment-info");
         const compensation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "salary-info");
 
@@ -210,14 +189,15 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
             key: workExperience?.descriptor?.name,
             experience: workExperience?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
         }
+        job.responsibilities = responsibilities?.descriptor?.list?.map((li: any) => li.value)
         job.employmentInformation = {
             code: employmentInformation?.descriptor?.code,
             name: employmentInformation?.descriptor?.name,
-            employmentInfo: {
-                code: employmentInformation?.descriptor?.list?.[0]?.descriptor?.code,
-                name: employmentInformation?.descriptor?.list?.[0]?.descriptor?.name,
-                value: employmentInformation?.descriptor?.list?.[0]?.value
-            }
+            employmentInfo: employmentInformation?.descriptor?.list?.map((li: any) => ({
+                code: li?.descriptor?.code,
+                name: li?.descriptor?.name,
+                value: li?.value
+            }))
         }
         job.compensation = {
             code: compensation?.descriptor?.code,
@@ -288,7 +268,7 @@ export const buildOnInitRequest = (input: any = {}) => {
 export const buildOnInitResponse = (input: any = {}) => {
 
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
-    const context = { transactionId, messageId, bppId, bppUri };
+    const context = { transactionId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
@@ -306,7 +286,7 @@ export const buildOnInitResponse = (input: any = {}) => {
             jobId: item?.id,
             role: item?.descriptor?.name,
             description: item?.descriptor?.long_desc,
-            additionalDesc: item?.descriptor?.additional_desc,
+            additionalDesc: { url: item?.descriptor?.additional_desc?.url, contentType: item?.descriptor?.additional_desc?.content_type },
             locations: provider?.locations
                 ?.filter((location: any) => item?.location_ids?.find((locationId: any) => location.id == locationId))
 
@@ -345,11 +325,11 @@ export const buildOnInitResponse = (input: any = {}) => {
         job.employmentInformation = {
             code: employmentInformation?.descriptor?.code,
             name: employmentInformation?.descriptor?.name,
-            employmentInfo: {
-                code: employmentInformation?.descriptor?.list?.[0]?.descriptor?.code,
-                name: employmentInformation?.descriptor?.list?.[0]?.descriptor?.name,
-                value: employmentInformation?.descriptor?.list?.[0]?.value
-            }
+            employmentInfo: employmentInformation?.descriptor?.list?.map((li: any) => ({
+                code: li?.descriptor?.code,
+                name: li?.descriptor?.name,
+                value: li?.value
+            }))
         }
         job.compensation = {
             code: compensation?.descriptor?.code,
@@ -373,9 +353,10 @@ export const buildOnInitResponse = (input: any = {}) => {
 
     }));
 
+    const additionalFormUrl = xinput?.form?.url
     const additionalFormData = Object.entries(xinput?.data ?? {})?.map(([key, value]: any[]) => ({ formInputKey: key, formInputValue: value }));
 
-    return { data: { context, company, initiatedJobs, jobFulfillments, additionalFormData } };
+    return { data: { context, company, initiatedJobs, jobFulfillments, additionalFormUrl, additionalFormData } };
 }
 
 export const buildConfirmRequest = (input: any = {}) => {
@@ -433,11 +414,12 @@ export const buildOnConfirmRequest = (input: any = {}) => {
 export const buildOnConfirmResponse = (input: any = {}) => {
 
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
-    const context = { transactionId, messageId, bppId, bppUri };
+    const context = { transactionId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
     const xinput = input?.message?.order?.xinput;
+    const applicationId = input?.message?.order?.id;
 
     const company = {
         id: provider?.id,
@@ -451,7 +433,7 @@ export const buildOnConfirmResponse = (input: any = {}) => {
             jobId: item?.id,
             role: item?.descriptor?.name,
             description: item?.descriptor?.long_desc,
-            additionalDesc: item?.descriptor?.additional_desc,
+            additionalDesc: { url: item?.descriptor?.additional_desc?.url, contentType: item?.descriptor?.additional_desc?.content_type },
             locations: provider?.locations
                 ?.filter((location: any) => item?.location_ids?.find((locationId: any) => location.id == locationId))
 
@@ -520,7 +502,7 @@ export const buildOnConfirmResponse = (input: any = {}) => {
 
     const additionalFormData = Object.entries(xinput?.data ?? {})?.map(([key, value]: any[]) => ({ formInputKey: key, formInputValue: value }));
 
-    return { data: { context, company, confirmedJobs, jobFulfillments, additionalFormData } };
+    return { data: { context, applicationId, company, confirmedJobs, jobFulfillments, additionalFormData } };
 }
 
 export const buildError = (input: any = {}) => {
