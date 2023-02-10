@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.3
+  version: 0.1.4
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1113,6 +1113,19 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ConfirmMentorship'
+            example:
+              mentorshipId: 63e6065223df082856936335
+              mentorshipSessionId: 2494098b-a2e8-4d29-8791-1b708c458cb5
+              context:
+                transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                bppId: dev.elevate-apis.shikshalokam.org/bpp
+                bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
+              billing:
+                name: Van Bode III
+                phone: 881-311-2951 x01508
+                email: test_user@gmail.com
+                time:
+                  timezone: IST
       responses:
         '200':
           description: Mentorship confirmation request sent to network
@@ -1120,6 +1133,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConfirmedMentorship'
+              example:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                  bppId: dev.elevate-apis.shikshalokam.org/bpp
+                  bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
+                confirmationId: '123456'
+                mentorshipSession:
+                  id: 2494098b-a2e8-4d29-8791-1b708c458cb5
+                  sessionJoinLinks:
+                    - id: https://dev.elevate-apis.shikshalokam.org/dsep-mentoring/v1/sessions/join/63e6065223df082856936335?user=63e60798b2ec6cdb1b106b3d&name=Van%20Bode%20III
+                      link: https://dev.elevate-apis.shikshalokam.org/dsep-mentoring/v1/sessions/join/63e6065223df082856936335?user=63e60798b2ec6cdb1b106b3d&name=Van%20Bode%20III
+                  language: English
+                  timingStart: '2023-02-19T23:23:16'
+                  timingEnd: '2023-02-20T01:23:16'
+                  type: ONLINE
+                  status: Live
+                  timezone: Asia/Calcutta
+                  mentor:
+                    id: 63e5fa8762820fd9e6be9e21
+                    name: joffin Mentor Twelve
+                    gender: Male
+                    image: image location
+                    rating: '4.9'
         '404':
           description: Mentorship confirm request failed
           content:
@@ -1144,49 +1180,6 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/mentorship/confirm"
-  /mentorship/onConfirm:
-    post:
-      tags:
-        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
-      summary: onConfirm mentorship
-      requestBody:
-        description: Mentorship on_confirm context
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Context'
-      responses:
-        '200':
-          description: Mentorship on_confirm request sent to network
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConfirmedMentorship'
-        '404':
-          description: Mentorship on_confirm request failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "404"
-                message: "Mentorship on_confirm request could not be created"
-                data: "Long descriptive message"
-                type: "Application error"
-                path: "/mentorship/onConfirm"
-        '500':
-          description: Mentorship on_confirm request could not be created due to unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "500"
-                message: "Error processing request {specific error log from exception/error}"
-                data: "Additional error message/logs"
-                type: "System error"
-                path: "/mentorship/onConfirm"
   /mentorship/status:
     post:
       tags: 
@@ -2575,19 +2568,67 @@ components:
       description: Schema for Mentorship on confirm response
       type: object
       required:
-        - mentorshipSessionId
+        - confirmationId
         - context
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        mentorshipSessionId:
+        confirmationId:
           description: Mentorship session id
           type: string
-        sessionJoinLink:
-          description: Mentorship session url to join session
-          type: string
         mentorshipSession:
-          $ref: '#/components/schemas/MentorshipSession'
+          $ref: '#/components/schemas/ConfirmedMentorshipSession'
+    ConfirmedMentorshipSession:
+      description: MentorSession object
+      type: object
+      required:
+        - id
+        - language
+        - type
+        - mentor
+      properties:
+        id:
+          description: Session Fulfillments Id
+          type: string
+        sessionJoinLinks:
+          description: Mentorship session url to join session
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/MentorshipSessionJoinLink'
+        language:
+          description: Session language
+          type: string
+        timingStart:
+          description: Session start date
+          type: string
+        timingEnd:
+          description: Session end date
+          type: string
+        type:
+          description: Session type (ONLINE)
+          type: string
+        status:
+          description: Session status (Live)
+          type: string
+        timezone:
+          description: Session timezone (Asia/Calcutta)
+          type: string
+        mentor:
+          $ref: '#/components/schemas/Mentor'
+    MentorshipSessionJoinLink:
+      description: Mentorship Join Link object
+      type: object
+      required:
+        - code
+        - link
+      properties:
+        id:
+          description: session join link code
+          type: string
+        link:
+          description: session join link
+          type: string
     SearchScholarship:
       description: Schema for Scholarship search object
       type: object
