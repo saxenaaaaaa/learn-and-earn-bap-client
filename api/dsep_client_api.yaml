@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.0
+  version: 0.1.1
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -866,14 +866,69 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MentorshipResults'
+              $ref: '#/components/schemas/SearchMentorship'
+            examples:
+              Search by session title and mentor name:
+                value:
+                  sessionTitle:
+                    key: Management
+                  mentor:
+                    name: joffin
+              Search by session title:
+                value:
+                  sessionTitle:
+                    key: Management
+              Search by mentor name:
+                value:
+                  mentor:
+                    name: joffin
       responses:
         '200':
           description: Mentorship search request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/MentorshipResults'
+              example:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                mentorshipProviders:
+                  - id: 63d93aea62820fd9e6be9d1b
+                    code: org7
+                    name: ShikshalokamSeven
+                    description: ShikshalokamOrgSeven
+                    mentorships:
+                      - id: 63e6065223df082856936335
+                        code: Class Room Management Level 1
+                        name: Class Room Management Level 1
+                        description: A level 1 session on class room management for state schools and colleges.
+                        longDescription: A level 1 session on class room management for state schools and colleges.
+                        imageLocations:
+                          - users/1232s2133sdd1-12e2dasd3123.png
+                        categories:
+                          - id: Infrastructure Management
+                            code: Infrastructure Management
+                            name: Infrastructure Management
+                        available: 5
+                        allocated: 10
+                        price: 0
+                        mentorshipSessions:
+                          - id: 2494098b-a2e8-4d29-8791-1b708c458cb5
+                            language: English
+                            timingStart: '2023-02-19T23:23:16'
+                            timingEnd: '2023-02-20T01:23:16'
+                            type: ONLINE
+                            status: Live
+                            timezone: Asia/Calcutta
+                            mentor:
+                              id: 63e5fa8762820fd9e6be9e21
+                              name: joffin Mentor Twelve
+                              gender: Male
+                              image: image location
+                              rating: '4.9'
+                        recommendedFor:
+                          - recommendationForCode: deo
+                            recommendationForName: District education officer
         '404':
           description: Mentorship search request failed
           content:
@@ -898,49 +953,6 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/mentorship/search"
-  /mentorship/onSearch:
-    post:
-      tags:
-        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
-      summary: onSeach mentorships
-      requestBody:
-        description: Mentorship context
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Context'
-      responses:
-        '200':
-          description: Mentorships data retrieved from network
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MentorshipResults'
-        '404':
-          description: Mentorship on_search request failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "404"
-                message: "Mentorship on_search request could not be created"
-                data: "Long descriptive message"
-                type: "Application error"
-                path: "/mentorship/onSearch"
-        '500':
-          description: Mentorship on_search request could not be created due to unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "500"
-                message: "Error processing request {specific error log from exception/error}"
-                data: "Additional error message/logs"
-                type: "System error"
-                path: "/mentorship/onSearch"
   /mentorship/select:
     post:
       tags:
@@ -2295,85 +2307,20 @@ components:
         statusCode:
           type: string
           description: status code
-    UserProfileOLDCONFIRM:
-      description: Schema for User Profile
-      type: object
-      required:
-        - name
-        - contact
-      properties:
-        name:
-          type: string
-          description: User full name
-        dob:
-          type: string
-          description: User dob
-        gender:
-          type: string
-          description: User gender
-        contact:
-          type: object
-          properties:
-            phone:
-              type: string
-              description: User mobile number
-            email:
-              type: string
-              description: User email
-        resume:
-          type: string
-          description: link to resume
-    JobCategory:
-      description: JobCategory object
-      type: object
-      required:
-        - id
-        - code
-      properties:
-        id:        
-          type: string
-        code:
-          type: string
-    Compensation:
-      description: compensation object
-      type: object
-      required:
-        - type
-        - amount
-        - currency
-        - frequency
-      properties:
-        type:        
-          type: string
-          enum: 
-            - fixed
-            - variable
-            - commission
-            - allowance
-        amount:
-          type: number
-        currency:
-          type: string
-        frequency:
-          type: string
     SearchMentorship:
       description: Schema for Mentorship search object
       type: object
       properties:
-        titles:
-          type: array
-          items:
-            type: object
-            properties: 
-              key:
-                type: string
+        sessionTitle:
+          type: object
+          properties: 
+            key:
+              type: string
         mentor:
-          type: array
-          items:
-            type: object
-            properties: 
-              name:
-                type: string
+          type: object
+          properties: 
+            name:
+              type: string
     SelectMentorship:
       description: Schema for mentorship selection
       type: object
@@ -2510,14 +2457,11 @@ components:
         id:
           description: Mentorship id / item id
           type: string
-        category:
-          description: Mentorship category
+        code:
+          description: Mentorship code
           type: string
         name:
           description: Mentorship name
-          type: string
-        code:
-          description: Mentorship code
           type: string
         description:
           description: Mentorship description
@@ -2525,9 +2469,17 @@ components:
         longDescription:
           description: Mentorship long description
           type: string
-        imageLocation:
+        imageLocations:
           description: Mentorship Image
-          type: string
+          type: array
+          items:
+            type: string
+        categories:
+          description: Mentorship categories
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/MentorshipCategory'
         available:
           description: Mentorships available
           type: integer
@@ -2547,6 +2499,23 @@ components:
           items:
             oneOf:
             - $ref: '#/components/schemas/MentorshipRecommendation'
+    MentorshipCategory:
+      description: MentorSession object
+      type: object
+      required:
+        - id
+        - code
+        - name
+      properties:
+        id:
+          description: Mentorship Category Id
+          type: string
+        code:
+          description: Mentorship Category code
+          type: string
+        name:
+          description: Mentorship Category name
+          type: string
     MentorshipSession:
       description: MentorSession object
       type: object
@@ -2606,13 +2575,13 @@ components:
           description: Mentor name
           type: string
         gender:
-          description: Mentor gender
+          description: Mentor gender - not listed in schema
           type: string
         image:
-          description: Mentor image link
+          description: Mentor image link - not listed in schema
           type: string
         rating:
-          description: Mentor rating
+          description: Mentor rating - not listed in schema
           type: string
     OnInitMentorship:
       description: Schema for Mentorship oninit
