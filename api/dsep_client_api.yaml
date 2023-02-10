@@ -15,7 +15,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SearchJob'
+              $ref: "#/components/schemas/SearchJob"
             examples:
               Search with all parameters:
                 value:
@@ -37,7 +37,7 @@ paths:
                 value:
                   company:
                     name: Google India
-              Search by company name in multiple locations :
+              Search by company name in multiple locations:
                 value:
                   company:
                     name: Google India
@@ -56,12 +56,12 @@ paths:
                     - name: Python
                       code: Flutter
       responses:
-        '200':
+        "200":
           description: Job search request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchJobsResponse'
+                $ref: "#/components/schemas/SearchJobsResponse"
               examples:
                 Job search results:
                   value:
@@ -71,50 +71,50 @@ paths:
                     jobProviderPlatform: Affindi Jobs
                     jobResults:
                       - company:
-                          id: '1'
+                          id: "1"
                           name: Google India Pvt Ltd
                           imageLink:
                             - url: data:image/jpeg;base64,R0lG**LOGO**OF**GOOGLE*jIQA7
                               size: sm
                         jobs:
-                          - jobId: '1'
+                          - jobId: "1"
                             role: Software Engineering Manager II, Google Cloud
                             description: Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems
                             additionalDesc:
                               url: https://g.co/kgs/XRj9sH
                               contentType: text/html
                             locations:
-                              - id: '1'
+                              - id: "1"
                                 city: Bangalore
                                 cityCode: std:080
                                 state: Karnataka
                                 country: India
                                 countryCode: IND
-                              - id: '2'
+                              - id: "2"
                                 city: Hyderabad
                                 cityCode: std:040
                                 state: Telangana
                                 country: India
                                 countryCode: IND
-                    
-        '404':
+
+        "404":
           description: Job search request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Job search request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/job/search"
-        '500':
+        "500":
           description: Job search request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -132,24 +132,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SelectJob'
+              $ref: "#/components/schemas/SelectJob"
             examples:
-                Select a specific job:
-                  value:
-                    companyId: '1'
-                    jobs:
-                      jobId: '1'
-                    context:
-                      transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
-                      bppId: affinidibpp.com
-                      bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
+              Select a specific job:
+                value:
+                  companyId: "1"
+                  jobs:
+                    jobId: "1"
+                  context:
+                    transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
+                    bppId: affinidibpp.com
+                    bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
       responses:
-        '200':
+        "200":
           description: Job select request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SelectedJobResponse'
+                $ref: "#/components/schemas/SelectedJobResponse"
               examples:
                 Job selection response:
                   value:
@@ -158,29 +158,29 @@ paths:
                       bppId: affinidibpp.com
                       bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
                     company:
-                      id: '1'
+                      id: "1"
                       name: Google India Pvt Ltd
                       imageLink:
                         - url: data:image/jpeg;base64,R0lG**LOGO**OF**GOOGLE*jIQA7
                           size: sm
                     selectedJobs:
-                      - jobId: '1'
+                      - jobId: "1"
                         role: Software Engineering Manager II, Google Cloud
                         description: Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems
                         additionalDesc:
                           url: https://g.co/kgs/XRj9sH
                           contentType: text/html
                         locations:
-                          - id: '1'
+                          - id: "1"
                             city: Bangalore
                             cityCode: std:080
                             state: Karnataka
                             country: India
                             countryCode: IND
                         fulfillmentCategory:
-                          - id: '1'
+                          - id: "1"
                             type: IN-PERSON
-                          - id: '2'
+                          - id: "2"
                             type: VIRTUAL
                         educationalQualifications:
                           - category: Minimum Educational Qualifications
@@ -236,33 +236,33 @@ paths:
                               value: LPA
                             - code: min-comp
                               name: Minimum Compensation
-                              value: '35'
+                              value: "35"
                             - code: max-comp
                               name: Maximum Compensation
-                              value: '65'
+                              value: "65"
                             - code: avg-comp
                               name: Average Compensation
-                              value: '50'
+                              value: "50"
                         additionalFormUrl: https://affinidi.com/path/to/application/form
-                    
-        '404':
+
+        "404":
           description: Job select request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Job select request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/job/select"
-        '500':
+        "500":
           description: Job select request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -280,7 +280,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InitJob'
+              $ref: "#/components/schemas/InitJob"
             examples:
               Job init request:
                 value:
@@ -288,11 +288,11 @@ paths:
                     transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
                     bppId: affinidibpp.com
                     bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
-                  companyId: '1'
+                  companyId: "1"
                   jobs:
-                    jobId: '1'
+                    jobId: "1"
                   jobFulfillments:
-                    - JobFulfillmentCategoryId: '1'
+                    - JobFulfillmentCategoryId: "1"
                       jobApplicantProfile:
                         name: John Doe
                         languages:
@@ -321,16 +321,16 @@ paths:
                     - formInputKey: work-mode
                       formInputValue: hybrid
                     - formInputKey: exp-years
-                      formInputValue: '10'
+                      formInputValue: "10"
                     - formInputKey: sop
                       formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
       responses:
-        '200':
+        "200":
           description: Job init request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InitJobResponse'
+                $ref: "#/components/schemas/InitJobResponse"
               examples:
                 Job init response:
                   value:
@@ -339,20 +339,20 @@ paths:
                       bppId: affinidibpp.com
                       bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
                     company:
-                      id: '1'
+                      id: "1"
                       name: Google India Pvt Ltd
                       imageLink:
                         - url: data:image/jpeg;base64,R0lG**LOGO**OF**GOOGLE*jIQA7
                           size: sm
                     initiatedJobs:
-                      - jobId: '1'
+                      - jobId: "1"
                         role: Software Engineering Manager II, Google Cloud
                         description: Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems
                         additionalDesc:
                           url: https://g.co/kgs/XRj9sH
                           contentType: text/html
                         locations:
-                          - id: '1'
+                          - id: "1"
                             city: Bangalore
                             cityCode: std:080
                             state: Karnataka
@@ -412,15 +412,15 @@ paths:
                               value: LPA
                             - code: min-comp
                               name: Minimum Compensation
-                              value: '35'
+                              value: "35"
                             - code: max-comp
                               name: Maximum Compensation
-                              value: '65'
+                              value: "65"
                             - code: avg-comp
                               name: Average Compensation
-                              value: '50'
+                              value: "50"
                     jobFulfillments:
-                      - JobFulfillmentCategoryId: '1'
+                      - JobFulfillmentCategoryId: "1"
                         jobApplicantProfile:
                           name: John Doe
                           languages:
@@ -443,35 +443,35 @@ paths:
                             - React
                             - Project Management
                             - Enterprise Architecture
-                    additionalFormUrl: "https://affinidi.com/path/to/application/form" 
+                    additionalFormUrl: "https://affinidi.com/path/to/application/form"
                     additionalFormData:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
                         formInputValue: hybrid
                       - formInputKey: exp-years
-                        formInputValue: '10'
+                        formInputValue: "10"
                       - formInputKey: sop
                         formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
-                    
-        '404':
+
+        "404":
           description: Job init request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Job init request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/job/init"
-        '500':
+        "500":
           description: Job init request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -489,17 +489,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConfirmJobRequest'
+              $ref: "#/components/schemas/ConfirmJobRequest"
             examples:
               Job confirmation request:
                 value:
-                  jobId: '1'
+                  jobId: "1"
                   context:
                     transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
                     bppId: affinidibpp.com
                     bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
                   confirmation:
-                    JobFulfillmentCategoryId: '1'
+                    JobFulfillmentCategoryId: "1"
                     jobApplicantProfile:
                       name: John Doe
                       languages:
@@ -522,14 +522,14 @@ paths:
                         - React
                         - Project Management
                         - Enterprise Architecture
-                  
+
       responses:
-        '200':
+        "200":
           description: Job confirmation request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConfirmJobResponse'
+                $ref: "#/components/schemas/ConfirmJobResponse"
               examples:
                 Job confirmation response:
                   value:
@@ -537,22 +537,22 @@ paths:
                       transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
                       bppId: affinidibpp.com
                       bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
-                    applicationId: '123456'
+                    applicationId: "123456"
                     company:
-                      id: '1'
+                      id: "1"
                       name: Google India Pvt Ltd
                       imageLink:
                         - url: data:image/jpeg;base64,R0lG**LOGO**OF**GOOGLE*jIQA7
                           size: sm
                     confirmedJobs:
-                      - jobId: '1'
+                      - jobId: "1"
                         role: Software Engineering Manager II, Google Cloud
                         description: Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems
                         additionalDesc:
                           url: https://g.co/kgs/XRj9sH
                           contentType: text/html
                         locations:
-                          - id: '1'
+                          - id: "1"
                             city: Bangalore
                             cityCode: std:080
                             state: Karnataka
@@ -612,15 +612,15 @@ paths:
                               value: LPA
                             - code: min-comp
                               name: Minimum Compensation
-                              value: '35'
+                              value: "35"
                             - code: max-comp
                               name: Maximum Compensation
-                              value: '65'
+                              value: "65"
                             - code: avg-comp
                               name: Average Compensation
-                              value: '50'
+                              value: "50"
                     jobFulfillments:
-                      - JobFulfillmentCategoryId: '1'
+                      - JobFulfillmentCategoryId: "1"
                         jobApplicantProfile:
                           name: John Doe
                           languages:
@@ -649,27 +649,27 @@ paths:
                       - formInputKey: work-mode
                         formInputValue: hybrid
                       - formInputKey: exp-years
-                        formInputValue: '10'
+                        formInputValue: "10"
                       - formInputKey: sop
                         formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
-        '404':
+        "404":
           description: Job confirm request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Job confirm could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/job/confirm"
-        '500':
+        "500":
           description: Job confirmation request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -687,23 +687,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/JobStatusRequest'
+              $ref: "#/components/schemas/JobStatusRequest"
             examples:
               Job status request:
                 value:
-                  applicationId: '123456'
+                  applicationId: "123456"
                   context:
                     transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
                     bppId: affinidibpp.com
                     bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
-                  
+
       responses:
-        '200':
+        "200":
           description: Job status request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JobStatusResponse'
+                $ref: "#/components/schemas/JobStatusResponse"
               examples:
                 Job status response:
                   value:
@@ -711,22 +711,22 @@ paths:
                       transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
                       bppId: affinidibpp.com
                       bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
-                    applicationId: '123456'
+                    applicationId: "123456"
                     company:
-                      id: '1'
+                      id: "1"
                       name: Google India Pvt Ltd
                       imageLink:
                         - url: data:image/jpeg;base64,R0lG**LOGO**OF**GOOGLE*jIQA7
                           size: sm
                     confirmedJobs:
-                      - jobId: '1'
+                      - jobId: "1"
                         role: Software Engineering Manager II, Google Cloud
                         description: Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems
                         additionalDesc:
                           url: https://g.co/kgs/XRj9sH
                           contentType: text/html
                         locations:
-                          - id: '1'
+                          - id: "1"
                             city: Bangalore
                             cityCode: std:080
                             state: Karnataka
@@ -786,15 +786,15 @@ paths:
                               value: LPA
                             - code: min-comp
                               name: Minimum Compensation
-                              value: '35'
+                              value: "35"
                             - code: max-comp
                               name: Maximum Compensation
-                              value: '65'
+                              value: "65"
                             - code: avg-comp
                               name: Average Compensation
-                              value: '50'
+                              value: "50"
                     jobFulfillments:
-                      - JobFulfillmentCategoryId: '1'
+                      - JobFulfillmentCategoryId: "1"
                         jobApplicantProfile:
                           name: John Doe
                           languages:
@@ -827,28 +827,28 @@ paths:
                       - formInputKey: work-mode
                         formInputValue: hybrid
                       - formInputKey: exp-years
-                        formInputValue: '10'
+                        formInputValue: "10"
                       - formInputKey: sop
                         formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
-                    
-        '404':
+
+        "404":
           description: Job status request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Job status request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/job/status"
-        '500':
+        "500":
           description: Job status request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -866,32 +866,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MentorshipResults'
+              $ref: "#/components/schemas/MentorshipResults"
       responses:
-        '200':
+        "200":
           description: Mentorship search request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
-        '404':
+                $ref: "#/components/schemas/Acknowledgement"
+        "404":
           description: Mentorship search request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship search request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/search"
-        '500':
+        "500":
           description: Mentorship search request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -909,32 +909,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Context'
+              $ref: "#/components/schemas/Context"
       responses:
-        '200':
+        "200":
           description: Mentorships data retrieved from network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MentorshipResults'
-        '404':
+                $ref: "#/components/schemas/MentorshipResults"
+        "404":
           description: Mentorship on_search request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship on_search request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/onSearch"
-        '500':
+        "500":
           description: Mentorship on_search request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -952,32 +952,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SelectMentorship'
+              $ref: "#/components/schemas/SelectMentorship"
       responses:
-        '200':
+        "200":
           description: Mentorship select request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MentorshipProvider'
-        '404':
+                $ref: "#/components/schemas/MentorshipProvider"
+        "404":
           description: Mentorship select request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship select request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/select"
-        '500':
+        "500":
           description: Mentorship select request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -995,32 +995,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Context'
+              $ref: "#/components/schemas/Context"
       responses:
-        '200':
+        "200":
           description: Mentorship on_select request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MentorshipProvider'
-        '404':
+                $ref: "#/components/schemas/MentorshipProvider"
+        "404":
           description: Mentorship on_select request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship on_select request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/onSelect"
-        '500':
+        "500":
           description: Mentorship on_Select request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1038,32 +1038,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InitMentorship'
+              $ref: "#/components/schemas/InitMentorship"
       responses:
-        '200':
+        "200":
           description: Mentorship init request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnInitMentorship'
-        '404':
+                $ref: "#/components/schemas/OnInitMentorship"
+        "404":
           description: Mentorship init request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship init could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/init"
-        '500':
+        "500":
           description: Mentorship init request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1081,32 +1081,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Context'
+              $ref: "#/components/schemas/Context"
       responses:
-        '200':
+        "200":
           description: Mentorship on_init request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnInitMentorship'
-        '404':
+                $ref: "#/components/schemas/OnInitMentorship"
+        "404":
           description: Mentorship on_init request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship on_init request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/onInit"
-        '500':
+        "500":
           description: Mentorship on_init request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1124,32 +1124,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConfirmMentorship'
+              $ref: "#/components/schemas/ConfirmMentorship"
       responses:
-        '200':
+        "200":
           description: Mentorship confirmation request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConfirmedMentorship'
-        '404':
+                $ref: "#/components/schemas/ConfirmedMentorship"
+        "404":
           description: Mentorship confirm request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship confirm could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/confirm"
-        '500':
+        "500":
           description: Mentorship confirmation request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1167,32 +1167,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Context'
+              $ref: "#/components/schemas/Context"
       responses:
-        '200':
+        "200":
           description: Mentorship on_confirm request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConfirmedMentorship'
-        '404':
+                $ref: "#/components/schemas/ConfirmedMentorship"
+        "404":
           description: Mentorship on_confirm request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship on_confirm request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/onConfirm"
-        '500':
+        "500":
           description: Mentorship on_confirm request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1201,7 +1201,7 @@ paths:
                 path: "/mentorship/onConfirm"
   /mentorship/status:
     post:
-      tags: 
+      tags:
         - Mentoring & Coaching
       summary: Mentorship status check
       requestBody:
@@ -1210,32 +1210,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StatusMentorship'
+              $ref: "#/components/schemas/StatusMentorship"
       responses:
-        '200':
+        "200":
           description: Mentorship status request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MentorshipProvider'
-        '404':
+                $ref: "#/components/schemas/MentorshipProvider"
+        "404":
           description: Mentorship status request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship status could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/status"
-        '500':
+        "500":
           description: Mentorship status request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1253,32 +1253,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Context'
+              $ref: "#/components/schemas/Context"
       responses:
-        '200':
+        "200":
           description: Mentorship onStatus request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MentorshipProvider'
-        '404':
+                $ref: "#/components/schemas/MentorshipProvider"
+        "404":
           description: Mentorship onStatus request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship onStatus request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/onStatus"
-        '500':
+        "500":
           description: Mentorship onStatus request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1296,32 +1296,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SearchScholarship'
+              $ref: "#/components/schemas/SearchScholarship"
       responses:
-        '200':
+        "200":
           description: Scholarship search request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScholarshipResults'
-        '404':
+                $ref: "#/components/schemas/ScholarshipResults"
+        "404":
           description: Scholarship search request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Scholarship search request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/scholarship/search"
-        '500':
+        "500":
           description: Scholarship search request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1339,32 +1339,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Context'
+              $ref: "#/components/schemas/Context"
       responses:
-        '200':
+        "200":
           description: Scholarships data retrieved from network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScholarshipResults'
-        '404':
+                $ref: "#/components/schemas/ScholarshipResults"
+        "404":
           description: Scholarship on_search request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship on_search request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/scholarship/onSearch"
-        '500':
+        "500":
           description: Scholarship on_search request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1382,32 +1382,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SelectScholarship'
+              $ref: "#/components/schemas/SelectScholarship"
       responses:
-        '200':
+        "200":
           description: Scholarship select request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
-        '404':
+                $ref: "#/components/schemas/Acknowledgement"
+        "404":
           description: Scholarship select request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Scholarship select request could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/scholarship/select"
-        '500':
+        "500":
           description: Scholarship select request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1425,32 +1425,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InitScholarship'
+              $ref: "#/components/schemas/InitScholarship"
       responses:
-        '200':
+        "200":
           description: Scholarship init request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
-        '404':
+                $ref: "#/components/schemas/Acknowledgement"
+        "404":
           description: Scholarship init request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Scholarship init could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/scholarship/init"
-        '500':
+        "500":
           description: Scholarship init request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1468,32 +1468,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConfirmMentorship'
+              $ref: "#/components/schemas/ConfirmMentorship"
       responses:
-        '200':
+        "200":
           description: Mentorship confirmation request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
-        '404':
+                $ref: "#/components/schemas/Acknowledgement"
+        "404":
           description: Mentorship confirm request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship confirm could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/confirm"
-        '500':
+        "500":
           description: Mentorship confirmation request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1502,7 +1502,7 @@ paths:
                 path: "/mentorship/confirm"
   /scholarship/status:
     post:
-      tags: 
+      tags:
         - Scholarships & Grants
       summary: Mentorship status check
       requestBody:
@@ -1511,32 +1511,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StatusMentorship'
+              $ref: "#/components/schemas/StatusMentorship"
       responses:
-        '200':
+        "200":
           description: Mentorship status request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
-        '404':
+                $ref: "#/components/schemas/Acknowledgement"
+        "404":
           description: Mentorship status request failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "404"
                 message: "Mentorship status could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
                 path: "/mentorship/status"
-        '500':
+        "500":
           description: Mentorship status request could not be created due to unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               example:
                 code: "500"
                 message: "Error processing request {specific error log from exception/error}"
@@ -1551,26 +1551,26 @@ components:
       properties:
         title:
           type: object
-          properties: 
+          properties:
             key:
               type: string
         company:
           type: object
-          properties: 
+          properties:
             name:
               type: string
             locations:
               type: array
               items:
                 type: object
-                properties: 
+                properties:
                   city:
                     type: string
         skills:
           type: array
           items:
             type: object
-            properties: 
+            properties:
               name:
                 type: string
               code:
@@ -1583,7 +1583,7 @@ components:
         - jobs
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         jobProviderPlatform:
           type: string
           description: Job ProviderPlatform
@@ -1591,7 +1591,7 @@ components:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/JobResult'
+              - $ref: "#/components/schemas/JobResult"
     JobResult:
       description: Schema for Job result
       type: object
@@ -1600,12 +1600,12 @@ components:
         - jobs
       properties:
         company:
-          $ref: '#/components/schemas/Company'
+          $ref: "#/components/schemas/Company"
         jobs:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/JobSummary'
+              - $ref: "#/components/schemas/JobSummary"
     Company:
       description: Company object
       type: object
@@ -1614,7 +1614,7 @@ components:
         - name
         - imageLink
       properties:
-        id:        
+        id:
           type: string
         name:
           type: string
@@ -1622,7 +1622,7 @@ components:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/Image'
+              - $ref: "#/components/schemas/Image"
     Image:
       description: Image object
       type: object
@@ -1630,7 +1630,7 @@ components:
         - url
         - size
       properties:
-        url:        
+        url:
           type: string
         size:
           type: string
@@ -1652,12 +1652,12 @@ components:
           type: string
           description: Job description
         additionalDesc:
-          $ref: '#/components/schemas/AdditionalDesc' 
+          $ref: "#/components/schemas/AdditionalDesc"
         locations:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/Location'
+              - $ref: "#/components/schemas/Location"
     AdditionalDesc:
       description: Additional Desc object
       type: object
@@ -1665,7 +1665,7 @@ components:
         - url
         - contentType
       properties:
-        url:        
+        url:
           type: string
         contentType:
           type: string
@@ -1680,7 +1680,7 @@ components:
         - country
         - countryCode
       properties:
-        id:        
+        id:
           type: string
         city:
           type: string
@@ -1708,7 +1708,7 @@ components:
             jobId:
               type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
     SelectedJobResponse:
       description: Schema for selected job response
       type: object
@@ -1717,14 +1717,14 @@ components:
         - selectedJobs
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         company:
-          $ref: '#/components/schemas/Company'
+          $ref: "#/components/schemas/Company"
         selectedJobs:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/SelectedJob'
+              - $ref: "#/components/schemas/SelectedJob"
     SelectedJob:
       description: Schema for Selected Job
       type: object
@@ -1742,22 +1742,22 @@ components:
           type: string
           description: Job description
         additionalDesc:
-          $ref: '#/components/schemas/AdditionalDesc' 
+          $ref: "#/components/schemas/AdditionalDesc"
         locations:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/Location'
+              - $ref: "#/components/schemas/Location"
         fulfillmentCategory:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/JobFulfillmentCategory'
+              - $ref: "#/components/schemas/JobFulfillmentCategory"
         educationalQualifications:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/EducationalQualification'
+              - $ref: "#/components/schemas/EducationalQualification"
         workExperience:
           type: object
           required:
@@ -1771,7 +1771,7 @@ components:
               type: array
               items:
                 oneOf:
-                - $ref: '#/components/schemas/WorkExperience'
+                  - $ref: "#/components/schemas/WorkExperience"
         responsibilities:
           type: array
           items:
@@ -1793,7 +1793,7 @@ components:
               type: array
               items:
                 oneOf:
-                - $ref: '#/components/schemas/EmploymentInformation'
+                  - $ref: "#/components/schemas/EmploymentInformation"
         compensation:
           type: object
           required:
@@ -1811,7 +1811,7 @@ components:
               type: array
               items:
                 oneOf:
-                - $ref: '#/components/schemas/SalaryInformation'
+                  - $ref: "#/components/schemas/SalaryInformation"
         additionalFormUrl:
           type: string
           description: Additional form from job provider
@@ -1822,38 +1822,38 @@ components:
         - id
         - type
       properties:
-        id:        
+        id:
           type: string
         type:
           description: example IN-PERSON, VIRTUAL
           type: string
     EducationalQualification:
-          type: object
-          required:
-            - category
-            - qualification
-          properties:
-            category:
-              description: qualification category ie Minimum Educational Qualifications
-              type: string
-            qualification:
-              type: array
-              items:
-                oneOf:
-                - $ref: '#/components/schemas/Qualification'
+      type: object
+      required:
+        - category
+        - qualification
+      properties:
+        category:
+          description: qualification category ie Minimum Educational Qualifications
+          type: string
+        qualification:
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/Qualification"
     Qualification:
       description: Job education Qualification object
       type: object
       required:
         - value
       properties:
-        code:      
+        code:
           description: qualification code ie degree
           type: string
         name:
           description: qualification name ie Degree
           type: string
-        value:      
+        value:
           description: qualification name ie Masters
           type: string
     WorkExperience:
@@ -1862,13 +1862,13 @@ components:
       required:
         - value
       properties:
-        code:      
+        code:
           description: work experience code ie exp-in-years
           type: string
         name:
           description: work experience name ie Minimum Work Experience
           type: string
-        value:      
+        value:
           description: work experience name ie 8 Years
           type: string
     EmploymentInformation:
@@ -1877,13 +1877,13 @@ components:
       required:
         - value
       properties:
-        code:      
+        code:
           description: code example emp-duration-type
           type: string
         name:
           description: name ie Employment Duration Type
           type: string
-        value:      
+        value:
           description: ie Full Time
           type: string
     SalaryInformation:
@@ -1892,13 +1892,13 @@ components:
       required:
         - value
       properties:
-        code:      
+        code:
           description: code example emp-duration-type
           type: string
         name:
           description: name ie Salary Range
           type: string
-        value:      
+        value:
           description: ie 35 LPA to 65 LPA
           type: string
     InitJob:
@@ -1911,7 +1911,7 @@ components:
         - jobApplicantProfile
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         companyId:
           type: string
         jobs:
@@ -1923,12 +1923,12 @@ components:
         jobFulfillments:
           type: array
           items:
-            $ref: '#/components/schemas/JobFulfillment' 
+            $ref: "#/components/schemas/JobFulfillment"
         additionalFormData:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+              - $ref: "#/components/schemas/JobAdditionalFormData"
     JobFulfillment:
       description: Schema for Job Fulfillment object
       type: object
@@ -1940,7 +1940,7 @@ components:
           type: string
           description: JobFulfillmentCategoryId
         jobApplicantProfile:
-          $ref: '#/components/schemas/JobApplicantProfile'
+          $ref: "#/components/schemas/JobApplicantProfile"
     JobApplicantProfile:
       description: Schema for Job Applicant Profile
       type: object
@@ -1961,7 +1961,7 @@ components:
         creds:
           type: array
           items:
-            $ref: '#/components/schemas/UserCredential'
+            $ref: "#/components/schemas/UserCredential"
         skills:
           type: array
           items:
@@ -1973,21 +1973,21 @@ components:
         - url
         - type
       properties:
-        url:     
+        url:
           description: Location for user document
           type: string
         type:
           description: Type of document
           type: string
     JobAdditionalFormData:
-          type: object
-          properties:
-            formInputKey:
-              description: Additional form key
-              type: string
-            formInputValue:
-              description: Additional form value for key
-              type: string
+      type: object
+      properties:
+        formInputKey:
+          description: Additional form key
+          type: string
+        formInputValue:
+          description: Additional form value for key
+          type: string
     InitJobResponse:
       description: Schema for init job response
       type: object
@@ -1997,17 +1997,17 @@ components:
         - initiatedJobs
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         company:
-          $ref: '#/components/schemas/Company'
+          $ref: "#/components/schemas/Company"
         initiatedJobs:
           type: array
           items:
-            $ref: '#/components/schemas/initiatedJobs'
+            $ref: "#/components/schemas/initiatedJobs"
         jobFulfillments:
           type: array
           items:
-            $ref: '#/components/schemas/JobFulfillment'
+            $ref: "#/components/schemas/JobFulfillment"
         additionalFormUrl:
           type: string
           description: Additional form from job provider
@@ -2015,7 +2015,7 @@ components:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+              - $ref: "#/components/schemas/JobAdditionalFormData"
     initiatedJobs:
       description: Schema for initiated Job
       type: object
@@ -2033,17 +2033,17 @@ components:
           type: string
           description: Job description
         additionalDesc:
-          $ref: '#/components/schemas/AdditionalDesc' 
+          $ref: "#/components/schemas/AdditionalDesc"
         locations:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/Location'
+              - $ref: "#/components/schemas/Location"
         educationalQualifications:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/EducationalQualification'
+              - $ref: "#/components/schemas/EducationalQualification"
         workExperience:
           type: object
           required:
@@ -2057,7 +2057,7 @@ components:
               type: array
               items:
                 oneOf:
-                - $ref: '#/components/schemas/WorkExperience'
+                  - $ref: "#/components/schemas/WorkExperience"
         responsibilities:
           type: array
           items:
@@ -2079,7 +2079,7 @@ components:
               type: array
               items:
                 oneOf:
-                - $ref: '#/components/schemas/EmploymentInformation'
+                  - $ref: "#/components/schemas/EmploymentInformation"
         compensation:
           type: object
           required:
@@ -2097,7 +2097,7 @@ components:
               type: array
               items:
                 oneOf:
-                - $ref: '#/components/schemas/SalaryInformation'
+                  - $ref: "#/components/schemas/SalaryInformation"
     ConfirmJobRequest:
       description: Schema for Job confirm request
       type: object
@@ -2109,9 +2109,9 @@ components:
         jobId:
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         confirmation:
-          $ref: '#/components/schemas/JobFulfillment'
+          $ref: "#/components/schemas/JobFulfillment"
     ConfirmJobResponse:
       description: Schema for confirmed job response
       type: object
@@ -2122,19 +2122,19 @@ components:
         - confirmedJob
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         applicationId:
           type: string
         company:
-          $ref: '#/components/schemas/Company'
+          $ref: "#/components/schemas/Company"
         confirmedJobs:
           type: array
           items:
-            $ref: '#/components/schemas/ConfirmedJob'
+            $ref: "#/components/schemas/ConfirmedJob"
         jobFulfillments:
           type: array
           items:
-            $ref: '#/components/schemas/JobFulfillment'
+            $ref: "#/components/schemas/JobFulfillment"
         additionalFormUrl:
           type: string
           description: Additional form from job provider
@@ -2142,7 +2142,7 @@ components:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+              - $ref: "#/components/schemas/JobAdditionalFormData"
     ConfirmedJob:
       description: Schema for confirmed Job
       type: object
@@ -2160,17 +2160,17 @@ components:
           type: string
           description: Job description
         additionalDesc:
-          $ref: '#/components/schemas/AdditionalDesc' 
+          $ref: "#/components/schemas/AdditionalDesc"
         locations:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/Location'
+              - $ref: "#/components/schemas/Location"
         educationalQualifications:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/EducationalQualification'
+              - $ref: "#/components/schemas/EducationalQualification"
         workExperience:
           type: object
           required:
@@ -2184,7 +2184,7 @@ components:
               type: array
               items:
                 oneOf:
-                - $ref: '#/components/schemas/WorkExperience'
+                  - $ref: "#/components/schemas/WorkExperience"
         responsibilities:
           type: array
           items:
@@ -2206,7 +2206,7 @@ components:
               type: array
               items:
                 oneOf:
-                - $ref: '#/components/schemas/EmploymentInformation'
+                  - $ref: "#/components/schemas/EmploymentInformation"
         compensation:
           type: object
           required:
@@ -2224,7 +2224,7 @@ components:
               type: array
               items:
                 oneOf:
-                - $ref: '#/components/schemas/SalaryInformation'
+                  - $ref: "#/components/schemas/SalaryInformation"
     JobStatusRequest:
       description: Schema for Job selection
       type: object
@@ -2235,7 +2235,7 @@ components:
         applicationId:
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
     JobStatusResponse:
       description: Schema for job status response
       type: object
@@ -2246,19 +2246,19 @@ components:
         - confirmedJob
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         applicationId:
           type: string
         company:
-          $ref: '#/components/schemas/Company'
+          $ref: "#/components/schemas/Company"
         confirmedJobs:
           type: array
           items:
-            $ref: '#/components/schemas/ConfirmedJob'
+            $ref: "#/components/schemas/ConfirmedJob"
         jobFulfillments:
           type: array
           items:
-            $ref: '#/components/schemas/JobStatusFulfillment'
+            $ref: "#/components/schemas/JobStatusFulfillment"
         additionalFormUrl:
           type: string
           description: Additional form from job provider
@@ -2266,7 +2266,7 @@ components:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+              - $ref: "#/components/schemas/JobAdditionalFormData"
     JobStatusFulfillment:
       description: Schema for Job status Fulfillment object
       type: object
@@ -2279,9 +2279,9 @@ components:
           type: string
           description: JobFulfillmentCategoryId
         jobApplicantProfile:
-          $ref: '#/components/schemas/JobApplicantProfile'
+          $ref: "#/components/schemas/JobApplicantProfile"
         jobStatus:
-          $ref: '#/components/schemas/JobStatus'
+          $ref: "#/components/schemas/JobStatus"
     JobStatus:
       description: Schema for Job status object
       type: object
@@ -2330,7 +2330,7 @@ components:
         - id
         - code
       properties:
-        id:        
+        id:
           type: string
         code:
           type: string
@@ -2343,9 +2343,9 @@ components:
         - currency
         - frequency
       properties:
-        type:        
+        type:
           type: string
-          enum: 
+          enum:
             - fixed
             - variable
             - commission
@@ -2364,14 +2364,14 @@ components:
           type: array
           items:
             type: object
-            properties: 
+            properties:
               key:
                 type: string
         mentor:
           type: array
           items:
             type: object
-            properties: 
+            properties:
               name:
                 type: string
     SelectMentorship:
@@ -2384,7 +2384,7 @@ components:
         mentorshipSessionId:
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
     InitMentorship:
       description: Schema for Mentorship init
       type: object
@@ -2401,9 +2401,9 @@ components:
           description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         billing:
-          $ref: '#/components/schemas/MentorshipBilling'
+          $ref: "#/components/schemas/MentorshipBilling"
     ConfirmMentorship:
       description: Schema for Mentorship confirmation
       type: object
@@ -2419,9 +2419,9 @@ components:
           description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         billing:
-          $ref: '#/components/schemas/MentorshipBilling'
+          $ref: "#/components/schemas/MentorshipBilling"
     MentorshipBilling:
       description: Mentorship billing object
       type: object
@@ -2431,7 +2431,7 @@ components:
         - email
         - time
       properties:
-        name:       
+        name:
           description: Name
           type: string
         phone:
@@ -2456,7 +2456,7 @@ components:
           description: Mentorship id
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
     MentorshipResults:
       description: Schema for searched job results/response
       type: object
@@ -2465,12 +2465,12 @@ components:
         - mentorshipProviders
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         mentorshipProviders:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/MentorshipProvider'
+              - $ref: "#/components/schemas/MentorshipProvider"
     MentorshipProvider:
       description: Mentorship provider object
       type: object
@@ -2497,7 +2497,7 @@ components:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/Mentorship'
+              - $ref: "#/components/schemas/Mentorship"
     Mentorship:
       description: Mentorship Item object
       type: object
@@ -2541,12 +2541,12 @@ components:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/MentorshipSession'
+              - $ref: "#/components/schemas/MentorshipSession"
         recommendedFor:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/MentorshipRecommendation'
+              - $ref: "#/components/schemas/MentorshipRecommendation"
     MentorshipSession:
       description: MentorSession object
       type: object
@@ -2578,7 +2578,7 @@ components:
           description: Session timezone (Asia/Calcutta)
           type: string
         mentor:
-          $ref: '#/components/schemas/Mentor'
+          $ref: "#/components/schemas/Mentor"
     MentorshipRecommendation:
       description: Mentorship recommendation object
       type: object
@@ -2625,7 +2625,7 @@ components:
           description: Mentorship session id
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
     ConfirmedMentorship:
       description: Schema for Mentorship on confirm response
       type: object
@@ -2634,7 +2634,7 @@ components:
         - context
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         mentorshipSessionId:
           description: Mentorship session id
           type: string
@@ -2642,7 +2642,7 @@ components:
           description: Mentorship session url to join session
           type: string
         mentorshipSession:
-          $ref: '#/components/schemas/MentorshipSession'
+          $ref: "#/components/schemas/MentorshipSession"
     SearchScholarship:
       description: Schema for Scholarship search object
       type: object
@@ -2653,21 +2653,21 @@ components:
           type: array
           items:
             type: object
-            properties: 
+            properties:
               code:
                 type: string
         gender:
           type: string
         finStatus:
           type: object
-          properties: 
+          properties:
             family_income:
               type: string
         casteCategory:
           type: array
           items:
             type: object
-            properties: 
+            properties:
               caste:
                 type: string
     SelectScholarship:
@@ -2683,7 +2683,7 @@ components:
         scholarshipFulfillmentId:
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
     InitScholarship:
       description: Schema for Mentorship init
       type: object
@@ -2700,9 +2700,9 @@ components:
           description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         billing:
-          $ref: '#/components/schemas/MentorshipBilling'
+          $ref: "#/components/schemas/MentorshipBilling"
     ConfirmMentorship1:
       description: Schema for Mentorship confirmation
       type: object
@@ -2718,9 +2718,9 @@ components:
           description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
           type: string
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         billing:
-          $ref: '#/components/schemas/MentorshipBilling'
+          $ref: "#/components/schemas/MentorshipBilling"
     MentorshipBilling1:
       description: Mentorship billing object
       type: object
@@ -2730,7 +2730,7 @@ components:
         - email
         - time
       properties:
-        name:       
+        name:
           description: Name
           type: string
         phone:
@@ -2752,12 +2752,12 @@ components:
         - scholarshipProviders
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         scholarshipProviders:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/ScholarshipProvider'
+              - $ref: "#/components/schemas/ScholarshipProvider"
     ScholarshipProvider:
       description: Scholarship provider object
       type: object
@@ -2776,7 +2776,7 @@ components:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/Scholarship'
+              - $ref: "#/components/schemas/Scholarship"
     Scholarship:
       description: Scholarship Item object
       type: object
@@ -2795,11 +2795,11 @@ components:
           description: Scholarship description
           type: string
         amount:
-          $ref: '#/components/schemas/ScholarshipAmount'
+          $ref: "#/components/schemas/ScholarshipAmount"
         category:
-          $ref: '#/components/schemas/ScholarshipCategory'
+          $ref: "#/components/schemas/ScholarshipCategory"
         scholarshipDetails:
-          $ref: '#/components/schemas/ScholarshipDetails'
+          $ref: "#/components/schemas/ScholarshipDetails"
     ScholarshipAmount:
       description: Scholarship Amount
       type: object
@@ -2807,7 +2807,7 @@ components:
         - amount
         - currency
       properties:
-        amount:       
+        amount:
           description: amount
           type: number
         currency:
@@ -2862,7 +2862,7 @@ components:
           type: array
           items:
             oneOf:
-            - $ref: '#/components/schemas/AcademicQualification'
+              - $ref: "#/components/schemas/AcademicQualification"
     AcademicQualification:
       description: Academic Qualification
       type: object
@@ -2887,7 +2887,7 @@ components:
         - message
       properties:
         context:
-          $ref: '#/components/schemas/Context'
+          $ref: "#/components/schemas/Context"
         message:
           description: Acknowledgement message
           type: object
@@ -2941,21 +2941,21 @@ components:
           description: Path to json schema generating the error. Used only during json schema validation errors
           type: string
     NetworkError:
+      description: Error message
+      type: object
+      properties:
+        code:
+          description: Error code
+          type: integer
+        message:
           description: Error message
+          type: string
+        data:
+          description: Additional error data
           type: object
-          properties:
-            code:
-              description: Error code
-              type: integer
-            message:
-              description: Error message
-              type: string
-            data:
-              description: Additional error data
-              type: object
-            type:
-              description: Error type
-              type: string
+        type:
+          description: Error type
+          type: string
   securitySchemes:
     ApiKey:
       type: apiKey

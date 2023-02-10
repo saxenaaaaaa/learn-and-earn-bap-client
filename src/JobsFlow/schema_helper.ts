@@ -7,7 +7,7 @@ export const buildContext = (input: any = {}) => {
         domain: process.env.DOMAIN + input?.category,
         action: input?.action ?? "",
         location: { city: { code: process.env.CITY || (input?.city ?? "") }, country: { code: process.env.COUNTRY || (input?.country ?? "") } },
-        core_version: process.env.CORE_VERSION || (input?.core_version ?? ""),
+        version: process.env.CORE_VERSION || (input?.core_version ?? ""),
         bap_id: process.env.BAP_ID || (input?.bapId ?? ""),
         bap_uri: process.env.BAP_URI || (input?.bapUri ?? ""),
         bpp_id: (input?.bppId ?? ""),
@@ -25,16 +25,21 @@ export const isAcknowledged = (input: any = {}) => {
 export const buildSearchRequest = (input: any = {}) => {
     const context = buildContext({ category: 'jobs', action: 'search' });
     const intent: any = {}
-    if (input?.titles?.[0].key) {
-        intent.item = { "descriptor": { "name": input?.titles?.[0].key } }
+    if (input?.title?.key) {
+        intent.item = { "descriptor": { "name": input?.title?.key } }
     }
 
-    if (input?.companies?.[0].name) {
-        intent.provider = { "descriptor": { "name": input?.companies?.[0].name } }
+    if (input?.company?.name) {
+        intent.provider = { "descriptor": { "name": input?.company?.name } }
     }
 
-    if (input?.companies?.[0].locations) {
-        intent.provider = { locations: input?.companies?.[0]?.locations }
+    if (input?.company.locations) {
+        intent.provider = {
+            ...(intent?.provider ?? {}),
+            locations: input?.company?.locations?.map((city: any) => {
+                return city
+            })
+        }
     }
 
     if (input?.skills?.length) {
@@ -42,7 +47,6 @@ export const buildSearchRequest = (input: any = {}) => {
     }
 
     const message = { intent: intent };
-
     return { payload: { context, message } };
 }
 
@@ -124,7 +128,7 @@ export const buildSelectRequest = (input: any = {}) => {
 
     const context = buildContext({
         category: "jobs",
-        action: 'on_search',
+        action: 'select',
         bppId: input?.context?.bppId,
         bppUri: input?.context?.bppUri,
         transactionId: input?.context?.transactionId,
@@ -133,7 +137,7 @@ export const buildSelectRequest = (input: any = {}) => {
         order: {
             provider: { id: input?.companyId },
             items: [
-                { id: input?.jobId }
+                { id: input?.jobs.jobId }
             ]
         }
     }
@@ -251,15 +255,14 @@ export const buildInitRequest = (input: any) => {
                         person: {
                             name: data?.jobApplicantProfile?.name,
                             languages: data?.jobApplicantProfile?.languages?.map((language: any) => {
-                                return language
+                                return { code: language }
                             }),
                             URL: data?.jobApplicantProfile?.profileUrl,
-                            creds: {
-                                url: data?.jobApplicantProfile?.creds?.url,
-                                type: data?.jobApplicantProfile?.creds?.type
-                            },
+                            creds: data?.jobApplicantProfile?.creds?.map((data: any) => {
+                                return { url: data.url, type: data.type }
+                            }),
                             skills: data?.jobApplicantProfile?.skills?.map((skill: any) => {
-                                return skill
+                                return { name: skill }
                             }),
                         }
                     }

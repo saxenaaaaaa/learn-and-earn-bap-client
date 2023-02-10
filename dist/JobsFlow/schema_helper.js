@@ -6,14 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildError = exports.buildOnConfirmResponse = exports.buildOnConfirmRequest = exports.buildConfirmResponse = exports.buildConfirmRequest = exports.buildOnInitResponse = exports.buildOnInitRequest = exports.buildInitResponse = exports.buildInitRequest = exports.buildOnSelectResponse = exports.buildOnSelectRequest = exports.buildSelectResponse = exports.buildSelectRequest = exports.buildOnSearchResponse = exports.buildOnSearchRequest = exports.buildSearchResponse = exports.buildSearchRequest = exports.isAcknowledged = exports.buildContext = void 0;
 const moment_1 = __importDefault(require("moment"));
 const uuid_1 = require("uuid");
-const initRequest_json_1 = __importDefault(require("./mock/initRequest.json"));
 const buildContext = (input = {}) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
     return {
         domain: process.env.DOMAIN + (input === null || input === void 0 ? void 0 : input.category),
         action: (_a = input === null || input === void 0 ? void 0 : input.action) !== null && _a !== void 0 ? _a : "",
         location: { city: { code: process.env.CITY || ((_b = input === null || input === void 0 ? void 0 : input.city) !== null && _b !== void 0 ? _b : "") }, country: { code: process.env.COUNTRY || ((_c = input === null || input === void 0 ? void 0 : input.country) !== null && _c !== void 0 ? _c : "") } },
-        core_version: process.env.CORE_VERSION || ((_d = input === null || input === void 0 ? void 0 : input.core_version) !== null && _d !== void 0 ? _d : ""),
+        version: process.env.CORE_VERSION || ((_d = input === null || input === void 0 ? void 0 : input.core_version) !== null && _d !== void 0 ? _d : ""),
         bap_id: process.env.BAP_ID || ((_e = input === null || input === void 0 ? void 0 : input.bapId) !== null && _e !== void 0 ? _e : ""),
         bap_uri: process.env.BAP_URI || ((_f = input === null || input === void 0 ? void 0 : input.bapUri) !== null && _f !== void 0 ? _f : ""),
         bpp_id: ((_g = input === null || input === void 0 ? void 0 : input.bppId) !== null && _g !== void 0 ? _g : ""),
@@ -33,14 +32,16 @@ const buildSearchRequest = (input = {}) => {
     var _a, _b, _c, _d, _e, _f, _g, _h;
     const context = (0, exports.buildContext)({ category: 'jobs', action: 'search' });
     const intent = {};
-    if ((_a = input === null || input === void 0 ? void 0 : input.titles) === null || _a === void 0 ? void 0 : _a[0].key) {
-        intent.item = { "descriptor": { "name": (_b = input === null || input === void 0 ? void 0 : input.titles) === null || _b === void 0 ? void 0 : _b[0].key } };
+    if ((_a = input === null || input === void 0 ? void 0 : input.title) === null || _a === void 0 ? void 0 : _a.key) {
+        intent.item = { "descriptor": { "name": (_b = input === null || input === void 0 ? void 0 : input.title) === null || _b === void 0 ? void 0 : _b.key } };
     }
-    if ((_c = input === null || input === void 0 ? void 0 : input.companies) === null || _c === void 0 ? void 0 : _c[0].name) {
-        intent.provider = { "descriptor": { "name": (_d = input === null || input === void 0 ? void 0 : input.companies) === null || _d === void 0 ? void 0 : _d[0].name } };
+    if ((_c = input === null || input === void 0 ? void 0 : input.company) === null || _c === void 0 ? void 0 : _c.name) {
+        intent.provider = { "descriptor": { "name": (_d = input === null || input === void 0 ? void 0 : input.company) === null || _d === void 0 ? void 0 : _d.name } };
     }
-    if ((_e = input === null || input === void 0 ? void 0 : input.companies) === null || _e === void 0 ? void 0 : _e[0].locations) {
-        intent.provider = { locations: (_g = (_f = input === null || input === void 0 ? void 0 : input.companies) === null || _f === void 0 ? void 0 : _f[0]) === null || _g === void 0 ? void 0 : _g.locations };
+    if (input === null || input === void 0 ? void 0 : input.company.locations) {
+        intent.provider = Object.assign(Object.assign({}, ((_e = intent === null || intent === void 0 ? void 0 : intent.provider) !== null && _e !== void 0 ? _e : {})), { locations: (_g = (_f = input === null || input === void 0 ? void 0 : input.company) === null || _f === void 0 ? void 0 : _f.locations) === null || _g === void 0 ? void 0 : _g.map((city) => {
+                return city;
+            }) });
     }
     if ((_h = input === null || input === void 0 ? void 0 : input.skills) === null || _h === void 0 ? void 0 : _h.length) {
         intent.fulfillment = { customer: { person: { skills: input === null || input === void 0 ? void 0 : input.skills } } };
@@ -52,7 +53,7 @@ exports.buildSearchRequest = buildSearchRequest;
 const buildSearchResponse = (input = {}, body = {}) => {
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri } = input;
     const context = { transactionId, messageId, bppId, bppUri };
-    return { context, message: input.message };
+    return { data: { context } };
 };
 exports.buildSearchResponse = buildSearchResponse;
 const buildOnSearchRequest = (input = {}) => {
@@ -112,14 +113,14 @@ const buildOnSearchResponse = (input = {}, body = {}) => {
             jobs.push(job);
         });
     });
-    return { context, jobs };
+    return { data: { context, jobs } };
 };
 exports.buildOnSearchResponse = buildOnSearchResponse;
 const buildSelectRequest = (input = {}) => {
     var _a, _b, _c;
     const context = (0, exports.buildContext)({
         category: "jobs",
-        action: 'on_search',
+        action: 'select',
         bppId: (_a = input === null || input === void 0 ? void 0 : input.context) === null || _a === void 0 ? void 0 : _a.bppId,
         bppUri: (_b = input === null || input === void 0 ? void 0 : input.context) === null || _b === void 0 ? void 0 : _b.bppUri,
         transactionId: (_c = input === null || input === void 0 ? void 0 : input.context) === null || _c === void 0 ? void 0 : _c.transactionId,
@@ -128,7 +129,7 @@ const buildSelectRequest = (input = {}) => {
         order: {
             provider: { id: input === null || input === void 0 ? void 0 : input.companyId },
             items: [
-                { id: input === null || input === void 0 ? void 0 : input.jobId }
+                { id: input === null || input === void 0 ? void 0 : input.jobs.jobId }
             ]
         }
     };
@@ -138,7 +139,7 @@ exports.buildSelectRequest = buildSelectRequest;
 const buildSelectResponse = (input = {}, body = {}) => {
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri } = input;
     const context = { transactionId, messageId, bppId, bppUri };
-    return { context, message: input === null || input === void 0 ? void 0 : input.message };
+    return { data: { context, message: input === null || input === void 0 ? void 0 : input.message } };
 };
 exports.buildSelectResponse = buildSelectResponse;
 const buildOnSelectRequest = (input = {}) => {
@@ -210,12 +211,11 @@ const buildOnSelectResponse = (input = {}, body = {}) => {
         job.additionalFormUrl = (_7 = xinput === null || xinput === void 0 ? void 0 : xinput.form) === null || _7 === void 0 ? void 0 : _7.url;
         selectedJobs.push(job);
     });
-    return { context, company, selectedJobs };
+    return { data: { context, company, selectedJobs } };
 };
 exports.buildOnSelectResponse = buildOnSelectResponse;
-const buildInitRequest = (input = initRequest_json_1.default) => {
+const buildInitRequest = (input) => {
     var _a, _b, _c;
-    console.log(initRequest_json_1.default, 'shsh');
     const context = (0, exports.buildContext)({
         category: "jobs",
         action: 'init',
@@ -223,7 +223,6 @@ const buildInitRequest = (input = initRequest_json_1.default) => {
         bppUri: (_b = input === null || input === void 0 ? void 0 : input.context) === null || _b === void 0 ? void 0 : _b.bppUri,
         transactionId: (_c = input === null || input === void 0 ? void 0 : input.context) === null || _c === void 0 ? void 0 : _c.transactionId,
     });
-    console.log(context);
     const message = {
         order: {
             provider: { id: input === null || input === void 0 ? void 0 : input.companyId },
@@ -231,22 +230,21 @@ const buildInitRequest = (input = initRequest_json_1.default) => {
                 { id: input === null || input === void 0 ? void 0 : input.jobs.jobId }
             ],
             fulfillments: input.jobFulfillments.map((data) => {
-                var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+                var _a, _b, _c, _d, _e, _f, _g, _h;
                 return {
                     id: data === null || data === void 0 ? void 0 : data.JobFulfillmentCategoryId,
                     customer: {
                         person: {
                             name: (_a = data === null || data === void 0 ? void 0 : data.jobApplicantProfile) === null || _a === void 0 ? void 0 : _a.name,
                             languages: (_c = (_b = data === null || data === void 0 ? void 0 : data.jobApplicantProfile) === null || _b === void 0 ? void 0 : _b.languages) === null || _c === void 0 ? void 0 : _c.map((language) => {
-                                return language;
+                                return { code: language };
                             }),
                             URL: (_d = data === null || data === void 0 ? void 0 : data.jobApplicantProfile) === null || _d === void 0 ? void 0 : _d.profileUrl,
-                            creds: {
-                                url: (_f = (_e = data === null || data === void 0 ? void 0 : data.jobApplicantProfile) === null || _e === void 0 ? void 0 : _e.creds) === null || _f === void 0 ? void 0 : _f.url,
-                                type: (_h = (_g = data === null || data === void 0 ? void 0 : data.jobApplicantProfile) === null || _g === void 0 ? void 0 : _g.creds) === null || _h === void 0 ? void 0 : _h.type
-                            },
-                            skills: (_k = (_j = data === null || data === void 0 ? void 0 : data.jobApplicantProfile) === null || _j === void 0 ? void 0 : _j.skills) === null || _k === void 0 ? void 0 : _k.map((skill) => {
-                                return skill;
+                            creds: (_f = (_e = data === null || data === void 0 ? void 0 : data.jobApplicantProfile) === null || _e === void 0 ? void 0 : _e.creds) === null || _f === void 0 ? void 0 : _f.map((data) => {
+                                return { url: data.url, type: data.type };
+                            }),
+                            skills: (_h = (_g = data === null || data === void 0 ? void 0 : data.jobApplicantProfile) === null || _g === void 0 ? void 0 : _g.skills) === null || _h === void 0 ? void 0 : _h.map((skill) => {
+                                return { name: skill };
                             }),
                         }
                     }
@@ -255,12 +253,11 @@ const buildInitRequest = (input = initRequest_json_1.default) => {
             xinput: input === null || input === void 0 ? void 0 : input.xinput
         },
     };
-    console.log(context, message);
     return { payload: { context, message } };
 };
 exports.buildInitRequest = buildInitRequest;
 const buildInitResponse = (input = {}, body = {}) => {
-    return input;
+    return { data: { input } };
 };
 exports.buildInitResponse = buildInitResponse;
 const buildOnInitRequest = (input = {}) => {
@@ -270,11 +267,11 @@ const buildOnInitRequest = (input = {}) => {
 };
 exports.buildOnInitRequest = buildOnInitRequest;
 const buildOnInitResponse = (input = {}, body = {}) => {
-    return input;
+    return { data: { input } };
 };
 exports.buildOnInitResponse = buildOnInitResponse;
 const buildConfirmRequest = (input = {}) => {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
     const context = (0, exports.buildContext)({
         category: "jobs",
         action: 'confirm',
@@ -289,16 +286,16 @@ const buildConfirmRequest = (input = {}) => {
                 { id: input === null || input === void 0 ? void 0 : input.jobId }
             ],
             fulfillments: [{
-                    id: input === null || input === void 0 ? void 0 : input.jobApplicantProfile.id,
+                    id: (_d = input === null || input === void 0 ? void 0 : input.confirmation) === null || _d === void 0 ? void 0 : _d.JobFulfillmentCategoryId,
                     customer: {
                         person: {
-                            name: input.jobApplicantProfile.name,
-                            languages: input.jobApplicantProfile.languages,
-                            URL: input.jobApplicantProfile.url,
-                            creds: input.jobApplicantProfile.creds.map((cred) => {
+                            name: (_f = (_e = input === null || input === void 0 ? void 0 : input.confirmation) === null || _e === void 0 ? void 0 : _e.jobApplicantProfile) === null || _f === void 0 ? void 0 : _f.name,
+                            languages: (_h = (_g = input === null || input === void 0 ? void 0 : input.confirmation) === null || _g === void 0 ? void 0 : _g.jobApplicantProfile) === null || _h === void 0 ? void 0 : _h.languages,
+                            URL: (_k = (_j = input === null || input === void 0 ? void 0 : input.confirmation) === null || _j === void 0 ? void 0 : _j.jobApplicantProfile) === null || _k === void 0 ? void 0 : _k.url,
+                            creds: (_m = (_l = input === null || input === void 0 ? void 0 : input.confirmation) === null || _l === void 0 ? void 0 : _l.jobApplicantProfile) === null || _m === void 0 ? void 0 : _m.creds.map((cred) => {
                                 return cred;
                             }),
-                            skills: input.jobApplicantProfile.skills.map((skill) => {
+                            skills: (_q = (_p = (_o = input === null || input === void 0 ? void 0 : input.confirmation) === null || _o === void 0 ? void 0 : _o.jobApplicantProfile) === null || _p === void 0 ? void 0 : _p.skills) === null || _q === void 0 ? void 0 : _q.map((skill) => {
                                 return skill;
                             }),
                         }
@@ -307,11 +304,14 @@ const buildConfirmRequest = (input = {}) => {
             xinput: input === null || input === void 0 ? void 0 : input.xinput
         },
     };
+    if (!(input === null || input === void 0 ? void 0 : input.companyId)) {
+        (_r = message === null || message === void 0 ? void 0 : message.order) === null || _r === void 0 ? true : delete _r.provider;
+    }
     return { payload: { context, message } };
 };
 exports.buildConfirmRequest = buildConfirmRequest;
 const buildConfirmResponse = (input = {}, body = {}) => {
-    return input;
+    return { data: input };
 };
 exports.buildConfirmResponse = buildConfirmResponse;
 const buildOnConfirmRequest = (input = {}) => {
@@ -323,7 +323,7 @@ exports.buildOnConfirmRequest = buildOnConfirmRequest;
 const buildOnConfirmResponse = (input = {}) => {
     const context = (0, exports.buildContext)({ category: 'jobs', action: 'on_confirm', transactionId: input === null || input === void 0 ? void 0 : input.transactionId, messageId: input === null || input === void 0 ? void 0 : input.messageId, bppId: input === null || input === void 0 ? void 0 : input.bppId, bppUri: input.bppUri });
     const message = input === null || input === void 0 ? void 0 : input.message;
-    return { payload: { context, message } };
+    return { data: { context, message } };
 };
 exports.buildOnConfirmResponse = buildOnConfirmResponse;
 const buildError = (input = {}) => {
