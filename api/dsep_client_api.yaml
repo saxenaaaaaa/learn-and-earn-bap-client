@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.5
+  version: 0.1.7
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1143,7 +1143,7 @@ paths:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
                   bppId: dev.elevate-apis.shikshalokam.org/bpp
                   bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
-                mentorshipConfirmationId: '123456'
+                mentorshipApplicationId: '123456'
                 mentorshipSession:
                   id: 2494098b-a2e8-4d29-8791-1b708c458cb5
                   sessionJoinLinks:
@@ -1198,7 +1198,7 @@ paths:
             schema:
               $ref: '#/components/schemas/MentorshipStatusRequest'
             example:
-              mentorshipConfirmationId: '123456'
+              mentorshipApplicationId: '123456'
               context:
                 transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
                 bppId: dev.elevate-apis.shikshalokam.org/bpp
@@ -1215,8 +1215,8 @@ paths:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
                   bppId: dev.elevate-apis.shikshalokam.org/bpp
                   bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
-                mentorshipConfirmationId: '123456'
-                mentorshipConfirmationStatus: CANCELLED
+                mentorshipApplicationId: '123456'
+                mentorshipApplicationStatus: CANCELLED
                 mentorshipProvider:
                   id: 63d93aea62820fd9e6be9d1b
                   code: org7
@@ -1254,7 +1254,6 @@ paths:
                       recommendedFor:
                         - recommendationForCode: deo
                           recommendationForName: District education officer
-                
         '404':
           description: Mentorship status request failed
           content:
@@ -1279,39 +1278,62 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/mentorship/status"
-  /mentorship/onStatus:
+  /mentorship/cancel:
     post:
-      tags:
-        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
-      summary: Mentorship onStatus
+      tags: 
+        - Mentoring & Coaching
+      summary: Mentorship cancel request
       requestBody:
-        description: Object for mentorship onStatus
+        description: Mentorship cancel request
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Context'
+              $ref: '#/components/schemas/MentorshipCancelRequest'
+            examples:
+              Cancel with reason id:
+                value:
+                  mentorshipApplicationId: '123456'
+                  mentorshipCancellationReasonId: 12
+                  context:
+                    transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                    bppId: dev.elevate-apis.shikshalokam.org/bpp
+                    bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
+              Cancel with reason description:
+                value:
+                  mentorshipApplicationId: '123456'
+                  mentorshipCancellationReason: "This timing isn't convenient for me anymore"
+                  context:
+                    transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                    bppId: dev.elevate-apis.shikshalokam.org/bpp
+                    bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
       responses:
         '200':
-          description: Mentorship onStatus request sent to network
+          description: Mentorship cancel request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MentorshipProvider'
+                $ref: '#/components/schemas/MentorshipCancelResponse'
+              example:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                  bppId: dev.elevate-apis.shikshalokam.org/bpp
+                  bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
+                mentorshipApplicationId: '123456'
         '404':
-          description: Mentorship onStatus request failed
+          description: Mentorship cancel request failed
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
                 code: "404"
-                message: "Mentorship onStatus request could not be created"
+                message: "Mentorship status could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
-                path: "/mentorship/onStatus"
+                path: "/mentorship/cancel"
         '500':
-          description: Mentorship onStatus request could not be created due to unexpected error
+          description: Mentorship cancel request could not be created due to unexpected error
           content:
             application/json:
               schema:
@@ -1321,12 +1343,12 @@ paths:
                 message: "Error processing request {specific error log from exception/error}"
                 data: "Additional error message/logs"
                 type: "System error"
-                path: "/mentorship/onStatus"
+                path: "/mentorship/cancel"
   /scholarship/search:
     post:
       tags:
         - Scholarships & Grants
-      summary: Seach scholarships
+      summary: Search scholarships
       requestBody:
         description: Scholarship search criteria
         required: true
@@ -1334,6 +1356,26 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SearchScholarship'
+            examples:
+              Search by scholarship name:
+                value:
+                  name: Undergraduation scholarship
+              Search by gender criteria:
+                value:
+                  gender: Female
+              Search by by financial income criteria:
+                value:
+                  finStatus:
+                    family_income: '200000'
+              Search by by caste criteria:
+                value:
+                  casteCategory:
+                    - caste: SC
+              Search by categories for female students:
+                value:
+                  categories:
+                    - code: ug
+                  gender: Female
       responses:
         '200':
           description: Scholarship search request sent to network
@@ -1341,6 +1383,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScholarshipResults'
+              example:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                scholarshipProviders:
+                  - id: BX213573733
+                    name: XYZ Education Foundation
+                    scholarships:
+                      - id: SCM_00420068
+                        name: XYZ Foundation Undergraduation scholarship
+                        description: XYZ Foundation Undergraduation scholarship
+                        amount:
+                          amount: 30000
+                          currency: INR
+                        category:
+                          id: DSEP_CAT_1
+                          name: Under Graduate
+                          code: ug
+                        scholarshipDetails:
+                          id: DSEP_FUL_01
+                          type: SCHOLARSHIP
+                          gender: Female
+                          applicationStartDate: '2022-12-01'
+                          applicationEndDate: '2022-12-31'
+                          supportContact:
+                            name: Mary G
+                            phone: '9876543210'
+                            email: maryg@xyz.com
+                          academicQualifications:
+                            - code: gr
+                              name: Grade
+                              value: Grade 12
+                            - code: percentage_grade
+                              name: Percentage/Grade
+                              value: '50'
+                            - code: passing_year
+                              name: Passing Year
+                              value: '2021'
         '404':
           description: Scholarship search request failed
           content:
@@ -2623,13 +2702,13 @@ components:
       description: Schema for Mentorship on confirm response
       type: object
       required:
-        - mentorshipConfirmationId
+        - mentorshipApplicationId
         - context
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        mentorshipConfirmationId:
-          description: Mentorship confirmation/order id
+        mentorshipApplicationId:
+          description: Mentorship application id
           type: string
         mentorshipSession:
           $ref: '#/components/schemas/ConfirmedMentorshipSession'
@@ -2690,8 +2769,8 @@ components:
       required:
         - context
       properties:
-        mentorshipConfirmationId:
-          description: Mentorship confirmation id
+        mentorshipApplicationId:
+          description: Mentorship application id
           type: string
         context:
           $ref: '#/components/schemas/Context'
@@ -2700,19 +2779,47 @@ components:
       type: object
       required:
         - context
-        - mentorshipConfirmationId
-        - mentorshipConfirmationStatus
+        - mentorshipApplicationId
+        - mentorshipApplicationStatus
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        mentorshipConfirmationId:
-          description: Mentorship confirmation id
+        mentorshipApplicationId:
+          description: Mentorship application id
           type: string
-        mentorshipConfirmationStatus:
-          description: Mentorship status
+        mentorshipApplicationStatus:
+          description: Mentorship application status
           type: string
         mentorshipProvider:
           $ref: '#/components/schemas/MentorshipProvider'
+    MentorshipCancelRequest:
+      description: Schema for Mentorship cancel request
+      type: object
+      required:
+        - context
+      properties:
+        mentorshipApplicationId:
+          description: Mentorship application id
+          type: string
+        mentorshipCancellationReasonId:
+          description: Mentorship cancellation reason id ie 12
+          type: integer
+        mentorshipCancellationReason:
+          description: Mentorship cancellation reason
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    MentorshipCancelResponse:
+      description: Schema for Mentorship cancel response
+      type: object
+      required:
+        - context
+      properties:
+        mentorshipApplicationId:
+          description: Mentorship application id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
     SearchScholarship:
       description: Schema for Scholarship search object
       type: object
@@ -2910,8 +3017,11 @@ components:
         id:
           description: Scholarship id / fulfillment id
           type: string
-        name:
-          description: Scholarship fulfillment name
+        type:
+          description: fulfillment type
+          type: string
+        gender:
+          description: application end date
           type: string
         applicationStartDate:
           description: application start date
@@ -2919,20 +3029,30 @@ components:
         applicationEndDate:
           description: application end date
           type: string
-        contactName:
-          description: contact person name
-          type: string
-        contactPhone:
-          description: contact person name
-          type: string
-        contactEmail:
-          description: application end email
-          type: string
+        supportContact:
+          $ref: '#/components/schemas/SupportContact'
         academicQualifications:
           type: array
           items:
             oneOf:
             - $ref: '#/components/schemas/AcademicQualification'
+    SupportContact:
+      description: Support contact
+      type: object
+      required:
+        - id
+        - name
+        - code
+      properties:
+        name:
+          description: contact person name
+          type: string
+        phone:
+          description: contact person name
+          type: string
+        email:
+          description: contact person email
+          type: string
     AcademicQualification:
       description: Academic Qualification
       type: object
