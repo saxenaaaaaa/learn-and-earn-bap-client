@@ -22,6 +22,7 @@ import onSelectResponse from './mock/onSelectResponse.json'
 import onSearchResponse from './mock/onSearchResponse.json'
 import onInitResponse from './mock/onInitResponse.json'
 import onConfirmResponse from './mock/onConfirmResponse.json'
+import { json } from "stream/consumers";
 dotenv.config();
 const gatewayUrl = process.env.GATEWAY_URL || "";
 const localNetwork = process.env.JOB_NETWORK
@@ -29,6 +30,7 @@ const localNetwork = process.env.JOB_NETWORK
 export async function searchJob(body: any): Promise<any> {
   try {
     const { payload } = buildSearchRequest(body);
+    console.log(JSON.stringify(payload))
 
     let response = onSearchResponse;
     if (localNetwork != 'local') {
@@ -57,7 +59,7 @@ export async function onSearchJob(body: any): Promise<any> {
 export async function selectJob(body: any): Promise<any> {
   try {
     const { payload } = buildSelectRequest(body);
-
+    console.log(JSON.stringify(payload))
     let response = onSelectResponse;
     if (localNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
@@ -87,6 +89,7 @@ export async function onSelectJob(body: any) {
 export async function initJob(body: any) {
   try {
     const { payload } = buildInitRequest(body);
+    console.log(JSON.stringify(payload))
 
     let response = onInitResponse;
     if (localNetwork != 'local') {
@@ -116,7 +119,9 @@ export async function onInitJob(body: any) {
 
 export async function confirmJob(body: any): Promise<any> {
   try {
+    console.log('aiia')
     const { payload } = buildConfirmRequest(body);
+    console.log(JSON.stringify(payload))
     let response = onConfirmResponse;
     if (localNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };

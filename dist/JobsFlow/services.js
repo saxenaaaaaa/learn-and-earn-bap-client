@@ -16,16 +16,25 @@ exports.onConfirmJob = exports.confirmJob = exports.onInitJob = exports.initJob 
 const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const schema_helper_1 = require("./schema_helper");
+const onSelectResponse_json_1 = __importDefault(require("./mock/onSelectResponse.json"));
+const onSearchResponse_json_1 = __importDefault(require("./mock/onSearchResponse.json"));
+const onInitResponse_json_1 = __importDefault(require("./mock/onInitResponse.json"));
+const onConfirmResponse_json_1 = __importDefault(require("./mock/onConfirmResponse.json"));
 dotenv_1.default.config();
 const gatewayUrl = process.env.GATEWAY_URL || "";
+const localNetwork = process.env.JOB_NETWORK;
 function searchJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { payload } = (0, schema_helper_1.buildSearchRequest)(body);
-            console.log(payload);
-            const headers = { "Content-Type": "application/JSON" };
-            let response = yield axios_1.default.post(`${gatewayUrl}/search`, payload, { headers });
-            return (0, schema_helper_1.buildSearchResponse)(response === null || response === void 0 ? void 0 : response.data, body);
+            console.log(JSON.stringify(payload));
+            let response = onSearchResponse_json_1.default;
+            if (localNetwork != 'local') {
+                const headers = { "Content-Type": "application/JSON" };
+                let res = yield axios_1.default.post(`${gatewayUrl}/search`, payload, { headers });
+                response = res === null || res === void 0 ? void 0 : res.data;
+            }
+            return (0, schema_helper_1.buildSearchResponse)(response, body);
         }
         catch (error) {
             return { error: error, errorOccured: true };
@@ -51,10 +60,14 @@ function selectJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { payload } = (0, schema_helper_1.buildSelectRequest)(body);
-            console.log(payload);
-            const headers = { "Content-Type": "application/JSON" };
-            let response = yield axios_1.default.post(`${gatewayUrl}/search`, payload, { headers });
-            return (0, schema_helper_1.buildSelectResponse)(response === null || response === void 0 ? void 0 : response.data, body);
+            console.log(JSON.stringify(payload));
+            let response = onSelectResponse_json_1.default;
+            if (localNetwork != 'local') {
+                const headers = { "Content-Type": "application/JSON" };
+                let res = yield axios_1.default.post(`${gatewayUrl}/select`, payload, { headers });
+                response = res === null || res === void 0 ? void 0 : res.data;
+            }
+            return (0, schema_helper_1.buildSelectResponse)(response, body);
         }
         catch (error) {
             return { error: error, errorOccured: true };
@@ -80,9 +93,14 @@ function initJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { payload } = (0, schema_helper_1.buildInitRequest)(body);
-            const headers = { "Content-Type": "application/JSON" };
-            let response = yield axios_1.default.post(`${gatewayUrl}/init`, payload, { headers });
-            return (0, schema_helper_1.buildInitResponse)(response === null || response === void 0 ? void 0 : response.data);
+            console.log(JSON.stringify(payload));
+            let response = onInitResponse_json_1.default;
+            if (localNetwork != 'local') {
+                const headers = { "Content-Type": "application/JSON" };
+                let res = yield axios_1.default.post(`${gatewayUrl}/init`, payload, { headers });
+                response = res.data;
+            }
+            return (0, schema_helper_1.buildInitResponse)(response);
         }
         catch (error) {
             return { error: error, errorOccured: true };
@@ -107,10 +125,16 @@ exports.onInitJob = onInitJob;
 function confirmJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            console.log('aiia');
             const { payload } = (0, schema_helper_1.buildConfirmRequest)(body);
-            const headers = { "Content-Type": "application/JSON" };
-            let response = yield axios_1.default.post(`${gatewayUrl}/confirm`, payload, { headers });
-            return (0, schema_helper_1.buildConfirmResponse)(response === null || response === void 0 ? void 0 : response.data);
+            console.log(JSON.stringify(payload));
+            let response = onConfirmResponse_json_1.default;
+            if (localNetwork != 'local') {
+                const headers = { "Content-Type": "application/JSON" };
+                let res = yield axios_1.default.post(`${gatewayUrl}/confirm`, payload, { headers });
+                response = res.data;
+            }
+            return (0, schema_helper_1.buildConfirmResponse)(response);
         }
         catch (error) {
             return { error: error, errorOccured: true };

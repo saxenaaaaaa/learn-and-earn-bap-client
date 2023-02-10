@@ -7,7 +7,7 @@ export const buildContext = (input: any = {}) => {
         domain: process.env.DOMAIN + input?.category,
         action: input?.action ?? "",
         location: { city: { code: process.env.CITY || (input?.city ?? "") }, country: { code: process.env.COUNTRY || (input?.country ?? "") } },
-        core_version: process.env.CORE_VERSION || (input?.core_version ?? ""),
+        version: process.env.CORE_VERSION || (input?.core_version ?? ""),
         bap_id: process.env.BAP_ID || (input?.bapId ?? ""),
         bap_uri: process.env.BAP_URI || (input?.bapUri ?? ""),
         bpp_id: (input?.bppId ?? ""),
@@ -29,12 +29,13 @@ export const buildSearchRequest = (input: any = {}) => {
         intent.item = { "descriptor": { "name": input?.title?.key } }
     }
 
-    if (input?.company.name) {
+    if (input?.company?.name) {
         intent.provider = { "descriptor": { "name": input?.company?.name } }
     }
 
     if (input?.company.locations) {
         intent.provider = {
+            ...(intent?.provider ?? {}),
             locations: input?.company?.locations?.map((city: any) => {
                 return city
             })
@@ -46,7 +47,6 @@ export const buildSearchRequest = (input: any = {}) => {
     }
 
     const message = { intent: intent };
-    console.log(message.intent.item)
     return { payload: { context, message } };
 }
 
@@ -128,7 +128,7 @@ export const buildSelectRequest = (input: any = {}) => {
 
     const context = buildContext({
         category: "jobs",
-        action: 'on_search',
+        action: 'select',
         bppId: input?.context?.bppId,
         bppUri: input?.context?.bppUri,
         transactionId: input?.context?.transactionId,
@@ -137,7 +137,7 @@ export const buildSelectRequest = (input: any = {}) => {
         order: {
             provider: { id: input?.companyId },
             items: [
-                { id: input?.jobId }
+                { id: input?.jobs.jobId }
             ]
         }
     }
@@ -255,15 +255,14 @@ export const buildInitRequest = (input: any) => {
                         person: {
                             name: data?.jobApplicantProfile?.name,
                             languages: data?.jobApplicantProfile?.languages?.map((language: any) => {
-                                return language
+                                return { code: language }
                             }),
                             URL: data?.jobApplicantProfile?.profileUrl,
-                            creds: {
-                                url: data?.jobApplicantProfile?.creds?.url,
-                                type: data?.jobApplicantProfile?.creds?.type
-                            },
+                            creds: data?.jobApplicantProfile?.creds?.map((data: any) => {
+                                return { url: data.url, type: data.type }
+                            }),
                             skills: data?.jobApplicantProfile?.skills?.map((skill: any) => {
-                                return skill
+                                return { name: skill }
                             }),
                         }
                     }
@@ -298,23 +297,23 @@ export const buildConfirmRequest = (input: any = {}) => {
         bppUri: input?.context?.bppUri,
         transactionId: input?.context?.transactionId,
     });
-    const message = {
+    const message: any = {
         order: {
             provider: { id: input?.companyId },
             items: [
                 { id: input?.jobId }
             ],
             fulfillments: [{
-                id: input?.jobApplicantProfile.id,
+                id: input?.confirmation?.JobFulfillmentCategoryId,
                 customer: {
                     person: {
-                        name: input.jobApplicantProfile.name,
-                        languages: input.jobApplicantProfile.languages,
-                        URL: input.jobApplicantProfile.url,
-                        creds: input.jobApplicantProfile.creds.map((cred: any) => {
+                        name: input?.confirmation?.jobApplicantProfile?.name,
+                        languages: input?.confirmation?.jobApplicantProfile?.languages,
+                        URL: input?.confirmation?.jobApplicantProfile?.url,
+                        creds: input?.confirmation?.jobApplicantProfile?.creds.map((cred: any) => {
                             return cred
                         }),
-                        skills: input.jobApplicantProfile.skills.map((skill: any) => {
+                        skills: input?.confirmation?.jobApplicantProfile?.skills?.map((skill: any) => {
                             return skill
                         }),
                     }
@@ -322,6 +321,10 @@ export const buildConfirmRequest = (input: any = {}) => {
             }],
             xinput: input?.xinput
         },
+
+    }
+    if (!input?.companyId) {
+        delete message?.order?.provider
     }
 
     return { payload: { context, message } }
