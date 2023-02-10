@@ -2,7 +2,6 @@
 import moment from "moment";
 import { v4 as uuid } from "uuid";
 import onsearchResponse from './mock/onSearchResponse.json'
-import initRequest from './mock/initRequest.json'
 export const buildContext = (input: any = {}) => {
     return {
         domain: process.env.DOMAIN + input?.category,
@@ -231,7 +230,7 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
 }
 
 
-export const buildInitRequest = (input: any = initRequest) => {
+export const buildInitRequest = (input: any) => {
     const context = buildContext({
         category: "jobs",
         action: 'init',
