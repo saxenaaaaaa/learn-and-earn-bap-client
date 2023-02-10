@@ -363,7 +363,7 @@ export const buildOnInitResponse = (input: any = {}) => {
             name: fulfilment?.customer?.person?.name,
             language: fulfilment?.customer?.person?.languages?.map((language: any) => language?.code),
             profileUrl: fulfilment?.customer?.person?.url,
-            creds: fulfilment?.customer?.person?.creds;
+            creds: fulfilment?.customer?.person?.creds,
             skills: fulfilment?.customer?.person?.skills?.map((skill: any) => skill?.name)
         },
         state: fulfilment?.state?.descriptor
@@ -508,7 +508,7 @@ export const buildOnConfirmResponse = (input: any = {}) => {
             name: fulfilment?.customer?.person?.name,
             language: fulfilment?.customer?.person?.languages?.map((language: any) => language?.code),
             profileUrl: fulfilment?.customer?.person?.url,
-            creds: fulfilment?.customer?.person?.creds;
+            creds: fulfilment?.customer?.person?.creds,
             skills: fulfilment?.customer?.person?.skills?.map((skill: any) => skill?.name)
         },
         state: fulfilment?.state?.descriptor
