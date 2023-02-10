@@ -51,7 +51,7 @@ export const buildSearchResponse = (input: any = {}, body: any = {}) => {
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input;
     const context = { transactionId, messageId, bppId, bppUri };
 
-    return { context, message: input.message };
+    return { data: { context } };
 }
 
 export const buildOnSearchRequest = (input: any = {}) => {
@@ -118,7 +118,7 @@ export const buildOnSearchResponse = (input: any = {}, body: any = {}) => {
         })
     })
 
-    return { context, jobs };
+    return { data: { context, jobs } };
 }
 
 export const buildSelectRequest = (input: any = {}) => {
@@ -146,7 +146,7 @@ export const buildSelectResponse = (input: any = {}, body: any = {}) => {
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input;
     const context = { transactionId, messageId, bppId, bppUri };
 
-    return { context, message: input?.message };
+    return { data: { context, message: input?.message } };
 }
 
 export const buildOnSelectRequest = (input: any = {}) => {
@@ -227,7 +227,7 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
         selectedJobs.push(job);
     });
 
-    return { context, company, selectedJobs };
+    return { data: { context, company, selectedJobs } };
 }
 
 
@@ -273,7 +273,7 @@ export const buildInitRequest = (input: any = initRequest) => {
 }
 
 export const buildInitResponse = (input: any = {}, body: any = {}) => {
-    return input;
+    return { data: { input } };
 }
 
 export const buildOnInitRequest = (input: any = {}) => {
@@ -284,7 +284,7 @@ export const buildOnInitRequest = (input: any = {}) => {
 }
 
 export const buildOnInitResponse = (input: any = {}, body: any = {}) => {
-    return input;
+    return { data: { input } };
 }
 
 export const buildConfirmRequest = (input: any = {}) => {
@@ -325,7 +325,7 @@ export const buildConfirmRequest = (input: any = {}) => {
 }
 
 export const buildConfirmResponse = (input: any = {}, body: any = {}) => {
-    return input;
+    return { data: input };
 }
 
 export const buildOnConfirmRequest = (input: any = {}) => {
@@ -339,7 +339,7 @@ export const buildOnConfirmResponse = (input: any = {}) => {
     const context = buildContext({ category: 'jobs', action: 'on_confirm', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input.bppUri });
     const message = input?.message
 
-    return { payload: { context, message } };
+    return { data: { context, message } };
 }
 
 export const buildError = (input: any = {}) => {
