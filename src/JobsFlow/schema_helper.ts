@@ -248,7 +248,7 @@ export const buildInitRequest = (input: any) => {
                     }
                 }
             }),
-            xinput: input?.xinput
+            xinput: { data: Object.fromEntries(input?.additionalFormData?.map((formData: any) => [formData?.formInputKey, formData?.formInputValue])) }
         },
     }
     return { payload: { context, message } }
@@ -348,9 +348,7 @@ export const buildOnInitResponse = (input: any = {}) => {
             profileUrl: fulfilment?.customer?.person?.url,
             creds: fulfilment?.customer?.person?.creds,
             skills: fulfilment?.customer?.person?.skills?.map((skill: any) => skill?.name)
-        },
-        state: fulfilment?.state?.descriptor
-
+        }
     }));
 
     const additionalFormUrl = xinput?.form?.url
@@ -516,14 +514,119 @@ export const buildError = (input: any = {}) => {
 }
 
 export const buildStatusRequest = (input: any = {}) => {
-    return {}
+    const context = buildContext({
+        category: "jobs",
+        action: 'status',
+        bppId: input?.context?.bppId,
+        bppUri: input?.context?.bppUri,
+        transactionId: input?.context?.transactionId,
+    });
+    const message = {
+        order: {
+            id: input?.applicationId
+        },
+    }
+    return { payload: { context, message } };
 }
 export const buildStatusResponse = (input: any = {}) => {
-    return {}
+    return { data: input };
 }
 export const buildOnStatusRequest = (input: any = {}) => {
-    return {}
+    const context = buildContext({ category: 'jobs', action: 'on_status', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input.bppUri });
+    const message = {};
+
+    return { payload: { context, message } };
 }
 export const buildOnStatusResponse = (input: any = {}) => {
-    return {}
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
+    const context = { transactionId, bppId, bppUri };
+
+    const provider = input?.message?.order?.provider;
+    const items = input?.message?.order?.items;
+    const xinput = input?.message?.order?.xinput;
+    const applicationId = input?.message?.order?.id;
+
+    const company = {
+        id: provider?.id,
+        name: provider?.descriptor?.name,
+        imageLink: provider?.descriptor?.images?.map((image: any) => ({ url: image?.url, size: image?.size_type }))
+    }
+
+    const confirmedJobs: any[] = [];
+    items?.forEach((item: any) => {
+        const job: any = {
+            jobId: item?.id,
+            role: item?.descriptor?.name,
+            description: item?.descriptor?.long_desc,
+            additionalDesc: { url: item?.descriptor?.additional_desc?.url, contentType: item?.descriptor?.additional_desc?.content_type },
+            locations: provider?.locations
+                ?.filter((location: any) => item?.location_ids?.find((locationId: any) => location.id == locationId))
+
+                ?.map((location: any) => ({
+                    id: location?.id,
+                    city: location?.city?.name,
+                    cityCode: location?.city?.code,
+                    state: location?.state?.name,
+                    country: location?.country?.name,
+                    countryCode: location?.country?.code
+                })),
+            fulfillmentCategory: item?.fulfillments
+                ?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillment?.id == fulfillmentId))
+                ?.map((fulfillment: any) => fulfillment),
+
+            educationalQualifications: item?.tags
+                ?.filter((tag: any) => tag?.descriptor?.name?.toLowerCase()?.includes('qualifications'))
+                ?.map((tag: any) => ({
+                    category: tag?.descriptor?.name,
+                    qualification: tag?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+                }))
+        };
+
+        const responsibilities = item?.tags?.find((tag: any) => tag?.descriptor?.name?.toLowerCase() == "responsibilities");
+
+        const workExperience = item?.tags?.find((tag: any) => tag?.descriptor?.name?.toLowerCase() == "work experience");
+        const employmentInformation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "employment-info");
+        const compensation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "salary-info");
+
+        job.responsibilities = responsibilities?.descriptor?.list?.map((li: any) => li.value)
+
+        job.workExperience = {
+            key: workExperience?.descriptor?.name,
+            experience: workExperience?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+        }
+        job.employmentInformation = {
+            code: employmentInformation?.descriptor?.code,
+            name: employmentInformation?.descriptor?.name,
+            employmentInfo: {
+                code: employmentInformation?.descriptor?.list?.[0]?.descriptor?.code,
+                name: employmentInformation?.descriptor?.list?.[0]?.descriptor?.name,
+                value: employmentInformation?.descriptor?.list?.[0]?.value
+            }
+        }
+        job.compensation = {
+            code: compensation?.descriptor?.code,
+            name: compensation?.descriptor?.name,
+            salaryInfo: compensation?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
+        }
+
+        confirmedJobs.push(job);
+    });
+
+    const jobFulfillments = input?.message?.order?.fulfillments.map((fulfilment: any) => ({
+        jobFulfillmentCategoryId: fulfilment?.id,
+        jobApplicantProfile: {
+            name: fulfilment?.customer?.person?.name,
+            language: fulfilment?.customer?.person?.languages?.map((language: any) => language?.code),
+            profileUrl: fulfilment?.customer?.person?.url,
+            creds: fulfilment?.customer?.person?.creds,
+            skills: fulfilment?.customer?.person?.skills?.map((skill: any) => skill?.name)
+        },
+        jobStatus: { status: fulfilment?.state?.descriptor?.name, statusCode: fulfilment?.state?.descriptor?.name }
+
+    }));
+
+    const additionalFormUrl = xinput?.form?.url
+    const additionalFormData = Object.entries(xinput?.data ?? {})?.map(([key, value]: any[]) => ({ formInputKey: key, formInputValue: value }));
+
+    return { data: { context, applicationId, company, confirmedJobs, jobFulfillments, additionalFormUrl, additionalFormData } };
 }
