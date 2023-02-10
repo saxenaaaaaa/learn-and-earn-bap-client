@@ -16,7 +16,10 @@ import {
   buildOnConfirmRequest,
   buildInitResponse,
   buildOnInitResponse,
-  buildOnConfirmResponse
+  buildOnConfirmResponse,
+  buildStatusRequest,
+  buildOnStatusResponse,
+  buildOnStatusRequest
 } from "./schema_helper";
 import onSelectResponse from './mock/onSelectResponse.json'
 import onSearchResponse from './mock/onSearchResponse.json'
@@ -141,6 +144,35 @@ export async function onConfirmJob(body: any) {
 
     let response: any = await axios.post(`${gatewayUrl}/on_confirm`, payload, { headers });
     return buildOnConfirmResponse(response.data);
+  }
+  catch (error) {
+    return { error: error, errorOccured: true };
+  }
+}
+
+
+export async function statusJob(body: any) {
+  try {
+    const payload = buildStatusRequest(body);
+    let response = 'data';
+    if (localNetwork != 'local') {
+      const headers = { "Content-Type": "application/JSON" };
+      let res = await axios.post(`${gatewayUrl}/confirm`, payload, { headers });
+      response = res?.data
+    }
+    return buildOnStatusResponse(response);
+  }
+  catch (error) {
+    return { error: error, errorOccured: true };
+  }
+}
+export async function onStatusJob(body: any) {
+  try {
+    const payload = buildOnStatusRequest(body);
+    const headers = { "Content-Type": "application/JSON" };
+
+    let response: any = await axios.post(`${gatewayUrl}/on_confirm`, payload, { headers });
+    return buildOnStatusResponse(response.data);
   }
   catch (error) {
     return { error: error, errorOccured: true };
