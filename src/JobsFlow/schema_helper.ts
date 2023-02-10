@@ -514,3 +514,16 @@ export const buildError = (input: any = {}) => {
         path: input.path
     }
 }
+
+export const buildStatusRequest = (input: any = {}) => {
+    return {}
+}
+export const buildStatusResponse = (input: any = {}) => {
+    return {}
+}
+export const buildOnStatusRequest = (input: any = {}) => {
+    return {}
+}
+export const buildOnStatusResponse = (input: any = {}) => {
+    return {}
+}

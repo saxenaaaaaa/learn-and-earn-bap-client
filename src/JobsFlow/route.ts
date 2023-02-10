@@ -13,6 +13,8 @@ export const jobRoutes = () => {
     router.post("/on_init", jobController.onInit);
     router.post("/confirm", jobController.confirm);
     router.post("/on_confirm", jobController.onConfirm);
+    router.post("/status", jobController.status)
+    router.post("/on_status", jobController.onstatus)
     return router
 }
 
