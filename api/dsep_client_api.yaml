@@ -1,0 +1,2341 @@
+openapi: 3.0.0
+info:
+  version: 0.0.9
+  title: DSEP Client API
+  description: Client API to manage DSEP categories.
+paths:
+  /job/search:
+    post:
+      tags:
+        - Jobs & Internships
+      summary: Seach jobs
+      requestBody:
+        description: Job search criteria
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchJob'
+            example:
+              title:
+                key: Engineering Manager
+              company:
+                name: Google India
+                locations:
+                  - city: Hyderabad
+                  - city: Pune
+              skills:
+                - name: Python
+                  code: Flutter
+      responses:
+        '200':
+          description: Job search request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchJobsResponse'
+        '404':
+          description: Job search request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Job search request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/job/search"
+        '500':
+          description: Job search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/job/search"
+  /job/select:
+    post:
+      tags:
+        - Jobs & Internships
+      summary: Select jobs
+      requestBody:
+        description: Select specific job
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectJob'
+      responses:
+        '200':
+          description: Job select request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectedJobResponse'
+        '404':
+          description: Job select request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Job select request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/job/select"
+        '500':
+          description: Job search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/job/select"
+  /job/init:
+    post:
+      tags:
+        - Jobs & Internships
+      summary: Initialize job
+      requestBody:
+        description: Initialize specific job
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitJob'
+      responses:
+        '200':
+          description: Job init request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitJobResponse'
+        '404':
+          description: Job init request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Job init request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/job/init"
+        '500':
+          description: Job init request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/job/init"
+  /job/confirm:
+    post:
+      tags:
+        - Jobs & Internships
+      summary: Confirm jobs
+      requestBody:
+        description: Job confirmation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmJobRequest'
+      responses:
+        '200':
+          description: Job confirmation request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmJobResponse'
+        '404':
+          description: Job confirm request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Job confirm could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/job/confirm"
+        '500':
+          description: Job confirmation request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/job/confirm"
+  /job/status:
+    post:
+      tags:
+        - Jobs & Internships
+      summary: Job Status
+      requestBody:
+        description: Status of specific job
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobStatusRequest'
+      responses:
+        '200':
+          description: Job status request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatusResponse'
+        '404':
+          description: Job status request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Job status request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/job/status"
+        '500':
+          description: Job status request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/job/status"
+  /mentorship/search:
+    post:
+      tags:
+        - Mentoring & Coaching
+      summary: Seach mentorships
+      requestBody:
+        description: Mentorship search criteria
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MentorshipResults'
+      responses:
+        '200':
+          description: Mentorship search request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Mentorship search request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship search request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/search"
+        '500':
+          description: Mentorship search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/search"
+  /mentorship/onSearch:
+    post:
+      tags:
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
+      summary: onSeach mentorships
+      requestBody:
+        description: Mentorship context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Mentorships data retrieved from network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MentorshipResults'
+        '404':
+          description: Mentorship on_search request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship on_search request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/onSearch"
+        '500':
+          description: Mentorship on_search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/onSearch"
+  /mentorship/select:
+    post:
+      tags:
+        - Mentoring & Coaching
+      summary: Select specific mentorship object
+      requestBody:
+        description: Object for selected mentorship
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectMentorship'
+      responses:
+        '200':
+          description: Mentorship select request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MentorshipProvider'
+        '404':
+          description: Mentorship select request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship select request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/select"
+        '500':
+          description: Mentorship select request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/select"
+  /mentorship/onSelect:
+    post:
+      tags:
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
+      summary: onSelect mentorship
+      requestBody:
+        description: Mentorship on_select context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Mentorship on_select request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MentorshipProvider'
+        '404':
+          description: Mentorship on_select request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship on_select request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/onSelect"
+        '500':
+          description: Mentorship on_Select request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/onSelect"
+  /mentorship/init:
+    post:
+      tags:
+        - Mentoring & Coaching
+      summary: Init Mentorship
+      requestBody:
+        description: Mentorship init request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitMentorship'
+      responses:
+        '200':
+          description: Mentorship init request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnInitMentorship'
+        '404':
+          description: Mentorship init request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship init could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/init"
+        '500':
+          description: Mentorship init request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/init"
+  /mentorship/onInit:
+    post:
+      tags:
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
+      summary: onInit mentorship
+      requestBody:
+        description: Mentorship on_init context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Mentorship on_init request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnInitMentorship'
+        '404':
+          description: Mentorship on_init request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship on_init request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/onInit"
+        '500':
+          description: Mentorship on_init request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/onInit"
+  /mentorship/confirm:
+    post:
+      tags:
+        - Mentoring & Coaching
+      summary: Confirm mentorship
+      requestBody:
+        description: Mentorship confirmation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmMentorship'
+      responses:
+        '200':
+          description: Mentorship confirmation request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmedMentorship'
+        '404':
+          description: Mentorship confirm request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship confirm could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/confirm"
+        '500':
+          description: Mentorship confirmation request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/confirm"
+  /mentorship/onConfirm:
+    post:
+      tags:
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
+      summary: onConfirm mentorship
+      requestBody:
+        description: Mentorship on_confirm context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Mentorship on_confirm request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmedMentorship'
+        '404':
+          description: Mentorship on_confirm request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship on_confirm request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/onConfirm"
+        '500':
+          description: Mentorship on_confirm request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/onConfirm"
+  /mentorship/status:
+    post:
+      tags: 
+        - Mentoring & Coaching
+      summary: Mentorship status check
+      requestBody:
+        description: Mentorship status request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusMentorship'
+      responses:
+        '200':
+          description: Mentorship status request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MentorshipProvider'
+        '404':
+          description: Mentorship status request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship status could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/status"
+        '500':
+          description: Mentorship status request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/status"
+  /mentorship/onStatus:
+    post:
+      tags:
+        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
+      summary: Mentorship onStatus
+      requestBody:
+        description: Object for mentorship onStatus
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Mentorship onStatus request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MentorshipProvider'
+        '404':
+          description: Mentorship onStatus request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship onStatus request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/onStatus"
+        '500':
+          description: Mentorship onStatus request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/onStatus"
+  /scholarship/search:
+    post:
+      tags:
+        - Scholarships & Grants
+      summary: Seach scholarships
+      requestBody:
+        description: Scholarship search criteria
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchScholarship'
+      responses:
+        '200':
+          description: Scholarship search request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScholarshipResults'
+        '404':
+          description: Scholarship search request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Scholarship search request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/scholarship/search"
+        '500':
+          description: Scholarship search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/scholarship/search"
+  /scholarship/onSearch:
+    post:
+      tags:
+        - DO NOT USE FOR Synchronous mode - Scholarships & Grants
+      summary: onSeach scholarship
+      requestBody:
+        description: Scholarship context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+      responses:
+        '200':
+          description: Scholarships data retrieved from network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScholarshipResults'
+        '404':
+          description: Scholarship on_search request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship on_search request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/scholarship/onSearch"
+        '500':
+          description: Scholarship on_search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/scholarship/onSearch"
+  /scholarship/select:
+    post:
+      tags:
+        - Scholarships & Grants
+      summary: Select specific scholarship object
+      requestBody:
+        description: Object for selected scholarship
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectScholarship'
+      responses:
+        '200':
+          description: Scholarship select request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Scholarship select request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Scholarship select request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/scholarship/select"
+        '500':
+          description: Scholarship select request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/scholarship/select"
+  /scholarship/init:
+    post:
+      tags:
+        - Scholarships & Grants
+      summary: Init Scholarship
+      requestBody:
+        description: Scholarship init request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitScholarship'
+      responses:
+        '200':
+          description: Scholarship init request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Scholarship init request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Scholarship init could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/scholarship/init"
+        '500':
+          description: Scholarship init request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/scholarship/init"
+  /scholarship/confirm:
+    post:
+      tags:
+        - Scholarships & Grants
+      summary: Confirm mentorship
+      requestBody:
+        description: Mentorship confirmation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmMentorship'
+      responses:
+        '200':
+          description: Mentorship confirmation request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Mentorship confirm request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship confirm could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/confirm"
+        '500':
+          description: Mentorship confirmation request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/confirm"
+  /scholarship/status:
+    post:
+      tags: 
+        - Scholarships & Grants
+      summary: Mentorship status check
+      requestBody:
+        description: Mentorship status request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusMentorship'
+      responses:
+        '200':
+          description: Mentorship status request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgement'
+        '404':
+          description: Mentorship status request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Mentorship status could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/mentorship/status"
+        '500':
+          description: Mentorship status request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/mentorship/status"
+components:
+  schemas:
+    SearchJob:
+      description: Schema for Job search object
+      type: object
+      properties:
+        title:
+          type: object
+          properties: 
+            key:
+              type: string
+        company:
+          type: object
+          properties: 
+            name:
+              type: string
+            locations:
+              type: array
+              items:
+                type: object
+                properties: 
+                  city:
+                    type: string
+        skills:
+          type: array
+          items:
+            type: object
+            properties: 
+              name:
+                type: string
+              code:
+                type: string
+    SearchJobsResponse:
+      description: Schema for searched job results/response
+      type: object
+      required:
+        - context
+        - jobs
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        jobProviderPlatform:
+          type: string
+          description: Job ProviderPlatform
+        jobResults:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobResult'
+    JobResult:
+      description: Schema for Job result
+      type: object
+      required:
+        - company
+        - jobs
+      properties:
+        company:
+          $ref: '#/components/schemas/Company'
+        jobs:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobSummary'
+    Company:
+      description: Company object
+      type: object
+      required:
+        - id
+        - name
+        - imageLink
+      properties:
+        id:        
+          type: string
+        name:
+          type: string
+        imageLink:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Image'
+    Image:
+      description: Image object
+      type: object
+      required:
+        - url
+        - size
+      properties:
+        url:        
+          type: string
+        size:
+          type: string
+    JobSummary:
+      description: Schema for Job summary
+      type: object
+      required:
+        - jobId
+        - role
+        - description
+        - additionalDesc
+      properties:
+        jobId:
+          type: string
+        role:
+          type: string
+          description: Job role (Job name)
+        description:
+          type: string
+          description: Job description
+        additionalDesc:
+          $ref: '#/components/schemas/AdditionalDesc' 
+        locations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Location'
+    AdditionalDesc:
+      description: Additional Desc object
+      type: object
+      required:
+        - url
+        - contentType
+      properties:
+        url:        
+          type: string
+        contentType:
+          type: string
+    Location:
+      description: Location object
+      type: object
+      required:
+        - id
+        - city
+        - cityCode
+        - state
+        - country
+        - countryCode
+      properties:
+        id:        
+          type: string
+        city:
+          type: string
+        cityCode:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        countryCode:
+          type: string
+    SelectJob:
+      description: Schema for Job selection
+      type: object
+      required:
+        - companyId
+        - jobId
+        - context
+      properties:
+        companyId:
+          type: string
+        jobs:
+          type: object
+          properties:
+            jobId:
+              type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    SelectedJobResponse:
+      description: Schema for selected job response
+      type: object
+      required:
+        - context
+        - selectedJobs
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        company:
+          $ref: '#/components/schemas/Company'
+        selectedJobs:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/SelectedJob'
+    SelectedJob:
+      description: Schema for Selected Job
+      type: object
+      required:
+        - jobId
+        - role
+        - city
+      properties:
+        jobId:
+          type: string
+        role:
+          type: string
+          description: Job role
+        description:
+          type: string
+          description: Job description
+        additionalDesc:
+          $ref: '#/components/schemas/AdditionalDesc' 
+        locations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Location'
+        fulfillmentCategory:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobFulfillmentCategory'
+        educationalQualifications:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/EducationalQualification'
+        workExperience:
+          type: object
+          required:
+            - key
+            - qualification
+          properties:
+            key:
+              description: key will be Work Experience
+              type: string
+            experience:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/WorkExperience'
+        responsibilities:
+          type: array
+          items:
+            type: string
+        employmentInformation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be employment-info
+              type: string
+            name:
+              description: name will be Employment Information
+              type: string
+            employmentInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/EmploymentInformation'
+        compensation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be salary-info
+              type: string
+            name:
+              description: name will be Salary Compensation
+              type: string
+            salaryInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/SalaryInformation'
+        additionalFormUrl:
+          type: string
+          description: Additional form from job provider
+    JobFulfillmentCategory:
+      description: Job Fulfillment category object
+      type: object
+      required:
+        - id
+        - type
+      properties:
+        id:        
+          type: string
+        type:
+          description: example IN-PERSON, VIRTUAL
+          type: string
+    EducationalQualification:
+          type: object
+          required:
+            - category
+            - qualification
+          properties:
+            category:
+              description: qualification category ie Minimum Educational Qualifications
+              type: string
+            qualification:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/Qualification'
+    Qualification:
+      description: Job education Qualification object
+      type: object
+      required:
+        - value
+      properties:
+        code:      
+          description: qualification code ie degree
+          type: string
+        name:
+          description: qualification name ie Degree
+          type: string
+        value:      
+          description: qualification name ie Masters
+          type: string
+    WorkExperience:
+      description: Work Experience object
+      type: object
+      required:
+        - value
+      properties:
+        code:      
+          description: work experience code ie exp-in-years
+          type: string
+        name:
+          description: work experience name ie Minimum Work Experience
+          type: string
+        value:      
+          description: work experience name ie 8 Years
+          type: string
+    EmploymentInformation:
+      description: Employment Information object
+      type: object
+      required:
+        - value
+      properties:
+        code:      
+          description: code example emp-duration-type
+          type: string
+        name:
+          description: name ie Employment Duration Type
+          type: string
+        value:      
+          description: ie Full Time
+          type: string
+    SalaryInformation:
+      description: Salary Information object
+      type: object
+      required:
+        - value
+      properties:
+        code:      
+          description: code example emp-duration-type
+          type: string
+        name:
+          description: name ie Salary Range
+          type: string
+        value:      
+          description: ie 35 LPA to 65 LPA
+          type: string
+    InitJob:
+      description: Schema for Job initialization
+      type: object
+      required:
+        - context
+        - companyId
+        - jobId
+        - jobApplicantProfile
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        companyId:
+          type: string
+        jobs:
+          type: object
+          properties:
+            jobId:
+              type: string
+              description: jobId
+        jobFulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobFulfillment' 
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobAdditionalFormData'
+    JobFulfillment:
+      description: Schema for Job Fulfillment object
+      type: object
+      required:
+        - JobFulfillmentCategoryId
+        - jobApplicantProfile
+      properties:
+        JobFulfillmentCategoryId:
+          type: string
+          description: JobFulfillmentCategoryId
+        jobApplicantProfile:
+          $ref: '#/components/schemas/JobApplicantProfile'
+    JobApplicantProfile:
+      description: Schema for Job Applicant Profile
+      type: object
+      required:
+        - name
+        - contact
+      properties:
+        name:
+          type: string
+          description: User full name
+        languages:
+          type: array
+          items:
+            type: string
+        profileUrl:
+          type: string
+          description: User full name
+        creds:
+          $ref: '#/components/schemas/UserCredential'
+        skills:
+          type: array
+          items:
+            type: string
+    UserCredential:
+      description: User Credential object
+      type: object
+      required:
+        - url
+        - type
+      properties:
+        url:     
+          description: Location for user document
+          type: string
+        type:
+          description: Type of document
+          type: string
+    JobAdditionalFormData:
+          type: object
+          properties:
+            formInputKey:
+              description: Additional form key
+              type: string
+            formInputValue:
+              description: Additional form value for key
+              type: string
+    InitJobResponse:
+      description: Schema for init job response
+      type: object
+      required:
+        - context
+        - company
+        - initiatedJobs
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        company:
+          $ref: '#/components/schemas/Company'
+        initiatedJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/initiatedJobs'
+        jobFulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobFulfillment'
+        additionalFormUrl:
+          type: string
+          description: Additional form from job provider
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobAdditionalFormData'
+    initiatedJobs:
+      description: Schema for initiated Job
+      type: object
+      required:
+        - jobId
+        - role
+        - city
+      properties:
+        jobId:
+          type: string
+        role:
+          type: string
+          description: Job role
+        description:
+          type: string
+          description: Job description
+        additionalDesc:
+          $ref: '#/components/schemas/AdditionalDesc' 
+        locations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Location'
+        educationalQualifications:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/EducationalQualification'
+        workExperience:
+          type: object
+          required:
+            - key
+            - qualification
+          properties:
+            key:
+              description: key will be Work Experience
+              type: string
+            experience:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/WorkExperience'
+        responsibilities:
+          type: array
+          items:
+            type: string
+        employmentInformation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be employment-info
+              type: string
+            name:
+              description: name will be Employment Information
+              type: string
+            employmentInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/EmploymentInformation'
+        compensation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be salary-info
+              type: string
+            name:
+              description: name will be Salary Compensation
+              type: string
+            salaryInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/SalaryInformation'
+    ConfirmJobRequest:
+      description: Schema for Job confirm request
+      type: object
+      required:
+        - jobId
+        - context
+        - userProfile
+      properties:
+        jobId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        confirmation:
+          $ref: '#/components/schemas/JobFulfillment'
+    ConfirmJobResponse:
+      description: Schema for confirmed job response
+      type: object
+      required:
+        - context
+        - applicationId
+        - company
+        - confirmedJob
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        applicationId:
+          type: string
+        company:
+          $ref: '#/components/schemas/Company'
+        confirmedJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfirmedJob'
+        jobFulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobFulfillment'
+        additionalFormUrl:
+          type: string
+          description: Additional form from job provider
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobAdditionalFormData'
+    ConfirmedJob:
+      description: Schema for confirmed Job
+      type: object
+      required:
+        - jobId
+        - role
+        - city
+      properties:
+        jobId:
+          type: string
+        role:
+          type: string
+          description: Job role
+        description:
+          type: string
+          description: Job description
+        additionalDesc:
+          $ref: '#/components/schemas/AdditionalDesc' 
+        locations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Location'
+        educationalQualifications:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/EducationalQualification'
+        workExperience:
+          type: object
+          required:
+            - key
+            - qualification
+          properties:
+            key:
+              description: key will be Work Experience
+              type: string
+            experience:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/WorkExperience'
+        responsibilities:
+          type: array
+          items:
+            type: string
+        employmentInformation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be employment-info
+              type: string
+            name:
+              description: name will be Employment Information
+              type: string
+            employmentInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/EmploymentInformation'
+        compensation:
+          type: object
+          required:
+            - code
+            - name
+            - employmentInfo
+          properties:
+            code:
+              description: code will be salary-info
+              type: string
+            name:
+              description: name will be Salary Compensation
+              type: string
+            salaryInfo:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/SalaryInformation'
+    JobStatusRequest:
+      description: Schema for Job selection
+      type: object
+      required:
+        - applicationId
+        - context
+      properties:
+        applicationId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    JobStatusResponse:
+      description: Schema for job status response
+      type: object
+      required:
+        - context
+        - applicationId
+        - company
+        - confirmedJob
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        applicationId:
+          type: string
+        company:
+          $ref: '#/components/schemas/Company'
+        confirmedJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfirmedJob'
+        jobFulfillments:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobStatusFulfillment'
+        additionalFormUrl:
+          type: string
+          description: Additional form from job provider
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/JobAdditionalFormData'
+    JobStatusFulfillment:
+      description: Schema for Job status Fulfillment object
+      type: object
+      required:
+        - JobFulfillmentCategoryId
+        - jobApplicantProfile
+        - aaa
+      properties:
+        JobFulfillmentCategoryId:
+          type: string
+          description: JobFulfillmentCategoryId
+        jobApplicantProfile:
+          $ref: '#/components/schemas/JobApplicantProfile'
+        jobStatus:
+          $ref: '#/components/schemas/JobStatus'
+    JobStatus:
+      description: Schema for Job status object
+      type: object
+      required:
+        - status
+        - statusCode
+      properties:
+        status:
+          type: string
+          description: status
+        statusCode:
+          type: string
+          description: status code
+    UserProfileOLDCONFIRM:
+      description: Schema for User Profile
+      type: object
+      required:
+        - name
+        - contact
+      properties:
+        name:
+          type: string
+          description: User full name
+        dob:
+          type: string
+          description: User dob
+        gender:
+          type: string
+          description: User gender
+        contact:
+          type: object
+          properties:
+            phone:
+              type: string
+              description: User mobile number
+            email:
+              type: string
+              description: User email
+        resume:
+          type: string
+          description: link to resume
+    JobCategory:
+      description: JobCategory object
+      type: object
+      required:
+        - id
+        - code
+      properties:
+        id:        
+          type: string
+        code:
+          type: string
+    Compensation:
+      description: compensation object
+      type: object
+      required:
+        - type
+        - amount
+        - currency
+        - frequency
+      properties:
+        type:        
+          type: string
+          enum: 
+            - fixed
+            - variable
+            - commission
+            - allowance
+        amount:
+          type: number
+        currency:
+          type: string
+        frequency:
+          type: string
+    SearchMentorship:
+      description: Schema for Mentorship search object
+      type: object
+      properties:
+        titles:
+          type: array
+          items:
+            type: object
+            properties: 
+              key:
+                type: string
+        mentor:
+          type: array
+          items:
+            type: object
+            properties: 
+              name:
+                type: string
+    SelectMentorship:
+      description: Schema for mentorship selection
+      type: object
+      required:
+        - mentorshipSessionId
+        - context
+      properties:
+        mentorshipSessionId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    InitMentorship:
+      description: Schema for Mentorship init
+      type: object
+      required:
+        - mentorshipId
+        - mentorshipSessionId
+        - context
+        - billing
+      properties:
+        mentorshipId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        mentorshipSessionId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        billing:
+          $ref: '#/components/schemas/MentorshipBilling'
+    ConfirmMentorship:
+      description: Schema for Mentorship confirmation
+      type: object
+      required:
+        - mentorshipId
+        - context
+        - billing
+      properties:
+        mentorshipId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        mentorshipSessionId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        billing:
+          $ref: '#/components/schemas/MentorshipBilling'
+    MentorshipBilling:
+      description: Mentorship billing object
+      type: object
+      required:
+        - name
+        - phone
+        - email
+        - time
+      properties:
+        name:       
+          description: Name
+          type: string
+        phone:
+          description: Phone number
+          type: string
+        email:
+          description: Email
+          type: string
+        time:
+          type: object
+          properties:
+            timezone:
+              type: string
+    StatusMentorship:
+      description: Schema for Mentorship status
+      type: object
+      required:
+        - mentorshipId
+        - context
+      properties:
+        mentorshipId:
+          description: Mentorship id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    MentorshipResults:
+      description: Schema for searched job results/response
+      type: object
+      required:
+        - context
+        - mentorshipProviders
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        mentorshipProviders:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/MentorshipProvider'
+    MentorshipProvider:
+      description: Mentorship provider object
+      type: object
+      required:
+        - id
+        - code
+        - name
+        - description
+        - mentorships
+      properties:
+        id:
+          description: Mentorship provider id
+          type: string
+        code:
+          description: Mentorship provider code
+          type: string
+        name:
+          description: Mentorship provider name
+          type: string
+        description:
+          description: Mentorship provider description
+          type: string
+        mentorships:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Mentorship'
+    Mentorship:
+      description: Mentorship Item object
+      type: object
+      required:
+        - id
+        - category
+        - name
+        - description
+      properties:
+        id:
+          description: Mentorship id / item id
+          type: string
+        category:
+          description: Mentorship category
+          type: string
+        name:
+          description: Mentorship name
+          type: string
+        code:
+          description: Mentorship code
+          type: string
+        description:
+          description: Mentorship description
+          type: string
+        longDescription:
+          description: Mentorship long description
+          type: string
+        imageLocation:
+          description: Mentorship Image
+          type: string
+        available:
+          description: Mentorships available
+          type: integer
+        allocated:
+          description: Mentorships allocated
+          type: integer
+        price:
+          description: Mentorship price
+          type: number
+        mentorshipSessions:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/MentorshipSession'
+        recommendedFor:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/MentorshipRecommendation'
+    MentorshipSession:
+      description: MentorSession object
+      type: object
+      required:
+        - id
+        - language
+        - type
+        - mentor
+      properties:
+        id:
+          description: Session Fulfillments Id
+          type: string
+        language:
+          description: Session language
+          type: string
+        timingStart:
+          description: Session start date
+          type: string
+        timingEnd:
+          description: Session end date
+          type: string
+        type:
+          description: Session type (ONLINE)
+          type: string
+        status:
+          description: Session status (Live)
+          type: string
+        timezone:
+          description: Session timezone (Asia/Calcutta)
+          type: string
+        mentor:
+          $ref: '#/components/schemas/Mentor'
+    MentorshipRecommendation:
+      description: Mentorship recommendation object
+      type: object
+      required:
+        - recommendationForCode
+        - recommendationForName
+      properties:
+        recommendationForCode:
+          description: Mentorship recommendationForCode
+          type: string
+        recommendationForName:
+          description: Mentorship recommendationForName
+          type: string
+    Mentor:
+      description: Mentor object
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          description: Mentor id
+          type: string
+        name:
+          description: Mentor name
+          type: string
+        gender:
+          description: Mentor gender
+          type: string
+        image:
+          description: Mentor image link
+          type: string
+        rating:
+          description: Mentor rating
+          type: string
+    OnInitMentorship:
+      description: Schema for Mentorship oninit
+      type: object
+      required:
+        - mentorshipSessionId
+        - context
+      properties:
+        mentorshipSessionId:
+          description: Mentorship session id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    ConfirmedMentorship:
+      description: Schema for Mentorship on confirm response
+      type: object
+      required:
+        - mentorshipSessionId
+        - context
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        mentorshipSessionId:
+          description: Mentorship session id
+          type: string
+        sessionJoinLink:
+          description: Mentorship session url to join session
+          type: string
+        mentorshipSession:
+          $ref: '#/components/schemas/MentorshipSession'
+    SearchScholarship:
+      description: Schema for Scholarship search object
+      type: object
+      properties:
+        name:
+          type: string
+        categories:
+          type: array
+          items:
+            type: object
+            properties: 
+              code:
+                type: string
+        gender:
+          type: string
+        finStatus:
+          type: object
+          properties: 
+            family_income:
+              type: string
+        casteCategory:
+          type: array
+          items:
+            type: object
+            properties: 
+              caste:
+                type: string
+    SelectScholarship:
+      description: Schema for scholarship selection
+      type: object
+      required:
+        - scholarshipItemId
+        - scholarshipFulfillmentId
+        - context
+      properties:
+        scholarshipItemId:
+          type: string
+        scholarshipFulfillmentId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    InitScholarship:
+      description: Schema for Mentorship init
+      type: object
+      required:
+        - mentorshipId
+        - mentorshipSessionId
+        - context
+        - billing
+      properties:
+        mentorshipId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        mentorshipSessionId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        billing:
+          $ref: '#/components/schemas/MentorshipBilling'
+    ConfirmMentorship1:
+      description: Schema for Mentorship confirmation
+      type: object
+      required:
+        - mentorshipId
+        - context
+        - billing
+      properties:
+        mentorshipId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        mentorshipSessionId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        billing:
+          $ref: '#/components/schemas/MentorshipBilling'
+    MentorshipBilling1:
+      description: Mentorship billing object
+      type: object
+      required:
+        - name
+        - phone
+        - email
+        - time
+      properties:
+        name:       
+          description: Name
+          type: string
+        phone:
+          description: Phone number
+          type: string
+        email:
+          description: Email
+          type: string
+        time:
+          type: object
+          properties:
+            timezone:
+              type: string
+    ScholarshipResults:
+      description: Schema for searched scholarship results/response
+      type: object
+      required:
+        - context
+        - scholarshipProviders
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        scholarshipProviders:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/ScholarshipProvider'
+    ScholarshipProvider:
+      description: Scholarship provider object
+      type: object
+      required:
+        - id
+        - name
+        - scholarships
+      properties:
+        id:
+          description: Scholarship provider id
+          type: string
+        name:
+          description: Scholarship provider name
+          type: string
+        scholarships:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Scholarship'
+    Scholarship:
+      description: Scholarship Item object
+      type: object
+      required:
+        - id
+        - name
+        - description
+      properties:
+        id:
+          description: Scholarship id / item id
+          type: string
+        name:
+          description: Scholarship name
+          type: string
+        description:
+          description: Scholarship description
+          type: string
+        amount:
+          $ref: '#/components/schemas/ScholarshipAmount'
+        category:
+          $ref: '#/components/schemas/ScholarshipCategory'
+        scholarshipDetails:
+          $ref: '#/components/schemas/ScholarshipDetails'
+    ScholarshipAmount:
+      description: Scholarship Amount
+      type: object
+      required:
+        - amount
+        - currency
+      properties:
+        amount:       
+          description: amount
+          type: number
+        currency:
+          description: currency
+          type: string
+    ScholarshipCategory:
+      description: Scholarship Category
+      type: object
+      required:
+        - id
+        - name
+        - code
+      properties:
+        id:
+          description: Scholarship category id
+          type: string
+        name:
+          description: Scholarship category name
+          type: string
+        code:
+          description: Scholarship category code
+          type: string
+    ScholarshipDetails:
+      description: Scholarship fulfillment object
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          description: Scholarship id / fulfillment id
+          type: string
+        name:
+          description: Scholarship fulfillment name
+          type: string
+        applicationStartDate:
+          description: application start date
+          type: string
+        applicationEndDate:
+          description: application end date
+          type: string
+        contactName:
+          description: contact person name
+          type: string
+        contactPhone:
+          description: contact person name
+          type: string
+        contactEmail:
+          description: application end email
+          type: string
+        academicQualifications:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+    AcademicQualification:
+      description: Academic Qualification
+      type: object
+      required:
+        - id
+        - name
+        - code
+      properties:
+        code:
+          description: Academic qualification code
+          type: string
+        name:
+          description: Academic qualification name
+          type: string
+        value:
+          description: Academic qualification value
+          type: string
+    Acknowledgement:
+      type: object
+      required:
+        - context
+        - message
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        message:
+          description: Acknowledgement message
+          type: object
+          properties:
+            ack:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - ACK
+                    - NACK
+    Context:
+      description: schema context object
+      type: object
+      required:
+        - transactionId
+        - messageId
+        - bppId
+        - bppUri
+      properties:
+        transactionId:
+          type: string
+        messageId:
+          type: string
+        bppId:
+          type: string
+        bppUri:
+          type: string
+    Error:
+      type: object
+      required:
+        - type
+        - code
+        - message
+        - path
+      properties:
+        code:
+          description: DSEP specific error code
+          type: string
+        message:
+          description: Human readable error message from dsep API
+          type: string
+        data:
+          description: Additional error data
+          type: object
+        type:
+          description: Error type
+          type: string
+        path:
+          description: Path to json schema generating the error. Used only during json schema validation errors
+          type: string
+    NetworkError:
+          description: Error message
+          type: object
+          properties:
+            code:
+              description: Error code
+              type: integer
+            message:
+              description: Error message
+              type: string
+            data:
+              description: Additional error data
+              type: object
+            type:
+              description: Error type
+              type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+security:
+  - ApiKey: []
+servers:
+  - url: https://api.dsep.client.becknprotocol.io/v1
+    variables: {}
