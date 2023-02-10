@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.1
+  version: 0.1.2
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -965,6 +965,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SelectMentorship'
+            example:
+              mentorshipId: 63e6065223df082856936335
+              mentorshipSessionId: 2494098b-a2e8-4d29-8791-1b708c458cb5
+              context:
+                transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                bppId: dev.elevate-apis.shikshalokam.org/bpp
+                bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
       responses:
         '200':
           description: Mentorship select request sent to network
@@ -972,6 +979,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MentorshipProvider'
+              example:
+                id: 63d93aea62820fd9e6be9d1b
+                code: org7
+                name: ShikshalokamSeven
+                description: ShikshalokamOrgSeven
+                mentorships:
+                  - id: 63e6065223df082856936335
+                    code: Class Room Management Level 1
+                    name: Class Room Management Level 1
+                    description: A level 1 session on class room management for state schools and colleges.
+                    longDescription: A level 1 session on class room management for state schools and colleges.
+                    imageLocations:
+                      - users/1232s2133sdd1-12e2dasd3123.png
+                    categories:
+                      - id: Infrastructure Management
+                        code: Infrastructure Management
+                        name: Infrastructure Management
+                    available: 5
+                    allocated: 10
+                    price: 0
+                    mentorshipSessions:
+                      - id: 2494098b-a2e8-4d29-8791-1b708c458cb5
+                        language: English
+                        timingStart: '2023-02-19T23:23:16'
+                        timingEnd: '2023-02-20T01:23:16'
+                        type: ONLINE
+                        status: Live
+                        timezone: Asia/Calcutta
+                        mentor:
+                          id: 63e5fa8762820fd9e6be9e21
+                          name: joffin Mentor Twelve
+                          gender: Male
+                          image: image location
+                          rating: '4.9'
+                    recommendedFor:
+                      - recommendationForCode: deo
+                        recommendationForName: District education officer
         '404':
           description: Mentorship select request failed
           content:
@@ -996,49 +1040,6 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/mentorship/select"
-  /mentorship/onSelect:
-    post:
-      tags:
-        - DO NOT USE FOR Synchronous mode - Mentoring & Coaching
-      summary: onSelect mentorship
-      requestBody:
-        description: Mentorship on_select context
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Context'
-      responses:
-        '200':
-          description: Mentorship on_select request sent to network
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MentorshipProvider'
-        '404':
-          description: Mentorship on_select request failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "404"
-                message: "Mentorship on_select request could not be created"
-                data: "Long descriptive message"
-                type: "Application error"
-                path: "/mentorship/onSelect"
-        '500':
-          description: Mentorship on_Select request could not be created due to unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "500"
-                message: "Error processing request {specific error log from exception/error}"
-                data: "Additional error message/logs"
-                type: "System error"
-                path: "/mentorship/onSelect"
   /mentorship/init:
     post:
       tags:
@@ -2325,9 +2326,12 @@ components:
       description: Schema for mentorship selection
       type: object
       required:
+        - mentorshipId
         - mentorshipSessionId
         - context
       properties:
+        mentorshipId:
+          type: string
         mentorshipSessionId:
           type: string
         context:
