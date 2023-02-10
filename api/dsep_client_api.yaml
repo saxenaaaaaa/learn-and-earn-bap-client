@@ -16,17 +16,45 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SearchJob'
-            example:
-              title:
-                key: Engineering Manager
-              company:
-                name: Google India
-                locations:
-                  - city: Hyderabad
-                  - city: Pune
-              skills:
-                - name: Python
-                  code: Flutter
+            examples:
+              Search with all parameters:
+                value:
+                  title:
+                    key: Engineering Manager
+                  company:
+                    name: Google India
+                    locations:
+                      - city: Hyderabad
+                      - city: Pune
+                  skills:
+                    - name: Python
+                      code: Flutter
+              Search by job title:
+                value:
+                  title:
+                    key: Engineering Manager
+              Search by company name:
+                value:
+                  company:
+                    name: Google India
+              Search by company name in multiple locations :
+                value:
+                  company:
+                    name: Google India
+                    locations:
+                      - city: Hyderabad
+                      - city: Pune
+              Search by cities:
+                value:
+                  company:
+                    locations:
+                      - city: Hyderabad
+                      - city: Pune
+              Search by skills:
+                value:
+                  skills:
+                    - name: Python
+                      code: Flutter
       responses:
         '200':
           description: Job search request sent to network
