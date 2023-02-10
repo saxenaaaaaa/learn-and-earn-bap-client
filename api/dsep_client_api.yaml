@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.4
+  version: 0.1.5
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -866,7 +866,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SearchMentorship'
+              $ref: '#/components/schemas/SearchMentorshipRequest'
             examples:
               Search by session title and mentor name:
                 value:
@@ -964,7 +964,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SelectMentorship'
+              $ref: '#/components/schemas/SelectMentorshipRequest'
             example:
               mentorshipId: 63e6065223df082856936335
               context:
@@ -977,44 +977,49 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MentorshipProvider'
+                $ref: '#/components/schemas/SelectMentorshipResponse'
               example:
-                id: 63d93aea62820fd9e6be9d1b
-                code: org7
-                name: ShikshalokamSeven
-                description: ShikshalokamOrgSeven
-                mentorships:
-                  - id: 63e6065223df082856936335
-                    code: Class Room Management Level 1
-                    name: Class Room Management Level 1
-                    description: A level 1 session on class room management for state schools and colleges.
-                    longDescription: A level 1 session on class room management for state schools and colleges.
-                    imageLocations:
-                      - users/1232s2133sdd1-12e2dasd3123.png
-                    categories:
-                      - id: Infrastructure Management
-                        code: Infrastructure Management
-                        name: Infrastructure Management
-                    available: 5
-                    allocated: 10
-                    price: 0
-                    mentorshipSessions:
-                      - id: 2494098b-a2e8-4d29-8791-1b708c458cb5
-                        language: English
-                        timingStart: '2023-02-19T23:23:16'
-                        timingEnd: '2023-02-20T01:23:16'
-                        type: ONLINE
-                        status: Live
-                        timezone: Asia/Calcutta
-                        mentor:
-                          id: 63e5fa8762820fd9e6be9e21
-                          name: joffin Mentor Twelve
-                          gender: Male
-                          image: image location
-                          rating: '4.9'
-                    recommendedFor:
-                      - recommendationForCode: deo
-                        recommendationForName: District education officer
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                  bppId: dev.elevate-apis.shikshalokam.org/bpp
+                  bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
+                mentorshipProvider:
+                  id: 63d93aea62820fd9e6be9d1b
+                  code: org7
+                  name: ShikshalokamSeven
+                  description: ShikshalokamOrgSeven
+                  mentorships:
+                    - id: 63e6065223df082856936335
+                      code: Class Room Management Level 1
+                      name: Class Room Management Level 1
+                      description: A level 1 session on class room management for state schools and colleges.
+                      longDescription: A level 1 session on class room management for state schools and colleges.
+                      imageLocations:
+                        - users/1232s2133sdd1-12e2dasd3123.png
+                      categories:
+                        - id: Infrastructure Management
+                          code: Infrastructure Management
+                          name: Infrastructure Management
+                      available: 5
+                      allocated: 10
+                      price: 0
+                      mentorshipSessions:
+                        - id: 2494098b-a2e8-4d29-8791-1b708c458cb5
+                          language: English
+                          timingStart: '2023-02-19T23:23:16'
+                          timingEnd: '2023-02-20T01:23:16'
+                          type: ONLINE
+                          status: Live
+                          timezone: Asia/Calcutta
+                          mentor:
+                            id: 63e5fa8762820fd9e6be9e21
+                            name: joffin Mentor Twelve
+                            gender: Male
+                            image: image location
+                            rating: '4.9'
+                      recommendedFor:
+                        - recommendationForCode: deo
+                          recommendationForName: District education officer
         '404':
           description: Mentorship select request failed
           content:
@@ -1050,7 +1055,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InitMentorship'
+              $ref: '#/components/schemas/InitMentorshipRequest'
             example:
               mentorshipId: 63e6065223df082856936335
               mentorshipSessionId: 2494098b-a2e8-4d29-8791-1b708c458cb5
@@ -1070,7 +1075,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnInitMentorship'
+                $ref: '#/components/schemas/InitMentorshipResponse'
               example:
                 mentorshipSessionId: 2494098b-a2e8-4d29-8791-1b708c458cb5
                 context:
@@ -1112,7 +1117,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConfirmMentorship'
+              $ref: '#/components/schemas/ConfirmMentorshipRequest'
             example:
               mentorshipId: 63e6065223df082856936335
               mentorshipSessionId: 2494098b-a2e8-4d29-8791-1b708c458cb5
@@ -1132,13 +1137,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConfirmedMentorship'
+                $ref: '#/components/schemas/ConfirmMentorshipResponse'
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
                   bppId: dev.elevate-apis.shikshalokam.org/bpp
                   bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
-                confirmationId: '123456'
+                mentorshipConfirmationId: '123456'
                 mentorshipSession:
                   id: 2494098b-a2e8-4d29-8791-1b708c458cb5
                   sessionJoinLinks:
@@ -1191,14 +1196,65 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StatusMentorship'
+              $ref: '#/components/schemas/MentorshipStatusRequest'
+            example:
+              mentorshipConfirmationId: '123456'
+              context:
+                transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                bppId: dev.elevate-apis.shikshalokam.org/bpp
+                bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
       responses:
         '200':
           description: Mentorship status request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MentorshipProvider'
+                $ref: '#/components/schemas/MentorshipStatusResponse'
+              example:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                  bppId: dev.elevate-apis.shikshalokam.org/bpp
+                  bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
+                mentorshipConfirmationId: '123456'
+                mentorshipConfirmationStatus: CANCELLED
+                mentorshipProvider:
+                  id: 63d93aea62820fd9e6be9d1b
+                  code: org7
+                  name: ShikshalokamSeven
+                  description: ShikshalokamOrgSeven
+                  mentorships:
+                    - id: 63e6065223df082856936335
+                      code: Class Room Management Level 1
+                      name: Class Room Management Level 1
+                      description: A level 1 session on class room management for state schools and colleges.
+                      longDescription: A level 1 session on class room management for state schools and colleges.
+                      imageLocations:
+                        - users/1232s2133sdd1-12e2dasd3123.png
+                      categories:
+                        - id: Infrastructure Management
+                          code: Infrastructure Management
+                          name: Infrastructure Management
+                      available: 5
+                      allocated: 10
+                      price: 0
+                      mentorshipSessions:
+                        - id: 2494098b-a2e8-4d29-8791-1b708c458cb5
+                          language: English
+                          timingStart: '2023-02-19T23:23:16'
+                          timingEnd: '2023-02-20T01:23:16'
+                          type: ONLINE
+                          status: Live
+                          timezone: Asia/Calcutta
+                          mentor:
+                            id: 63e5fa8762820fd9e6be9e21
+                            name: joffin Mentor Twelve
+                            gender: Male
+                            image: image location
+                            rating: '4.9'
+                      recommendedFor:
+                        - recommendationForCode: deo
+                          recommendationForName: District education officer
+                
         '404':
           description: Mentorship status request failed
           content:
@@ -1449,7 +1505,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConfirmMentorship'
+              $ref: '#/components/schemas/ConfirmMentorship1'
       responses:
         '200':
           description: Mentorship confirmation request sent to network
@@ -1492,7 +1548,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StatusMentorship'
+              $ref: '#/components/schemas/ScholarshipStatusRequest'
       responses:
         '200':
           description: Mentorship status request sent to network
@@ -2276,7 +2332,7 @@ components:
         statusCode:
           type: string
           description: status code
-    SearchMentorship:
+    SearchMentorshipRequest:
       description: Schema for Mentorship search object
       type: object
       properties:
@@ -2290,89 +2346,6 @@ components:
           properties: 
             name:
               type: string
-    SelectMentorship:
-      description: Schema for mentorship selection
-      type: object
-      required:
-        - mentorshipId
-        - context
-      properties:
-        mentorshipId:
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
-    InitMentorship:
-      description: Schema for Mentorship init
-      type: object
-      required:
-        - mentorshipId
-        - mentorshipSessionId
-        - context
-        - billing
-      properties:
-        mentorshipId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
-        mentorshipSessionId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
-        billing:
-          $ref: '#/components/schemas/MentorshipBilling'
-    ConfirmMentorship:
-      description: Schema for Mentorship confirmation
-      type: object
-      required:
-        - mentorshipId
-        - context
-        - billing
-      properties:
-        mentorshipId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
-        mentorshipSessionId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
-        billing:
-          $ref: '#/components/schemas/MentorshipBilling'
-    MentorshipBilling:
-      description: Mentorship billing object
-      type: object
-      required:
-        - name
-        - phone
-        - email
-        - time
-      properties:
-        name:       
-          description: Name
-          type: string
-        phone:
-          description: Phone number
-          type: string
-        email:
-          description: Email
-          type: string
-        time:
-          type: object
-          properties:
-            timezone:
-              type: string
-    StatusMentorship:
-      description: Schema for Mentorship status
-      type: object
-      required:
-        - mentorshipId
-        - context
-      properties:
-        mentorshipId:
-          description: Mentorship id
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
     MentorshipResults:
       description: Schema for searched job results/response
       type: object
@@ -2552,8 +2525,49 @@ components:
         rating:
           description: Mentor rating - not listed in schema
           type: string
-    OnInitMentorship:
-      description: Schema for Mentorship oninit
+    SelectMentorshipRequest:
+      description: Schema for mentorship selection request
+      type: object
+      required:
+        - mentorshipId
+        - context
+      properties:
+        mentorshipId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    SelectMentorshipResponse:
+      description: Schema for Mentorship on select 
+      type: object
+      required:
+        - context
+        - mentorshipProvider
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        mentorshipProvider:
+          $ref: '#/components/schemas/MentorshipProvider'
+    InitMentorshipRequest:
+      description: Schema for Mentorship init request
+      type: object
+      required:
+        - mentorshipId
+        - mentorshipSessionId
+        - context
+        - billing
+      properties:
+        mentorshipId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        mentorshipSessionId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        billing:
+          $ref: '#/components/schemas/MentorshipBilling'
+    InitMentorshipResponse:
+      description: Schema for Mentorship init request
       type: object
       required:
         - mentorshipSessionId
@@ -2564,17 +2578,58 @@ components:
           type: string
         context:
           $ref: '#/components/schemas/Context'
-    ConfirmedMentorship:
+    ConfirmMentorshipRequest:
+      description: Schema for Mentorship confirmation request
+      type: object
+      required:
+        - mentorshipId
+        - context
+        - billing
+      properties:
+        mentorshipId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        mentorshipSessionId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        billing:
+          $ref: '#/components/schemas/MentorshipBilling'
+    MentorshipBilling:
+      description: Mentorship billing object
+      type: object
+      required:
+        - name
+        - phone
+        - email
+        - time
+      properties:
+        name:       
+          description: Name
+          type: string
+        phone:
+          description: Phone number
+          type: string
+        email:
+          description: Email
+          type: string
+        time:
+          type: object
+          properties:
+            timezone:
+              type: string
+    ConfirmMentorshipResponse:
       description: Schema for Mentorship on confirm response
       type: object
       required:
-        - confirmationId
+        - mentorshipConfirmationId
         - context
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        confirmationId:
-          description: Mentorship session id
+        mentorshipConfirmationId:
+          description: Mentorship confirmation/order id
           type: string
         mentorshipSession:
           $ref: '#/components/schemas/ConfirmedMentorshipSession'
@@ -2629,6 +2684,35 @@ components:
         link:
           description: session join link
           type: string
+    MentorshipStatusRequest:
+      description: Schema for Mentorship status request
+      type: object
+      required:
+        - context
+      properties:
+        mentorshipConfirmationId:
+          description: Mentorship confirmation id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    MentorshipStatusResponse:
+      description: Schema for Mentorship status request
+      type: object
+      required:
+        - context
+        - mentorshipConfirmationId
+        - mentorshipConfirmationStatus
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        mentorshipConfirmationId:
+          description: Mentorship confirmation id
+          type: string
+        mentorshipConfirmationStatus:
+          description: Mentorship status
+          type: string
+        mentorshipProvider:
+          $ref: '#/components/schemas/MentorshipProvider'
     SearchScholarship:
       description: Schema for Scholarship search object
       type: object
@@ -2886,6 +2970,18 @@ components:
                   enum:
                     - ACK
                     - NACK
+    ScholarshipStatusRequest:
+      description: Schema for Mentorship status request
+      type: object
+      required:
+        - mentorshipConfirmationId
+        - context
+      properties:
+        mentorshipConfirmationId:
+          description: Mentorship confirmation id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
     Context:
       description: schema context object
       type: object
