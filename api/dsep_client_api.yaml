@@ -62,6 +62,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchJobsResponse'
+              examples:
+                Job search results:
+                  value:
+                    context:
+                      transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
+                      messageId: 5ac3dd78-829e-4c7d-9139-a15adbb582cc
+                    jobProviderPlatform: Affindi Jobs
+                    jobResults:
+                      - company:
+                          id: '1'
+                          name: Google India Pvt Ltd
+                          imageLink:
+                            - url: data:image/jpeg;base64,R0lG**LOGO**OF**GOOGLE*jIQA7
+                              size: sm
+                        jobs:
+                          - jobId: '1'
+                            role: Software Engineering Manager II, Google Cloud
+                            description: Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems
+                            additionalDesc:
+                              url: https://g.co/kgs/XRj9sH
+                              contentType: text/html
+                            locations:
+                              - id: '1'
+                                city: Bangalore
+                                cityCode: std:080
+                                state: Karnataka
+                                country: India
+                                countryCode: IND
+                              - id: '2'
+                                city: Hyderabad
+                                cityCode: std:040
+                                state: Telangana
+                                country: India
+                                countryCode: IND
+                    
         '404':
           description: Job search request failed
           content:
@@ -98,6 +133,16 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SelectJob'
+            examples:
+                Select a specific job:
+                  value:
+                    companyId: '1'
+                    jobs:
+                      jobId: '1'
+                    context:
+                      transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
+                      bppId: affinidibpp.com
+                      bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
       responses:
         '200':
           description: Job select request sent to network
@@ -105,6 +150,101 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SelectedJobResponse'
+              examples:
+                Job selection response:
+                  value:
+                    context:
+                      transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
+                      bppId: affinidibpp.com
+                      bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
+                    company:
+                      id: '1'
+                      name: Google India Pvt Ltd
+                      imageLink:
+                        - url: data:image/jpeg;base64,R0lG**LOGO**OF**GOOGLE*jIQA7
+                          size: sm
+                    selectedJobs:
+                      - jobId: '1'
+                        role: Software Engineering Manager II, Google Cloud
+                        description: Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems
+                        additionalDesc:
+                          url: https://g.co/kgs/XRj9sH
+                          contentType: text/html
+                        locations:
+                          - id: '1'
+                            city: Bangalore
+                            cityCode: std:080
+                            state: Karnataka
+                            country: India
+                            countryCode: IND
+                        fulfillmentCategory:
+                          - id: '1'
+                            type: IN-PERSON
+                          - id: '2'
+                            type: VIRTUAL
+                        educationalQualifications:
+                          - category: Minimum Educational Qualifications
+                            qualification:
+                              - code: degree
+                                name: Degree
+                                value: Bachelors
+                              - value: Bachelors or Equivalent Practical Experience
+                          - category: Preferred Educational Qualifications
+                            qualification:
+                              - code: degree
+                                name: Degree
+                                value: Masters
+                              - code: degree
+                                name: Degree
+                                value: PhD
+                              - value: Master's degree or PhD in Computer Science or related technical field.
+                        workExperience:
+                          key: Work Experience
+                          experience:
+                            - code: exp-in-years
+                              name: Minimum Work Experience
+                              value: 8 Years
+                            - name: Software Development Experience
+                              value: 5 Years
+                            - name: Technical Leadership Experience
+                              value: 3 Years
+                            - value: 3 years of experience working in a complex, matrixed organization
+                        responsibilities:
+                          - Set and communicate team priorities that support the broader organization's goals. Align strategy, processes, and decision-making across teams.
+                          - Set clear expectations with individuals based on their level and role and aligned to the broader organization's goals. Meet regularly with individuals to discuss performance and development and provide feedback and coaching
+                          - Develop the mid-term technical vision and roadmap within the scope of your (often multiple) team(s). Evolve the roadmap to meet anticipated future requirements and infrastructure needs
+                          - Design, guide and vet systems designs within the scope of the broader area, and write product or system development code to solve ambiguous problems.
+                          - Review code developed by other engineers and provide feedback to ensure best practices (e.g., style guidelines, checking code in, accuracy, testability, and efficiency).
+                        employmentInformation:
+                          code: employment-info
+                          name: Employment Information
+                          employmentInfo:
+                            - code: emp-duration-type
+                              name: Employment Duration Type
+                              value: Full Time
+                        compensation:
+                          code: salary-info
+                          name: Salary Compensation
+                          salaryInfo:
+                            - code: Salary Range
+                              name: 35 LPA to 65 LPA
+                              value: string
+                            - name: Salary Range
+                              value: 35 LPA to 65 LPA
+                            - code: comp-unit
+                              name: Compensation Unit
+                              value: LPA
+                            - code: min-comp
+                              name: Minimum Compensation
+                              value: '35'
+                            - code: max-comp
+                              name: Maximum Compensation
+                              value: '65'
+                            - code: avg-comp
+                              name: Average Compensation
+                              value: '50'
+                        additionalFormUrl: https://affinidi.com/path/to/application/form
+                    
         '404':
           description: Job select request failed
           content:
@@ -118,7 +258,7 @@ paths:
                 type: "Application error"
                 path: "/job/select"
         '500':
-          description: Job search request could not be created due to unexpected error
+          description: Job select request could not be created due to unexpected error
           content:
             application/json:
               schema:
