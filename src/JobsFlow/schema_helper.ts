@@ -232,7 +232,6 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
 
 
 export const buildInitRequest = (input: any = initRequest) => {
-    console.log(initRequest, 'shsh')
     const context = buildContext({
         category: "jobs",
         action: 'init',
@@ -240,7 +239,6 @@ export const buildInitRequest = (input: any = initRequest) => {
         bppUri: input?.context?.bppUri,
         transactionId: input?.context?.transactionId,
     });
-    console.log(context)
     const message = {
         order: {
             provider: { id: input?.companyId },
@@ -271,7 +269,6 @@ export const buildInitRequest = (input: any = initRequest) => {
             xinput: input?.xinput
         },
     }
-    console.log(context, message)
     return { payload: { context, message } }
 }
 
