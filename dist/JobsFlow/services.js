@@ -12,135 +12,81 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onConfirmJob = exports.onSelectJob = exports.onInitJob = exports.initJob = exports.selectJob = exports.searchJob = exports.getJobConfirm = exports.getJobOnSearch = void 0;
+exports.onConfirmJob = exports.confirmJob = exports.onInitJob = exports.initJob = exports.onSelectJob = exports.selectJob = exports.onSearchJob = exports.searchJob = void 0;
 const axios_1 = __importDefault(require("axios"));
-const helper_1 = require("../helper");
 const dotenv_1 = __importDefault(require("dotenv"));
 const schema_helper_1 = require("./schema_helper");
 dotenv_1.default.config();
 const gatewayUrl = process.env.GATEWAY_URL || "";
-function getJobOnSearch(postBody) {
+function searchJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const context = (0, helper_1.contextOnSearch)('jobs', 'on_search', postBody.transaction_id, postBody.message_id);
-            const jobSchemaConstructer = {
-                context,
-                message: {},
-            };
-            const config = {
-                headers: {
-                    "Content-Type": "application/JSON",
-                },
-            };
-            let bppResp = yield axios_1.default.post(`${gatewayUrl}/on_search`, jobSchemaConstructer, config);
-            return (0, schema_helper_1.onSearchResponseBuilder)(bppResp);
+            const { payload } = (0, schema_helper_1.buildSearchRequest)(body);
+            const headers = { "Content-Type": "application/JSON" };
+            let response = yield axios_1.default.post(`${gatewayUrl}/search`, payload, { headers });
+            return (0, schema_helper_1.buildSearchResponse)(response === null || response === void 0 ? void 0 : response.data, body);
         }
         catch (error) {
-            return {
-                error: error,
-                errorOccured: true,
-            };
-        }
-    });
-}
-exports.getJobOnSearch = getJobOnSearch;
-function getJobConfirm(postBody) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const context = (0, helper_1.contextOnSearch)('jobs', 'confirm', postBody.transaction_id, postBody.message_id);
-            const message = (0, schema_helper_1.confirmMessageBuilder)(postBody);
-            const jobSchemaConstructer = {
-                context,
-                message
-            };
-            const config = {
-                headers: {
-                    "Content-Type": "application/JSON",
-                },
-            };
-            let bppResp = yield axios_1.default.post(`${gatewayUrl}/confirm`, jobSchemaConstructer, config);
-            return bppResp;
-        }
-        catch (error) {
-            console.error(error);
-            return {
-                error: error,
-                errorOccured: true,
-            };
-        }
-    });
-}
-exports.getJobConfirm = getJobConfirm;
-function searchJob(postBody) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const context = (0, helper_1.searchContextBuilder)("jobs", "search");
-            const message = (0, schema_helper_1.searchJobMessageBuilder)(postBody);
-            const jobSchemaConstructer = {
-                context,
-                message,
-            };
-            const config = {
-                headers: {
-                    "Content-Type": "application/JSON",
-                },
-            };
-            let bppResp = yield axios_1.default.post(`${gatewayUrl}/search`, jobSchemaConstructer, config);
-            return { context: { transaction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id }, network: bppResp.data, };
-        }
-        catch (error) {
-            console.error(error);
-            return {
-                error: error,
-                errorOccured: true,
-            };
+            return { error: error, errorOccured: true };
         }
     });
 }
 exports.searchJob = searchJob;
+function onSearchJob(body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { payload } = (0, schema_helper_1.buildOnSearchRequest)(body);
+            const headers = { "Content-Type": "application/JSON" };
+            let response = yield axios_1.default.post(`${gatewayUrl}/on_search`, payload, { headers });
+            return (0, schema_helper_1.buildOnSearchResponse)(response === null || response === void 0 ? void 0 : response.data, body);
+        }
+        catch (error) {
+            return { error: error, errorOccured: true };
+        }
+    });
+}
+exports.onSearchJob = onSearchJob;
 function selectJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const requestBody = (0, schema_helper_1.buildSelectRequest)(body);
-            const config = {
-                headers: {
-                    "Content-Type": "application/JSON",
-                },
-            };
-            let bppResp = yield axios_1.default.post(`${gatewayUrl}/select`, requestBody, config);
-            return { network: bppResp.data, context: requestBody === null || requestBody === void 0 ? void 0 : requestBody.context };
+            const { payload } = (0, schema_helper_1.buildSelectRequest)(body);
+            const headers = { "Content-Type": "application/JSON" };
+            let response = yield axios_1.default.post(`${gatewayUrl}/search`, payload, { headers });
+            return (0, schema_helper_1.buildSelectResponse)(response === null || response === void 0 ? void 0 : response.data, body);
         }
         catch (error) {
-            return {
-                error: error,
-                errorOccured: true,
-            };
+            return { error: error, errorOccured: true };
         }
     });
 }
 exports.selectJob = selectJob;
+function onSelectJob(body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { payload } = (0, schema_helper_1.buildOnSelectRequest)(body);
+            const headers = { "Content-Type": "application/JSON" };
+            let response = yield axios_1.default.post(`${gatewayUrl}/on_select`, payload, { headers });
+            return (0, schema_helper_1.buildOnSelectResponse)(response === null || response === void 0 ? void 0 : response.data, body);
+        }
+        catch (error) {
+            return { error: error, errorOccured: true, };
+        }
+    });
+}
+exports.onSelectJob = onSelectJob;
 function initJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const context = (0, helper_1.searchContextBuilder)("jobs", "init");
-            const message = (0, schema_helper_1.initJobMessageBuilder)(body);
-            const jobSchemaConstructer = {
-                context,
-                message,
-            };
-            const config = {
-                headers: {
-                    "Content-Type": "application/JSON",
-                },
-            };
-            let bppResp = yield axios_1.default.post(`${gatewayUrl}/init`, jobSchemaConstructer, config);
-            return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+            console.log('sjsjbsjb');
+            const { payload } = (0, schema_helper_1.buildInitRequest)();
+            console.log(payload);
+            const headers = { "Content-Type": "application/JSON" };
+            let response = yield axios_1.default.post(`${gatewayUrl}/init`, payload, { headers });
+            // return buildInitResponse(response?.data);
+            return payload;
         }
         catch (error) {
-            return {
-                error: error,
-                errorOccured: true,
-            };
+            return { error: error, errorOccured: true };
         }
     });
 }
@@ -148,77 +94,41 @@ exports.initJob = initJob;
 function onInitJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const context = (0, helper_1.searchContextBuilder)("jobs", "on_init");
-            const message = (0, schema_helper_1.onInitJobMessageBuilder)(body);
-            const jobSchemaConstructer = {
-                context,
-                message,
-            };
-            const config = {
-                headers: {
-                    "Content-Type": "application/JSON",
-                },
-            };
-            let bppResp = yield axios_1.default.post(`${gatewayUrl}/on_init`, jobSchemaConstructer, config);
-            return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+            const { payload } = (0, schema_helper_1.buildOnInitRequest)(body);
+            const headers = { "Content-Type": "application/JSON" };
+            let response = yield axios_1.default.post(`${gatewayUrl}/on_init`, payload, { headers });
+            return (0, schema_helper_1.buildOnInitResponse)(response === null || response === void 0 ? void 0 : response.data);
         }
         catch (error) {
-            return {
-                error: error,
-                errorOccured: true,
-            };
+            return { error: error, errorOccured: true };
         }
     });
 }
 exports.onInitJob = onInitJob;
-function onSelectJob(body) {
+function confirmJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const context = (0, helper_1.searchContextBuilder)("jobs", "on_select");
-            const message = (0, schema_helper_1.onSelectJobMessageBuilder)(body);
-            const jobSchemaConstructer = {
-                context,
-                message,
-            };
-            const config = {
-                headers: {
-                    "Content-Type": "application/JSON",
-                },
-            };
-            let bppResp = yield axios_1.default.post(`${gatewayUrl}/on_select`, jobSchemaConstructer, config);
-            return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+            const { payload } = (0, schema_helper_1.buildConfirmRequest)(body);
+            const headers = { "Content-Type": "application/JSON" };
+            let response = yield axios_1.default.post(`${gatewayUrl}/confirm`, payload, { headers });
+            return (0, schema_helper_1.buildConfirmResponse)(response === null || response === void 0 ? void 0 : response.data);
         }
         catch (error) {
-            return {
-                error: error,
-                errorOccured: true,
-            };
+            return { error: error, errorOccured: true };
         }
     });
 }
-exports.onSelectJob = onSelectJob;
+exports.confirmJob = confirmJob;
 function onConfirmJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const context = (0, helper_1.searchContextBuilder)("jobs", "on_confirm");
-            const message = (0, schema_helper_1.onConfirmMessageBuilder)(body);
-            const jobSchemaConstructer = {
-                context,
-                message,
-            };
-            const config = {
-                headers: {
-                    "Content-Type": "application/JSON",
-                },
-            };
-            let bppResp = yield axios_1.default.post(`${gatewayUrl}/on_confirm`, jobSchemaConstructer, config);
-            return { network: bppResp.data, transiction_id: jobSchemaConstructer.context.transaction_id, message_id: jobSchemaConstructer.context.message_id };
+            const { payload } = (0, schema_helper_1.buildOnConfirmRequest)(body);
+            const headers = { "Content-Type": "application/JSON" };
+            let response = yield axios_1.default.post(`${gatewayUrl}/on_confirm`, payload, { headers });
+            return (0, schema_helper_1.buildOnConfirmResponse)(response.data);
         }
         catch (error) {
-            return {
-                error: error,
-                errorOccured: true,
-            };
+            return { error: error, errorOccured: true };
         }
     });
 }
