@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { confirmJob, initJob, onConfirmJob, onInitJob, onSearchJob, onSelectJob, searchJob, selectJob } from "./services";
+import { confirmJob, initJob, onConfirmJob, onInitJob, onSearchJob, onSelectJob, onStatusJob, searchJob, selectJob, statusJob } from "./services";
 
 export const search = async (req: Request, res: Response) => {
   const { data, status = 200 } = await searchJob(req.body);
@@ -40,5 +40,14 @@ export const confirm = async (req: Request, res: Response) => {
 
 export const onConfirm = async (req: Request, res: Response) => {
   const { data }: any = await onConfirmJob(req.body);
+  res.json(data);
+}
+
+export const status = async (req: Request, res: Response) => {
+  const { data }: any = await statusJob(req.body)
+  res.json(data);
+}
+export const onstatus = async (req: Request, res: Response) => {
+  const { data }: any = await onStatusJob(req.body);
   res.json(data);
 }
