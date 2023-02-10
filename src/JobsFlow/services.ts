@@ -25,6 +25,7 @@ const gatewayUrl = process.env.GATEWAY_URL || "";
 export async function searchJob(body: any): Promise<any> {
   try {
     const { payload } = buildSearchRequest(body);
+    console.log(payload)
     const headers = { "Content-Type": "application/JSON" };
 
     let response: any = await axios.post(`${gatewayUrl}/search`, payload, { headers });
@@ -49,6 +50,7 @@ export async function onSearchJob(body: any): Promise<any> {
 export async function selectJob(body: any): Promise<any> {
   try {
     const { payload } = buildSelectRequest(body)
+    console.log(payload)
     const headers = { "Content-Type": "application/JSON" };
 
     let response: any = await axios.post(`${gatewayUrl}/search`, payload, { headers });
@@ -73,7 +75,7 @@ export async function onSelectJob(body: any) {
 
 export async function initJob(body: any) {
   try {
-    const { payload } = buildInitRequest();
+    const { payload } = buildInitRequest(body);
     const headers = { "Content-Type": "application/JSON" };
 
     let response: any = await axios.post(`${gatewayUrl}/init`, payload, { headers });

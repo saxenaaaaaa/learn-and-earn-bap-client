@@ -22,6 +22,7 @@ function searchJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { payload } = (0, schema_helper_1.buildSearchRequest)(body);
+            console.log(payload);
             const headers = { "Content-Type": "application/JSON" };
             let response = yield axios_1.default.post(`${gatewayUrl}/search`, payload, { headers });
             return (0, schema_helper_1.buildSearchResponse)(response === null || response === void 0 ? void 0 : response.data, body);
@@ -50,6 +51,7 @@ function selectJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { payload } = (0, schema_helper_1.buildSelectRequest)(body);
+            console.log(payload);
             const headers = { "Content-Type": "application/JSON" };
             let response = yield axios_1.default.post(`${gatewayUrl}/search`, payload, { headers });
             return (0, schema_helper_1.buildSelectResponse)(response === null || response === void 0 ? void 0 : response.data, body);
@@ -77,13 +79,10 @@ exports.onSelectJob = onSelectJob;
 function initJob(body) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log('sjsjbsjb');
-            const { payload } = (0, schema_helper_1.buildInitRequest)();
-            console.log(payload);
+            const { payload } = (0, schema_helper_1.buildInitRequest)(body);
             const headers = { "Content-Type": "application/JSON" };
             let response = yield axios_1.default.post(`${gatewayUrl}/init`, payload, { headers });
-            // return buildInitResponse(response?.data);
-            return payload;
+            return (0, schema_helper_1.buildInitResponse)(response === null || response === void 0 ? void 0 : response.data);
         }
         catch (error) {
             return { error: error, errorOccured: true };

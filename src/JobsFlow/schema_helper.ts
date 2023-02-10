@@ -2,7 +2,6 @@
 import moment from "moment";
 import { v4 as uuid } from "uuid";
 import onsearchResponse from './mock/onSearchResponse.json'
-import initRequest from './mock/initRequest.json'
 export const buildContext = (input: any = {}) => {
     return {
         domain: process.env.DOMAIN + input?.category,
@@ -26,16 +25,20 @@ export const isAcknowledged = (input: any = {}) => {
 export const buildSearchRequest = (input: any = {}) => {
     const context = buildContext({ category: 'jobs', action: 'search' });
     const intent: any = {}
-    if (input?.titles?.[0].key) {
-        intent.item = { "descriptor": { "name": input?.titles?.[0].key } }
+    if (input?.title?.key) {
+        intent.item = { "descriptor": { "name": input?.title?.key } }
     }
 
-    if (input?.companies?.[0].name) {
-        intent.provider = { "descriptor": { "name": input?.companies?.[0].name } }
+    if (input?.company.name) {
+        intent.provider = { "descriptor": { "name": input?.company?.name } }
     }
 
-    if (input?.companies?.[0].locations) {
-        intent.provider = { locations: input?.companies?.[0]?.locations }
+    if (input?.company.locations) {
+        intent.provider = {
+            locations: input?.company?.locations?.map((city: any) => {
+                return city
+            })
+        }
     }
 
     if (input?.skills?.length) {
@@ -43,7 +46,7 @@ export const buildSearchRequest = (input: any = {}) => {
     }
 
     const message = { intent: intent };
-
+    console.log(message.intent.item)
     return { payload: { context, message } };
 }
 
@@ -231,7 +234,7 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
 }
 
 
-export const buildInitRequest = (input: any = initRequest) => {
+export const buildInitRequest = (input: any) => {
     const context = buildContext({
         category: "jobs",
         action: 'init',
