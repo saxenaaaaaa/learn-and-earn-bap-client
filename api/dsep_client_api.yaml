@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.6
+  version: 0.1.7
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1348,7 +1348,7 @@ paths:
     post:
       tags:
         - Scholarships & Grants
-      summary: Seach scholarships
+      summary: Search scholarships
       requestBody:
         description: Scholarship search criteria
         required: true
@@ -1356,6 +1356,26 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SearchScholarship'
+            examples:
+              Search by scholarship name:
+                value:
+                  name: Undergraduation scholarship
+              Search by gender criteria:
+                value:
+                  gender: Female
+              Search by by financial income criteria:
+                value:
+                  finStatus:
+                    family_income: '200000'
+              Search by by caste criteria:
+                value:
+                  casteCategory:
+                    - caste: SC
+              Search by categories for female students:
+                value:
+                  categories:
+                    - code: ug
+                  gender: Female
       responses:
         '200':
           description: Scholarship search request sent to network
@@ -1363,6 +1383,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScholarshipResults'
+              example:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                scholarshipProviders:
+                  - id: BX213573733
+                    name: XYZ Education Foundation
+                    scholarships:
+                      - id: SCM_00420068
+                        name: XYZ Foundation Undergraduation scholarship
+                        description: XYZ Foundation Undergraduation scholarship
+                        amount:
+                          amount: 30000
+                          currency: INR
+                        category:
+                          id: DSEP_CAT_1
+                          name: Under Graduate
+                          code: ug
+                        scholarshipDetails:
+                          id: DSEP_FUL_01
+                          type: SCHOLARSHIP
+                          gender: Female
+                          applicationStartDate: '2022-12-01'
+                          applicationEndDate: '2022-12-31'
+                          supportContact:
+                            name: Mary G
+                            phone: '9876543210'
+                            email: maryg@xyz.com
+                          academicQualifications:
+                            - code: gr
+                              name: Grade
+                              value: Grade 12
+                            - code: percentage_grade
+                              name: Percentage/Grade
+                              value: '50'
+                            - code: passing_year
+                              name: Passing Year
+                              value: '2021'
         '404':
           description: Scholarship search request failed
           content:
@@ -2960,8 +3017,11 @@ components:
         id:
           description: Scholarship id / fulfillment id
           type: string
-        name:
-          description: Scholarship fulfillment name
+        type:
+          description: fulfillment type
+          type: string
+        gender:
+          description: application end date
           type: string
         applicationStartDate:
           description: application start date
@@ -2969,20 +3029,30 @@ components:
         applicationEndDate:
           description: application end date
           type: string
-        contactName:
-          description: contact person name
-          type: string
-        contactPhone:
-          description: contact person name
-          type: string
-        contactEmail:
-          description: application end email
-          type: string
+        supportContact:
+          $ref: '#/components/schemas/SupportContact'
         academicQualifications:
           type: array
           items:
             oneOf:
             - $ref: '#/components/schemas/AcademicQualification'
+    SupportContact:
+      description: Support contact
+      type: object
+      required:
+        - id
+        - name
+        - code
+      properties:
+        name:
+          description: contact person name
+          type: string
+        phone:
+          description: contact person name
+          type: string
+        email:
+          description: contact person email
+          type: string
     AcademicQualification:
       description: Academic Qualification
       type: object
