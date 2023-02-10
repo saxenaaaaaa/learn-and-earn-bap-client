@@ -1,9 +1,8 @@
 
 import moment from "moment";
 import { v4 as uuid } from "uuid";
-import onSelectMockResonse from './mock/onSearchResponse.json';
-import onSearchMockResponse from './mock/onSearchResponse.json';
-
+import onsearchResponse from './mock/onSearchResponse.json'
+import initRequest from './mock/initRequest.json'
 export const buildContext = (input: any = {}) => {
     return {
         domain: process.env.DOMAIN + input?.category,
@@ -64,7 +63,7 @@ export const buildOnSearchRequest = (input: any = {}) => {
 
 export const buildOnSearchResponse = (input: any = {}, body: any = {}) => {
 
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = onSearchMockResponse.context;
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input.context;
     const context = { transactionId, messageId, bppId, bppUri };
 
     const providers = input?.message?.catalog?.providers;
@@ -156,9 +155,9 @@ export const buildOnSelectRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnSelectResponse = (input: any = onSelectMockResonse, body: any = {}) => {
+export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
 
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = onSelectMockResonse.context;
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
     const context = { transactionId, messageId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
@@ -232,15 +231,48 @@ export const buildOnSelectResponse = (input: any = onSelectMockResonse, body: an
 }
 
 
-export const buildInitRequest = (input: any = {}) => {
-    const context = buildContext();
-    order: {
-        provider: { id: input?.companyId },
-        items: [
-            { id: input?.jobId }
-        ]
+export const buildInitRequest = (input: any = initRequest) => {
+    console.log(initRequest, 'shsh')
+    const context = buildContext({
+        category: "jobs",
+        action: 'init',
+        bppId: input?.context?.bppId,
+        bppUri: input?.context?.bppUri,
+        transactionId: input?.context?.transactionId,
+    });
+    console.log(context)
+    const message = {
+        order: {
+            provider: { id: input?.companyId },
+            items: [
+                { id: input?.jobs.jobId }
+            ],
+            fulfillments: input.jobFulfillments.map((data: any) => {
+                return {
+                    id: data?.JobFulfillmentCategoryId,
+                    customer: {
+                        person: {
+                            name: data?.jobApplicantProfile?.name,
+                            languages: data?.jobApplicantProfile?.languages?.map((language: any) => {
+                                return language
+                            }),
+                            URL: data?.jobApplicantProfile?.profileUrl,
+                            creds: {
+                                url: data?.jobApplicantProfile?.creds?.url,
+                                type: data?.jobApplicantProfile?.creds?.type
+                            },
+                            skills: data?.jobApplicantProfile?.skills?.map((skill: any) => {
+                                return skill
+                            }),
+                        }
+                    }
+                }
+            }),
+            xinput: input?.xinput
+        },
     }
-    return { payload: { context } };
+    console.log(context, message)
+    return { payload: { context, message } }
 }
 
 export const buildInitResponse = (input: any = {}, body: any = {}) => {
@@ -248,8 +280,10 @@ export const buildInitResponse = (input: any = {}, body: any = {}) => {
 }
 
 export const buildOnInitRequest = (input: any = {}) => {
-    const context = buildContext();
-    return { payload: { context } };
+    const context = buildContext({ category: 'jobs', action: 'on_init', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input.bppUri });
+    const message = {};
+
+    return { payload: { context, message } };
 }
 
 export const buildOnInitResponse = (input: any = {}, body: any = {}) => {
@@ -257,19 +291,66 @@ export const buildOnInitResponse = (input: any = {}, body: any = {}) => {
 }
 
 export const buildConfirmRequest = (input: any = {}) => {
-    const context = buildContext();
-    return { payload: { context } };
+    const context = buildContext({
+        category: "jobs",
+        action: 'confirm',
+        bppId: input?.context?.bppId,
+        bppUri: input?.context?.bppUri,
+        transactionId: input?.context?.transactionId,
+    });
+    const message = {
+        order: {
+            provider: { id: input?.companyId },
+            items: [
+                { id: input?.jobId }
+            ],
+            fulfillments: [{
+                id: input?.jobApplicantProfile.id,
+                customer: {
+                    person: {
+                        name: input.jobApplicantProfile.name,
+                        languages: input.jobApplicantProfile.languages,
+                        URL: input.jobApplicantProfile.url,
+                        creds: input.jobApplicantProfile.creds.map((cred: any) => {
+                            return cred
+                        }),
+                        skills: input.jobApplicantProfile.skills.map((skill: any) => {
+                            return skill
+                        }),
+                    }
+                }
+            }],
+            xinput: input?.xinput
+        },
+    }
+
+    return { payload: { context, message } }
 }
 
-export const buildConfirmResponse = (input: any = {}, , body: any = {}) => {
+export const buildConfirmResponse = (input: any = {}, body: any = {}) => {
     return input;
 }
 
 export const buildOnConfirmRequest = (input: any = {}) => {
-    const context = buildContext();
-    return { payload: { context } };
+    const context = buildContext({ category: 'jobs', action: 'on_confirm', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input.bppUri });
+    const message = {};
+
+    return { payload: { context, message } };
 }
 
-export const buildOnConfirmResponse = (input: any = {}, , body: any = {}) => {
-    return input;
+export const buildOnConfirmResponse = (input: any = {}) => {
+    const context = buildContext({ category: 'jobs', action: 'on_confirm', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input.bppUri });
+    const message = input?.message
+
+    return { payload: { context, message } };
+}
+
+export const buildError = (input: any = {}) => {
+    return {
+        code: "404",
+        message: input.message,
+        data: input.data,
+        type: "Application error",
+        path: input.path
+    }
 }
