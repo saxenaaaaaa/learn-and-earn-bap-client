@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.9
+  version: 0.1.10
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1444,49 +1444,6 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/scholarship/search"
-  /scholarship/onSearch:
-    post:
-      tags:
-        - DO NOT USE FOR Synchronous mode - Scholarships & Grants
-      summary: onSeach scholarship
-      requestBody:
-        description: Scholarship context
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Context'
-      responses:
-        '200':
-          description: Scholarships data retrieved from network
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ScholarshipResults'
-        '404':
-          description: Scholarship on_search request failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "404"
-                message: "Mentorship on_search request could not be created"
-                data: "Long descriptive message"
-                type: "Application error"
-                path: "/scholarship/onSearch"
-        '500':
-          description: Scholarship on_search request could not be created due to unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "500"
-                message: "Error processing request {specific error log from exception/error}"
-                data: "Additional error message/logs"
-                type: "System error"
-                path: "/scholarship/onSearch"
   /scholarship/init:
     post:
       tags:
@@ -1630,9 +1587,9 @@ paths:
     post:
       tags:
         - Scholarships & Grants
-      summary: Confirm mentorship
+      summary: Confirm scholarship
       requestBody:
-        description: Mentorship confirmation request
+        description: Scholarship confirmation request
         required: true
         content:
           application/json:
@@ -1689,7 +1646,7 @@ paths:
                             value: 2022-2023
       responses:
         '200':
-          description: Mentorship confirmation request sent to network
+          description: Scholarship confirmation request sent to network
           content:
             application/json:
               schema:
@@ -1718,19 +1675,19 @@ paths:
                           updatedAt: 2023-01-01 11:00:000
                           updatedBy: reviewer-1
         '404':
-          description: Mentorship confirm request failed
+          description: Scholarship confirm request failed
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
                 code: "404"
-                message: "Mentorship confirm could not be created"
+                message: "Scholarship confirm could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
-                path: "/mentorship/confirm"
+                path: "/scholarship/confirm"
         '500':
-          description: Mentorship confirmation request could not be created due to unexpected error
+          description: Scholarship confirmation request could not be created due to unexpected error
           content:
             application/json:
               schema:
@@ -1740,28 +1697,58 @@ paths:
                 message: "Error processing request {specific error log from exception/error}"
                 data: "Additional error message/logs"
                 type: "System error"
-                path: "/mentorship/confirm"
+                path: "/scholarship/confirm"
   /scholarship/status:
     post:
       tags: 
         - Scholarships & Grants
-      summary: Mentorship status check
+      summary: Scholarship status check
       requestBody:
-        description: Mentorship status request
+        description: Scholarship status request
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ScholarshipStatusRequest'
+            example:
+              scholarshipApplicationId: '123456'
+              context:
+                transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                bppId: https://xyzbpp.com/
+                bppUri: https://api.xyzbpp.com/v0/
       responses:
         '200':
-          description: Mentorship status request sent to network
+          description: Scholarship status request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/ScholarshipStatusResponse'
+              example:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                  bppId: https://xyzbpp.com/
+                  bppUri: https://api.xyzbpp.com/v0/
+                scholarshipApplicationId: '123456'
+                scholarshipProvider:
+                  id: BX213573733
+                  name: XYZ Education Foundation
+                  scholarships:
+                    - id: SCM_00420068
+                      name: XYZ Foundation Undergraduation scholarship
+                      description: XYZ Foundation Undergraduation scholarship
+                      amount:
+                        amount: 30000
+                        currency: INR
+                      scholarshipDetails:
+                        id: DSEP_FUL_01
+                        type: SCHOLARSHIP
+                        scholarshipStatus:
+                          code: INPROGRESS
+                          description: Your application is under review
+                          updatedAt: 2023-01-01 11:00:000
+                          updatedBy: reviewer-1
         '404':
-          description: Mentorship status request failed
+          description: Scholarship status request failed
           content:
             application/json:
               schema:
@@ -1771,9 +1758,9 @@ paths:
                 message: "Mentorship status could not be created"
                 data: "Long descriptive message"
                 type: "Application error"
-                path: "/mentorship/status"
+                path: "/scholarship/status"
         '500':
-          description: Mentorship status request could not be created due to unexpected error
+          description: Scholarship status request could not be created due to unexpected error
           content:
             application/json:
               schema:
@@ -1783,7 +1770,7 @@ paths:
                 message: "Error processing request {specific error log from exception/error}"
                 data: "Additional error message/logs"
                 type: "System error"
-                path: "/mentorship/status"
+                path: "/scholarship/status"
 components:
   schemas:
     SearchJob:
@@ -3470,6 +3457,32 @@ components:
           type: string
         scholarshipStatus:
           $ref: '#/components/schemas/ScholarshipStatus'
+    ScholarshipStatusRequest:
+      description: Schema for scholarship status request
+      type: object
+      required:
+        - scholarshipApplicationId
+        - context
+      properties:
+        scholarshipApplicationId:
+          description: scholarship application id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    ScholarshipStatusResponse:
+      description: Schema for scholarship status response
+      type: object
+      required:
+        - context
+        - scholarshipApplicationId
+        - scholarshipProviders
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        scholarshipApplicationId:
+          type: string
+        scholarshipProvider:
+          $ref: '#/components/schemas/ConfirmScholarshipResponseProvider'
     ConfirmMentorship1:
       description: Schema for Mentorship confirmation
       type: object
@@ -3531,18 +3544,6 @@ components:
                   enum:
                     - ACK
                     - NACK
-    ScholarshipStatusRequest:
-      description: Schema for Mentorship status request
-      type: object
-      required:
-        - mentorshipConfirmationId
-        - context
-      properties:
-        mentorshipConfirmationId:
-          description: Mentorship confirmation id
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
     Context:
       description: schema context object
       type: object
