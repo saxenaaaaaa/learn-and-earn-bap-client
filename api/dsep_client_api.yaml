@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.7
+  version: 0.1.8
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1487,49 +1487,6 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/scholarship/onSearch"
-  /scholarship/select:
-    post:
-      tags:
-        - Scholarships & Grants
-      summary: Select specific scholarship object
-      requestBody:
-        description: Object for selected scholarship
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SelectScholarship'
-      responses:
-        '200':
-          description: Scholarship select request sent to network
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Acknowledgement'
-        '404':
-          description: Scholarship select request failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "404"
-                message: "Scholarship select request could not be created"
-                data: "Long descriptive message"
-                type: "Application error"
-                path: "/scholarship/select"
-        '500':
-          description: Scholarship select request could not be created due to unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                code: "500"
-                message: "Error processing request {specific error log from exception/error}"
-                data: "Additional error message/logs"
-                type: "System error"
-                path: "/scholarship/select"
   /scholarship/init:
     post:
       tags:
@@ -1541,14 +1498,108 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InitScholarship'
+              $ref: '#/components/schemas/InitScholarshipRequest'
+            example:
+              context:
+                transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                bppId: https://xyzbpp.com/
+                bppUri: https://api.xyzbpp.com/v0/
+              scholarshipProvider:
+                id: BX213573733
+                name: XYZ Education Foundation
+                categoryId: DSEP_CAT_1
+                scholarships:
+                  - id: SCM_00420068
+                    name: XYZ Foundation Undergraduation scholarship
+                    description: XYZ Foundation Undergraduation scholarship
+                    amount:
+                      amount: 30000
+                      currency: INR
+                    scholarshipDetails:
+                      id: DSEP_FUL_01
+                      type: SCHOLARSHIP
+                      scholarshipRequestor:
+                        id: candidate_101
+                        name: Jane D
+                        gender: Female
+                        scholarshipRequestorContact:
+                          address: AB apartment|Mumbai|Maharashtra
+                          addressFormat: addressLine1|city|state
+                        academicQualifications:
+                          - code: gr
+                            name: Grade
+                            value: Grade 12
+                          - code: percentage_grade
+                            name: Percentage/Grade
+                            value: '75'
+                          - code: passing_year
+                            name: Passing Year
+                            value: '2022'
+                        currentEducations:
+                          - code: ug
+                            name: Under Graduate
+                            value: BSc IT
+                          - code: academic_year
+                            name: Academic Year
+                            value: 2022-2023
       responses:
         '200':
           description: Scholarship init request sent to network
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Acknowledgement'
+                $ref: '#/components/schemas/InitScholarshipResponse'
+              example:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                  bppId: https://xyzbpp.com/
+                  bppUri: https://api.xyzbpp.com/v0/
+                scholarshipApplicationId: '123456'
+                scholarshipProvider:
+                  id: BX213573733
+                  name: XYZ Education Foundation
+                  categoryId: DSEP_CAT_1
+                  scholarships:
+                    - id: SCM_00420068
+                      name: XYZ Foundation Undergraduation scholarship
+                      description: XYZ Foundation Undergraduation scholarship
+                      amount:
+                        amount: 30000
+                        currency: INR
+                      categoryId: DSEP_CAT_1
+                      additionalFormUrl: string
+                      scholarshipDetails:
+                        id: DSEP_FUL_01
+                        type: SCHOLARSHIP
+                        scholarshipStatus:
+                          code: INIT
+                          description: Application initiated
+                          updatedAt: 2023-01-01 10:00:000
+                          updatedBy: candidate_101
+                        scholarshipRequestor:
+                          id: candidate_101
+                          name: Jane D
+                          gender: Female
+                          scholarshipRequestorContact:
+                            address: AB apartment|Mumbai|Maharashtra
+                            addressFormat: addressLine1|city|state
+                          academicQualifications:
+                            - code: gr
+                              name: Grade
+                              value: Grade 12
+                            - code: percentage_grade
+                              name: Percentage/Grade
+                              value: '75'
+                            - code: passing_year
+                              name: Passing Year
+                              value: '2022'
+                          currentEducations:
+                            - code: ug
+                              name: Under Graduate
+                              value: BSc IT
+                            - code: academic_year
+                              name: Academic Year
+                              value: 2022-2023
         '404':
           description: Scholarship init request failed
           content:
@@ -2847,80 +2898,6 @@ components:
             properties: 
               caste:
                 type: string
-    SelectScholarship:
-      description: Schema for scholarship selection
-      type: object
-      required:
-        - scholarshipItemId
-        - scholarshipFulfillmentId
-        - context
-      properties:
-        scholarshipItemId:
-          type: string
-        scholarshipFulfillmentId:
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
-    InitScholarship:
-      description: Schema for Mentorship init
-      type: object
-      required:
-        - mentorshipId
-        - mentorshipSessionId
-        - context
-        - billing
-      properties:
-        mentorshipId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
-        mentorshipSessionId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
-        billing:
-          $ref: '#/components/schemas/MentorshipBilling'
-    ConfirmMentorship1:
-      description: Schema for Mentorship confirmation
-      type: object
-      required:
-        - mentorshipId
-        - context
-        - billing
-      properties:
-        mentorshipId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
-        mentorshipSessionId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
-        context:
-          $ref: '#/components/schemas/Context'
-        billing:
-          $ref: '#/components/schemas/MentorshipBilling'
-    MentorshipBilling1:
-      description: Mentorship billing object
-      type: object
-      required:
-        - name
-        - phone
-        - email
-        - time
-      properties:
-        name:       
-          description: Name
-          type: string
-        phone:
-          description: Phone number
-          type: string
-        email:
-          description: Email
-          type: string
-        time:
-          type: object
-          properties:
-            timezone:
-              type: string
     ScholarshipResults:
       description: Schema for searched scholarship results/response
       type: object
@@ -3012,7 +2989,7 @@ components:
       type: object
       required:
         - id
-        - name
+        - type
       properties:
         id:
           description: Scholarship id / fulfillment id
@@ -3057,9 +3034,9 @@ components:
       description: Academic Qualification
       type: object
       required:
-        - id
-        - name
         - code
+        - name
+        - value
       properties:
         code:
           description: Academic qualification code
@@ -3070,6 +3047,296 @@ components:
         value:
           description: Academic qualification value
           type: string
+    SelectScholarship:
+      description: Schema for scholarship selection
+      type: object
+      required:
+        - scholarshipItemId
+        - scholarshipFulfillmentId
+        - context
+      properties:
+        scholarshipItemId:
+          type: string
+        scholarshipFulfillmentId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    InitScholarshipRequest:
+      description: Schema for scholarship init
+      type: object
+      required:
+        - context
+        - scholarshipProviders
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        scholarshipProvider:
+          $ref: '#/components/schemas/InitScholarshipProvider'
+    InitScholarshipProvider:
+      description: Scholarship provider object
+      type: object
+      required:
+        - id
+        - name
+        - categoryId
+        - scholarships
+      properties:
+        id:
+          description: Scholarship provider id
+          type: string
+        name:
+          description: Scholarship provider name
+          type: string
+        categoryId:
+          description: Scholarship category id
+          type: string
+        scholarships:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/InitScholarship'
+    InitScholarship:
+      description: Scholarship Item object
+      type: object
+      required:
+        - id
+        - name
+        - description
+      properties:
+        id:
+          description: Scholarship id / item id
+          type: string
+        name:
+          description: Scholarship name
+          type: string
+        description:
+          description: Scholarship description
+          type: string
+        amount:
+          $ref: '#/components/schemas/ScholarshipAmount'
+        scholarshipDetails:
+          $ref: '#/components/schemas/InitScholarshipDetails'
+    InitScholarshipDetails:
+      description: Scholarship init details object
+      type: object
+      required:
+        - id
+        - type
+        - scholarshipRequestor
+      properties:
+        id:
+          description: fulfillment id
+          type: string
+        type:
+          description: scholarship type name
+          type: string
+        scholarshipRequestor:
+          $ref: '#/components/schemas/InitScholarshipRequestor'
+    InitScholarshipRequestor:
+      description: Scholarship requestor object
+      type: object
+      required:
+        - id
+        - name
+        - gender
+        - academicQualifications
+        - currentEducations
+        - scholarshipRequestorContact
+      properties:
+        id:
+          description: person id
+          type: string
+        name:
+          description: person name
+          type: string
+        gender:
+          description: person gender
+          type: string
+        scholarshipRequestorContact:
+          $ref: '#/components/schemas/ScholarshipRequestorContact'
+        academicQualifications:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+        currentEducations:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/CurrentEducation'
+    CurrentEducation:
+      description: Current Education
+      type: object
+      required:
+        - code
+        - name
+        - value
+      properties:
+        code:
+          description: Current Education code
+          type: string
+        name:
+          description: Current Education name
+          type: string
+        value:
+          description: Current Education value
+          type: string
+    ScholarshipRequestorContact:
+      description: Scholarship Requestor Contact
+      type: object
+      required:
+        - address
+        - addressFormat
+      properties:
+        address:
+          description: contact person address
+          type: string
+        addressFormat:
+          description: contact person address format
+          type: string
+    InitScholarshipResponse:
+      description: Schema for scholarship init response
+      type: object
+      required:
+        - context
+        - scholarshipApplicationId
+        - scholarshipProviders
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        scholarshipApplicationId:
+          type: string
+        scholarshipProvider:
+          $ref: '#/components/schemas/InitScholarshipResponseProvider'
+    InitScholarshipResponseProvider:
+      description: Scholarship provider object
+      type: object
+      required:
+        - id
+        - name
+        - categoryId
+        - scholarships
+      properties:
+        id:
+          description: Scholarship provider id
+          type: string
+        name:
+          description: Scholarship provider name
+          type: string
+        categoryId:
+          description: Scholarship category id
+          type: string
+        scholarships:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/InitResponseScholarship'
+    InitResponseScholarship:
+      description: Scholarship Item response object
+      type: object
+      required:
+        - id
+        - name
+        - description
+      properties:
+        id:
+          description: Scholarship id / item id
+          type: string
+        name:
+          description: Scholarship name
+          type: string
+        description:
+          description: Scholarship description
+          type: string
+        amount:
+          $ref: '#/components/schemas/ScholarshipAmount'
+        categoryId:
+          description: Scholarship category id
+          type: string
+        additionalFormUrl:
+          description: additional form url
+          type: string
+        scholarshipDetails:
+          $ref: '#/components/schemas/InitResponseScholarshipDetails'
+    InitResponseScholarshipDetails:
+      description: Scholarship init response details object
+      type: object
+      required:
+        - id
+        - type
+        - scholarshipRequestor
+      properties:
+        id:
+          description: fulfillment id
+          type: string
+        type:
+          description: scholarship type name
+          type: string
+        scholarshipStatus:
+          $ref: '#/components/schemas/ScholarshipStatus'
+        scholarshipRequestor:
+          $ref: '#/components/schemas/InitScholarshipRequestor'
+    ScholarshipStatus:
+      description: Scholarship status object
+      type: object
+      required:
+        - id
+        - type
+        - scholarshipRequestor
+      properties:
+        code:
+          description: code
+          type: string
+        description:
+          description: description
+          type: string
+        updatedAt:
+          description: updated at timestamp
+          type: string
+        updatedBy:
+          description: updated by
+          type: string
+    ConfirmMentorship1:
+      description: Schema for Mentorship confirmation
+      type: object
+      required:
+        - mentorshipId
+        - context
+        - billing
+      properties:
+        mentorshipId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        mentorshipSessionId:
+          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+        billing:
+          $ref: '#/components/schemas/MentorshipBilling'
+    MentorshipBilling1:
+      description: Mentorship billing object
+      type: object
+      required:
+        - name
+        - phone
+        - email
+        - time
+      properties:
+        name:       
+          description: Name
+          type: string
+        phone:
+          description: Phone number
+          type: string
+        email:
+          description: Email
+          type: string
+        time:
+          type: object
+          properties:
+            timezone:
+              type: string
     Acknowledgement:
       type: object
       required:
