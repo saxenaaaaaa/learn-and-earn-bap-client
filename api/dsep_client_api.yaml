@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.10
+  version: 0.1.11
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1771,6 +1771,74 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/scholarship/status"
+  /course/search:
+    post:
+      tags:
+        - Training & Courses
+      summary: Seach courses
+      requestBody:
+        description: Course search criteria
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchCourseRequest'
+            examples:
+              Search with all parameters:
+                value:
+                  courseTrainer: Prof. Madhavan Mukund
+                  providerInstitute: IIT Delhi
+                  courseTitle: Machine Learning
+                  courseState: archived
+                  credits: gt 1
+                  courseLanguage: Hindi
+              Search for courses by Prof. Madhavan Mukund:
+                value:
+                  courseTrainer: Prof. Madhavan Mukund
+              Search Machine Learning courses by institute:
+                value:
+                  providerInstitute: IIT Delhi
+                  courseTitle: Machine Learning
+              Search for all archived Machine Learning courses:
+                value:
+                  courseTitle: Machine Learning
+                  courseState: archived
+              Search for Machine Learning course with credits > 1 and medium of teaching Hindi:
+                value:
+                  courseTitle: Machine Learning
+                  credits: gt 1
+                  courseLanguage: Hindi
+      responses:
+        '200':
+          description: Course search request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MentorshipResults'
+        '404':
+          description: Course search request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Course search request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/course/search"
+        '500':
+          description: Course search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/course/search"
 components:
   schemas:
     SearchJob:
@@ -3483,6 +3551,28 @@ components:
           type: string
         scholarshipProvider:
           $ref: '#/components/schemas/ConfirmScholarshipResponseProvider'
+    SearchCourseRequest:
+      description: Schema for Course search object
+      type: object
+      properties:
+        courseTrainer:
+          description: Professor name
+          type: string
+        providerInstitute:
+          description: provider Institute name
+          type: string
+        courseTitle:
+          description: course Title
+          type: string
+        courseState:
+          description: Search for archived Courses
+          type: string
+        credits:
+          description: Course credits ie gt 1
+          type: string
+        courseLanguage:
+          description: Course Language
+          type: string
     ConfirmMentorship1:
       description: Schema for Mentorship confirmation
       type: object
