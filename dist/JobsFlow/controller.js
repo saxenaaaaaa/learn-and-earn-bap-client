@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onConfirm = exports.confirm = exports.onInit = exports.init = exports.onSelect = exports.select = exports.onSearch = exports.search = void 0;
+exports.onstatus = exports.status = exports.onConfirm = exports.confirm = exports.onInit = exports.init = exports.onSelect = exports.select = exports.onSearch = exports.search = void 0;
 const services_1 = require("./services");
 const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { data, status = 200 } = yield (0, services_1.searchJob)(req.body);
@@ -52,3 +52,13 @@ const onConfirm = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.json(data);
 });
 exports.onConfirm = onConfirm;
+const status = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data } = yield (0, services_1.statusJob)(req.body);
+    res.json(data);
+});
+exports.status = status;
+const onstatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data } = yield (0, services_1.onStatusJob)(req.body);
+    res.json(data);
+});
+exports.onstatus = onstatus;
