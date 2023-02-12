@@ -2,7 +2,7 @@ import moment from "moment";
 import { v4 as uuid } from "uuid";
 import { MentoringContext } from "./schema";
 
-export const buildContext = async (input: any = {}): Promise<any> => {
+export const buildContext = (input: any = {}) => {
   const context: MentoringContext = {
     domain: `${process.env.DOMAIN}${input?.category ?? "mentoring"}`,
     action: input.action ?? "",
@@ -17,8 +17,8 @@ export const buildContext = async (input: any = {}): Promise<any> => {
   return context;
 };
 
-export const buildSearchRequest = async (input: any = {}): Promise<any> => {
-  const context = await buildContext({
+export const buildSearchRequest = (input: any = {}) => {
+  const context = buildContext({
     action: "search",
     category: "mentoring"
   });
@@ -43,10 +43,7 @@ export const buildSearchRequest = async (input: any = {}): Promise<any> => {
   return { payload: { context, message: intent } };
 };
 
-export const buildSearchResponse = async (
-  response: any = {},
-  input: any = {}
-) => {
+export const buildSearchResponse = (response: any = {}, input: any = {}) => {
   const context = { transactionId: response?.context?.transaction_id };
   const mentorshipProviders: any = [];
   const responseMentorShipProviders: any =
