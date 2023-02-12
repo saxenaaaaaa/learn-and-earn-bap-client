@@ -9,20 +9,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancel = exports.status = exports.confirm = exports.init = exports.select = exports.search = void 0;
+exports.init = exports.cancel = exports.status = exports.confirm = exports.select = exports.search = void 0;
 const services_1 = require("./services");
 const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { data, status = 200 } = yield (0, services_1.searchMentorShipService)(req.body);
     return res.status(status).json(data);
 });
 exports.search = search;
-const select = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const select = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, status = 200 } = yield (0, services_1.selectMentorshipService)(req.body);
+    return res.status(status).json(data);
+});
 exports.select = select;
-const init = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.init = init;
-const confirm = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const confirm = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, status = 200 } = yield (0, services_1.confirmMentorshipService)(req.body);
+    return res.status(status).json(data);
+});
 exports.confirm = confirm;
-const status = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const status = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, status = 200 } = yield (0, services_1.statusMentorshipService)(req.body);
+    return res.status(status).json(data);
+});
 exports.status = status;
-const cancel = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const cancel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, status = 200 } = yield (0, services_1.cancelMentorshipService)(req.body);
+    return res.status(status).json(data);
+});
 exports.cancel = cancel;
+const init = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, status = 200 } = yield (0, services_1.initMentorshipService)(req.body);
+    return res.status(status).json(data);
+});
+exports.init = init;
