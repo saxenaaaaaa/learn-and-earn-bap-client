@@ -19,7 +19,7 @@ export const searchMentorShipService = async (body: any): Promise<any> => {
         searchRequest.payload,
         { headers }
       );
-      searchResponse = res?.data;
+      searchResponse = await buildSearchResponse(res?.data, body);
     } else {
       searchResponse = await buildSearchResponse(searchMentorShipResp, body);
     }
