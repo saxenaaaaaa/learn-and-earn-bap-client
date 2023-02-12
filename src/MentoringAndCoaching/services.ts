@@ -26,6 +26,7 @@ const jobNetwork = process.env.JOB_NETWORK;
 export const searchMentorShipService = async (body: any): Promise<any> => {
   try {
     const searchRequest = buildSearchRequest(body);
+    console.log(JSON.stringify(searchRequest.payload));
     let searchResponse: any = {};
     if (jobNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -48,6 +49,7 @@ export const searchMentorShipService = async (body: any): Promise<any> => {
 export const selectMentorshipService = async (body: any): Promise<any> => {
   try {
     const selectRequest = buildSelectRequest(body);
+    console.log(JSON.stringify(selectRequest.payload));
     let selectResponse: any = {};
     if (jobNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -69,6 +71,7 @@ export const selectMentorshipService = async (body: any): Promise<any> => {
 export const confirmMentorshipService = async (body: any): Promise<any> => {
   try {
     const confirmRequest = buildConfirmRequest(body);
+    console.log(JSON.stringify(confirmRequest.payload));
     let confirmResponse: any = {};
     if (jobNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -90,6 +93,7 @@ export const confirmMentorshipService = async (body: any): Promise<any> => {
 export const initMentorshipService = async (body: any): Promise<any> => {
   try {
     const initRequest = buildInitRequest(body);
+    console.log(JSON.stringify(initRequest.payload));
     let initResponse: any = {};
     if (jobNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -109,6 +113,7 @@ export const initMentorshipService = async (body: any): Promise<any> => {
 export const statusMentorshipService = async (body: any): Promise<any> => {
   try {
     const statusRequest = buildStatusRequest(body);
+    console.log(JSON.stringify(statusRequest.payload));
     let statusResponse: any = {};
     if (jobNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -131,6 +136,7 @@ export const statusMentorshipService = async (body: any): Promise<any> => {
 export const cancelMentorshipService = async (body: any): Promise<any> => {
   try {
     const cancelRequest = buildCancelRequest(body);
+    console.log(JSON.stringify(cancelRequest));
     let cancelResponse: any = {};
 
     if (jobNetwork !== "local") {
