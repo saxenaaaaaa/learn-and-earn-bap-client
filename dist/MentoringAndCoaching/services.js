@@ -18,6 +18,9 @@ const axios_1 = __importDefault(require("axios"));
 const searchMentorShipReponse_json_1 = __importDefault(require("./mocks/searchMentorShipReponse.json"));
 const selectMentorShipResponse_json_1 = __importDefault(require("./mocks/selectMentorShipResponse.json"));
 const confirmMentorShipResponse_json_1 = __importDefault(require("./mocks/confirmMentorShipResponse.json"));
+const statusMentorShipResponse_json_1 = __importDefault(require("./mocks/statusMentorShipResponse.json"));
+const cancelMentorShipResponse_json_1 = __importDefault(require("./mocks/cancelMentorShipResponse.json"));
+const initMentorShipResponse_json_1 = __importDefault(require("./mocks/initMentorShipResponse.json"));
 const gatewayUrl = "https://dev.elevate-apis.shikshalokam.org/bpp";
 const jobNetwork = process.env.JOB_NETWORK;
 const searchMentorShipService = (body) => __awaiter(void 0, void 0, void 0, function* () {
@@ -77,27 +80,59 @@ const confirmMentorshipService = (body) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.confirmMentorshipService = confirmMentorshipService;
-const initMentorshipService = () => __awaiter(void 0, void 0, void 0, function* () {
+const initMentorshipService = (body) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const selectRequest = (0, schema_build_helpers_1.buildSelectRequest)();
+        const initRequest = (0, schema_build_helpers_1.buildInitRequest)(body);
+        let initResponse = {};
+        if (jobNetwork !== "local") {
+            const headers = { "Content-Type": "application/JSON" };
+            let res = yield axios_1.default.post(`${gatewayUrl}/init`, initRequest.payload, {
+                headers
+            });
+            initResponse = (0, schema_build_helpers_1.buildInitResponse)(res === null || res === void 0 ? void 0 : res.data, body);
+        }
+        else {
+            initResponse = (0, schema_build_helpers_1.buildInitResponse)(initMentorShipResponse_json_1.default, body);
+        }
+        return { data: initResponse };
     }
     catch (error) {
         return { error: error, errorOccured: true };
     }
 });
 exports.initMentorshipService = initMentorshipService;
-const statusMentorshipService = () => __awaiter(void 0, void 0, void 0, function* () {
+const statusMentorshipService = (body) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const selectRequest = (0, schema_build_helpers_1.buildSelectRequest)();
+        const statusRequest = (0, schema_build_helpers_1.buildStatusRequest)(body);
+        let statusResponse = {};
+        if (jobNetwork !== "local") {
+            const headers = { "Content-Type": "application/JSON" };
+            let res = yield axios_1.default.post(`${gatewayUrl}/status`, statusRequest.payload, { headers });
+            statusResponse = (0, schema_build_helpers_1.buildStatusResponse)(res === null || res === void 0 ? void 0 : res.data, body);
+        }
+        else {
+            statusResponse = (0, schema_build_helpers_1.buildStatusResponse)(statusMentorShipResponse_json_1.default, body);
+        }
+        return { data: statusResponse };
     }
     catch (error) {
         return { error: error, errorOccured: true };
     }
 });
 exports.statusMentorshipService = statusMentorshipService;
-const cancelMentorshipService = () => __awaiter(void 0, void 0, void 0, function* () {
+const cancelMentorshipService = (body) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const selectRequest = (0, schema_build_helpers_1.buildSelectRequest)();
+        const cancelRequest = (0, schema_build_helpers_1.buildCancelRequest)(body);
+        let cancelResponse = {};
+        if (jobNetwork !== "local") {
+            const headers = { "Content-Type": "application/JSON" };
+            let res = yield axios_1.default.post(`${gatewayUrl}/cancel`, cancelRequest.payload, { headers });
+            cancelResponse = (0, schema_build_helpers_1.buildCancelResponse)(res === null || res === void 0 ? void 0 : res.data, body);
+        }
+        else {
+            cancelResponse = (0, schema_build_helpers_1.buildCancelResponse)(cancelMentorShipResponse_json_1.default, body);
+        }
+        return { data: cancelResponse };
     }
     catch (error) {
         return { error: error, errorOccured: true };

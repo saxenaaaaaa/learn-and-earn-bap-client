@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildStatusResponse = exports.buildStatusRequest = exports.buildInitResponse = exports.buildInitRequest = exports.buildConfirmResponse = exports.buildConfirmRequest = exports.buildSelectResponse = exports.buildSelectRequest = exports.buildSearchResponse = exports.buildSearchRequest = exports.buildContext = void 0;
+exports.buildInitResponse = exports.buildInitRequest = exports.buildCancelResponse = exports.buildCancelRequest = exports.buildStatusResponse = exports.buildStatusRequest = exports.buildConfirmResponse = exports.buildConfirmRequest = exports.buildSelectResponse = exports.buildSelectRequest = exports.buildSearchResponse = exports.buildSearchRequest = exports.buildContext = void 0;
 const moment_1 = __importDefault(require("moment"));
 const uuid_1 = require("uuid");
 const buildContext = (input = {}) => {
@@ -43,7 +43,7 @@ const buildSearchRequest = (input = {}) => {
             }
         };
     }
-    return { payload: { context, message: intent } };
+    return { payload: { context, message: { intent } } };
 };
 exports.buildSearchRequest = buildSearchRequest;
 const buildSearchResponse = (response = {}, input = {}) => {
@@ -203,7 +203,7 @@ const buildSelectResponse = (response = {}, input = {}) => {
 };
 exports.buildSelectResponse = buildSelectResponse;
 const buildConfirmRequest = (input = {}) => {
-    const context = (0, exports.buildContext)(Object.assign(Object.assign({}, input === null || input === void 0 ? void 0 : input.context), { category: "mentoring", action: "confirm" }));
+    const context = (0, exports.buildContext)(Object.assign(Object.assign({}, input === null || input === void 0 ? void 0 : input.context), { category: "mentoring", action: "search" }));
     const message = {
         order: {
             items: [
@@ -268,11 +268,144 @@ const buildConfirmResponse = (response = {}, input = {}) => {
     };
 };
 exports.buildConfirmResponse = buildConfirmResponse;
-const buildInitRequest = (input = {}) => { };
-exports.buildInitRequest = buildInitRequest;
-const buildInitResponse = () => { };
-exports.buildInitResponse = buildInitResponse;
-const buildStatusRequest = (input = {}) => { };
+const buildStatusRequest = (input = {}) => {
+    const context = (0, exports.buildContext)(Object.assign(Object.assign({}, input === null || input === void 0 ? void 0 : input.context), { action: "status", category: "mentoring" }));
+    const message = {
+        order_id: { id: input === null || input === void 0 ? void 0 : input.mentorshipApplicationId }
+    };
+    return { payload: { context, message } };
+};
 exports.buildStatusRequest = buildStatusRequest;
-const buildStatusResponse = () => { };
+const buildStatusResponse = (response = {}, input = {}) => {
+    var _a, _b, _c, _d, _e, _f;
+    const context = {
+        transactionId: (_a = response === null || response === void 0 ? void 0 : response.context) === null || _a === void 0 ? void 0 : _a.transaction_id,
+        bppId: (_b = response === null || response === void 0 ? void 0 : response.context) === null || _b === void 0 ? void 0 : _b.bpp_id,
+        bppUri: (_c = response === null || response === void 0 ? void 0 : response.context) === null || _c === void 0 ? void 0 : _c.bpp_uri
+    };
+    const { order } = response === null || response === void 0 ? void 0 : response.message;
+    const mentorshipApplicationId = order === null || order === void 0 ? void 0 : order.id;
+    const mentorshipApplicationStatus = order === null || order === void 0 ? void 0 : order.state;
+    const { provider } = order;
+    const mentorshipProvider = {
+        id: provider === null || provider === void 0 ? void 0 : provider.id,
+        code: (_d = provider === null || provider === void 0 ? void 0 : provider.descriptor) === null || _d === void 0 ? void 0 : _d.code,
+        name: (_e = provider === null || provider === void 0 ? void 0 : provider.descriptor) === null || _e === void 0 ? void 0 : _e.name,
+        description: (_f = provider === null || provider === void 0 ? void 0 : provider.descriptor) === null || _f === void 0 ? void 0 : _f.short_desc,
+        mentorships: provider === null || provider === void 0 ? void 0 : provider.items.map((item) => {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+            const itemObj = {
+                id: item === null || item === void 0 ? void 0 : item.id,
+                code: (_a = item === null || item === void 0 ? void 0 : item.descriptor) === null || _a === void 0 ? void 0 : _a.code,
+                name: (_b = item === null || item === void 0 ? void 0 : item.descriptor) === null || _b === void 0 ? void 0 : _b.name,
+                description: (_c = item === null || item === void 0 ? void 0 : item.descriptor) === null || _c === void 0 ? void 0 : _c.short_desc,
+                longDescription: (_d = item === null || item === void 0 ? void 0 : item.descriptor) === null || _d === void 0 ? void 0 : _d.long_desc,
+                imageLocations: (_e = item === null || item === void 0 ? void 0 : item.descriptor) === null || _e === void 0 ? void 0 : _e.images,
+                categories: item === null || item === void 0 ? void 0 : item.category_ids.map((categoryId) => {
+                    var _a, _b;
+                    const categoryFound = provider === null || provider === void 0 ? void 0 : provider.categories.find((category) => {
+                        return (category === null || category === void 0 ? void 0 : category.id.split(" ").join("-")) === categoryId;
+                    });
+                    let categoryObj = {};
+                    if (categoryFound) {
+                        categoryObj = {
+                            id: categoryFound === null || categoryFound === void 0 ? void 0 : categoryFound.id,
+                            code: (_a = categoryFound === null || categoryFound === void 0 ? void 0 : categoryFound.descriptor) === null || _a === void 0 ? void 0 : _a.code,
+                            name: (_b = categoryFound === null || categoryFound === void 0 ? void 0 : categoryFound.descriptor) === null || _b === void 0 ? void 0 : _b.name
+                        };
+                    }
+                    return categoryObj;
+                }),
+                available: (_g = (_f = item === null || item === void 0 ? void 0 : item.quantity) === null || _f === void 0 ? void 0 : _f.available) === null || _g === void 0 ? void 0 : _g.count,
+                allocated: (_j = (_h = item === null || item === void 0 ? void 0 : item.quantity) === null || _h === void 0 ? void 0 : _h.allocated) === null || _j === void 0 ? void 0 : _j.count,
+                price: (_k = item === null || item === void 0 ? void 0 : item.price) === null || _k === void 0 ? void 0 : _k.value,
+                mentorshipSessions: item === null || item === void 0 ? void 0 : item.fulfillment_ids.map((id) => {
+                    var _a, _b, _c, _d, _e, _f, _g, _h;
+                    let sessionObj = {};
+                    const fullfilementFound = provider === null || provider === void 0 ? void 0 : provider.fulfillments.find((elem) => (elem === null || elem === void 0 ? void 0 : elem.id) === id);
+                    if (fullfilementFound) {
+                        sessionObj = {
+                            id: fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.id,
+                            language: fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.language[0],
+                            timingStart: (_b = (_a = fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.time) === null || _a === void 0 ? void 0 : _a.range) === null || _b === void 0 ? void 0 : _b.start,
+                            timingEnd: (_d = (_c = fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.time) === null || _c === void 0 ? void 0 : _c.range) === null || _d === void 0 ? void 0 : _d.end,
+                            type: fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.type,
+                            status: (fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.tags.find((tag) => tag.code === "status"))
+                                ? fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.tags.find((tag) => tag.code === "status").list[0].name
+                                : "",
+                            timezone: (fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.tags.find((tag) => tag.code === "timeZone"))
+                                ? fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.tags.find((tag) => tag.code === "timeZone").list[0].name
+                                : "",
+                            mentor: {
+                                id: (_f = (_e = fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.agent) === null || _e === void 0 ? void 0 : _e.person) === null || _f === void 0 ? void 0 : _f.id,
+                                name: (_h = (_g = fullfilementFound === null || fullfilementFound === void 0 ? void 0 : fullfilementFound.agent) === null || _g === void 0 ? void 0 : _g.person) === null || _h === void 0 ? void 0 : _h.name,
+                                gender: "Male",
+                                image: "image location",
+                                rating: "4.9"
+                            }
+                        };
+                    }
+                    return sessionObj;
+                }),
+                recommendedFor: item === null || item === void 0 ? void 0 : item.tags.filter((elem) => elem.code === "recommended_for").map((elem) => ({
+                    recommendationForCode: elem.list[0].code,
+                    recommendationForName: elem.list[0].name
+                }))
+            };
+            return itemObj;
+        })
+    };
+    return {
+        context,
+        mentorshipApplicationId,
+        mentorshipApplicationStatus,
+        mentorshipProvider
+    };
+};
 exports.buildStatusResponse = buildStatusResponse;
+const buildCancelRequest = (input = {}) => {
+    const context = (0, exports.buildContext)(Object.assign(Object.assign({}, input.context), { action: "cancel", category: "mentoring" }));
+    let message = { order_id: input === null || input === void 0 ? void 0 : input.mentorshipApplicationId };
+    if (input === null || input === void 0 ? void 0 : input.mentorshipCancellationReasonId) {
+        message = Object.assign(Object.assign({}, message), { cancellation_reason_id: `${input === null || input === void 0 ? void 0 : input.mentorshipCancellationReasonId}` });
+    }
+    if (input === null || input === void 0 ? void 0 : input.mentorshipCancellationReasonDescription) {
+        message = Object.assign(Object.assign({}, message), { cancellation_reason_description: input === null || input === void 0 ? void 0 : input.mentorshipCancellationReasonDescription });
+    }
+    return { payload: { context, message } };
+};
+exports.buildCancelRequest = buildCancelRequest;
+const buildCancelResponse = (response = {}, input = {}) => {
+    var _a, _b, _c, _d, _e;
+    const context = {
+        transactionId: (_a = response === null || response === void 0 ? void 0 : response.context) === null || _a === void 0 ? void 0 : _a.transaction_id,
+        bppId: (_b = response === null || response === void 0 ? void 0 : response.context) === null || _b === void 0 ? void 0 : _b.bpp_id,
+        bppUri: (_c = response === null || response === void 0 ? void 0 : response.context) === null || _c === void 0 ? void 0 : _c.bpp_uri
+    };
+    const mentorshipApplicationId = (_e = (_d = response === null || response === void 0 ? void 0 : response.message) === null || _d === void 0 ? void 0 : _d.order) === null || _e === void 0 ? void 0 : _e.id;
+    return { context, mentorshipApplicationId };
+};
+exports.buildCancelResponse = buildCancelResponse;
+const buildInitRequest = (input = {}) => {
+    const context = (0, exports.buildContext)(Object.assign(Object.assign({}, input.context), { action: "search", category: "mentoring" }));
+    const message = {
+        order: {
+            items: [{ id: input === null || input === void 0 ? void 0 : input.mentorshipId }],
+            fulfillments: [
+                {
+                    id: input === null || input === void 0 ? void 0 : input.mentorshipSessionId
+                }
+            ],
+            billing: input === null || input === void 0 ? void 0 : input.billing
+        }
+    };
+    return { payload: { context, message } };
+};
+exports.buildInitRequest = buildInitRequest;
+const buildInitResponse = (response = {}, input = {}) => {
+    var _a, _b, _c, _d, _e;
+    const context = Object.assign(Object.assign({}, input.context), { transactionId: (_a = response === null || response === void 0 ? void 0 : response.context) === null || _a === void 0 ? void 0 : _a.transaction_id, bppId: (_b = response === null || response === void 0 ? void 0 : response.context) === null || _b === void 0 ? void 0 : _b.bpp_id, bppUri: (_c = response === null || response === void 0 ? void 0 : response.context) === null || _c === void 0 ? void 0 : _c.bpp_uri });
+    const mentorshipSessionId = (_e = (_d = response === null || response === void 0 ? void 0 : response.message) === null || _d === void 0 ? void 0 : _d.order) === null || _e === void 0 ? void 0 : _e.id;
+    return { context, mentorshipSessionId };
+};
+exports.buildInitResponse = buildInitResponse;
