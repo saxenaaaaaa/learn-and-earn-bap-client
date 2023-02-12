@@ -1,0 +1,20 @@
+{
+  "context": {
+    "domain": "dsep:mentoring",
+    "action": "on_init",
+    "bap_id": "https://dev.elevate-apis.shikshalokam.org/bap",
+    "bap_uri": "https://dev.elevate-apis.shikshalokam.org/bap",
+    "bpp_id": "dev.elevate-apis.shikshalokam.org/bpp",
+    "bpp_uri": "https://dev.elevate-apis.shikshalokam.org/bpp",
+    "timestamp": "2023-02-10T09:54:02.916Z",
+    "ttl": "PT10M",
+    "version": "1.0.0",
+    "message_id": "64109204-bdff-4af6-a76b-5a33f8aa8675",
+    "transaction_id": "bdb5ba09-2241-4f00-b434-73466cd06228"
+  },
+  "message": {
+    "order": {
+      "id": "3685c03c-3768-4770-bce6-05780c43e202"
+    }
+  }
+}
