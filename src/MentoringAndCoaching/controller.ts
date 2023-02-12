@@ -4,7 +4,7 @@ import { searchMentorShipService } from "./services";
 export const search = async (req: Request, res: Response) => {
   const { data, status = 200 } = await searchMentorShipService(req.body);
 
-  return res.status(status).send({ data });
+  return res.status(status).json(data);
 };
 
 export const select = async (req: Request, res: Response) => {};

@@ -10,7 +10,7 @@ const jobNetwork = process.env.JOB_NETWORK;
 
 export const searchMentorShipService = async (body: any): Promise<any> => {
   try {
-    const searchRequest = await buildSearchRequest(body);
+    const searchRequest = buildSearchRequest(body);
     let searchResponse: any = {};
     if (jobNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -19,9 +19,9 @@ export const searchMentorShipService = async (body: any): Promise<any> => {
         searchRequest.payload,
         { headers }
       );
-      searchResponse = await buildSearchResponse(res?.data, body);
+      searchResponse = buildSearchResponse(res?.data, body);
     } else {
-      searchResponse = await buildSearchResponse(searchMentorShipResp, body);
+      searchResponse = buildSearchResponse(searchMentorShipResp, body);
     }
 
     return { data: searchResponse };
