@@ -32,7 +32,7 @@ export const buildSearchRequest = (input: any = {}) => {
         intent.provider = { "descriptor": { "name": input?.company?.name } }
     }
 
-    if (input?.company.locations) {
+    if (input?.company?.locations) {
         intent.provider = {
             ...(intent?.provider ?? {}),
             locations: input?.company?.locations?.map((city: any) => {
