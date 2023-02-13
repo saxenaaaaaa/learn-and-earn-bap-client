@@ -114,7 +114,7 @@ export const buildSelectRequest = (input: any = {}) => {
         order: {
             provider: { id: input?.companyId },
             items: [
-                { id: input?.jobs.jobId }
+                { id: input?.jobs?.jobId }
             ]
         }
     }
