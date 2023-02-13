@@ -1,0 +1,30 @@
+name: Deploying DSEP_Webhook Client
+on:
+  push:
+    branches:
+    - main
+ 
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: deploying changes
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DSEPCLIENTHOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd dsep-unified-bap-client
+          git stash
+          git checkout main
+          git pull
+          npm install
+          npm run build
+          sleep 10
+          pm2 kill
+          pm2 start
+          sleep 10 
+          pm2 logs
