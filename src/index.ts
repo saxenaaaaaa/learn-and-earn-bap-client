@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { jobRoutes } from "./JobsFlow";
 import { mentorshipRoutes } from "./MentoringAndCoaching";
+import { scholarshipsRoutes } from "./ScholarshipsAndGrants/route";
 dotenv.config();
 
 const app: Express = express();
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use("/job", jobRoutes());
 
 app.use("/mentorship", mentorshipRoutes());
+app.use("/scholarship", scholarshipsRoutes());
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
