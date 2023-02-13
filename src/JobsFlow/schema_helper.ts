@@ -226,9 +226,9 @@ export const buildInitRequest = (input: any) => {
         order: {
             provider: { id: input?.companyId },
             items: [
-                { id: input?.jobs.jobId }
+                { id: input?.jobs?.jobId }
             ],
-            fulfillments: input.jobFulfillments.map((data: any) => {
+            fulfillments: input?.jobFulfillments?.map((data: any) => {
                 return {
                     id: data?.JobFulfillmentCategoryId,
                     customer: {
@@ -239,7 +239,7 @@ export const buildInitRequest = (input: any) => {
                             }),
                             URL: data?.jobApplicantProfile?.profileUrl,
                             creds: data?.jobApplicantProfile?.creds?.map((data: any) => {
-                                return { url: data.url, type: data.type }
+                                return { url: data?.url, type: data?.type }
                             }),
                             skills: data?.jobApplicantProfile?.skills?.map((skill: any) => {
                                 return { name: skill }
@@ -248,7 +248,7 @@ export const buildInitRequest = (input: any) => {
                     }
                 }
             }),
-            xinput: { data: Object.fromEntries(input?.additionalFormData?.map((formData: any) => [formData?.formInputKey, formData?.formInputValue])) }
+            xinput: { data: Object.fromEntries(input?.additionalFormData?.map((formData: any) => [formData?.formInputKey, formData?.formInputValue]) ?? []) }
         },
     }
     return { payload: { context, message } }
