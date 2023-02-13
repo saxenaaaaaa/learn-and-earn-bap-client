@@ -1,1 +1,53 @@
-{}
+{
+  "context": {
+    "domain": "dsep:scholarships",
+    "country": "IND",
+    "city": "*",
+    "action": "on_status",
+    "core_version": "1.0.0-draft",
+    "bap_id": "https://examplebap.io/",
+    "bap_uri": "https://api.examplebap.io/v0/",
+    "bpp_id": "https://xyzbpp.com/",
+    "bpp_uri": "https://api.xyzbpp.com/v0/",
+    "message_id": "5ac3dd78-829e-4c7d-9139-a15adbb582cc",
+    "timestamp": "2022-12-08T10:00:40.065Z"
+  },
+  "message": {
+    "order": {
+      "id": "456254",
+      "provider": {
+        "id": "BX213573733",
+        "descriptor": {
+          "name": "Maharashtra State Government"
+        },
+        "fulfillments": [
+          {
+            "id": "DSEP_FUL_01",
+            "type": "SCHOLARSHIP",
+            "state": {
+              "descriptor": {
+                "code": "INPROGRESS",
+                "short_desc": "Your application is under review"
+              },
+              "updated_at": "2023-01-01 11:00:000",
+              "updated_by": "reviewer-1"
+            }
+          }
+        ],
+        "items": [
+          {
+            "id": "SCM_00420068",
+            "descriptor": {
+              "name": "Maharashtra state scholarship for undergraduate female students for academic year 2022-23"
+            },
+            "price": {
+              "currency": "INR",
+              "value": 30000
+            },
+            "fulfillment_id": "DSEP_FUL_01"
+          }
+        ]
+      }
+    }
+  }
+}

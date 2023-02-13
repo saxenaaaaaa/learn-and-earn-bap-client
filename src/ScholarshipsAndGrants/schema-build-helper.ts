@@ -85,10 +85,7 @@ export const buildSearchRequest = (input: any = {}) => {
 };
 export const buildSearchResponse = (response: any = {}, input: any = {}) => {
   const context = {
-    transactionId: response?.context?.transaction_id ?? "",
-    messageId: response?.context?.message_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
+    transactionId: response?.context?.message_id
   };
 
   let scholarshipProviders: any = [];
@@ -267,8 +264,7 @@ export const buildInitRequest = (input: any = {}) => {
 };
 export const buildInitResponse = (response: any = {}, input: any = {}) => {
   const context = {
-    transactionId: response?.context?.transaction_id ?? "",
-    messageId: response?.context?.message_id,
+    transactionId: response?.context?.message_id,
     bppId: response?.context?.bpp_id,
     bppUri: response?.context?.bpp_uri
   };
@@ -365,11 +361,233 @@ export const buildInitResponse = (response: any = {}, input: any = {}) => {
 };
 
 export const buildConfirmRequest = (input: any = {}) => {
-  return { payload: {} };
+  const context = buildContext({
+    ...input?.context,
+    category: "scholarships",
+    action: "confirm"
+  });
+  const { scholarshipProvider = {} } = input;
+  const message: any = {
+    order: {
+      id: input?.scholarshipApplicationId,
+      provider: {
+        id: scholarshipProvider?.id,
+        category_id: scholarshipProvider?.categoryId,
+        descriptor: {
+          name: scholarshipProvider?.name
+        },
+        fulfillments: scholarshipProvider?.scholarships.map(
+          (scholarship: any) => {
+            let tags: any = [];
+            const { scholarshipDetails = {} } = scholarship;
+            if (
+              scholarshipDetails?.scholarshipRequestor
+                ?.academicQualifications &&
+              scholarshipDetails?.scholarshipRequestor?.academicQualifications
+                ?.length
+            ) {
+              tags.push({
+                code: "academic_qualifications",
+                name: "Academic Qualifications",
+                list: scholarshipDetails?.scholarshipRequestor?.academicQualifications.map(
+                  (qualification: any) => {
+                    return {
+                      code: qualification?.code,
+                      name: qualification?.name,
+                      value: qualification?.value
+                    };
+                  }
+                )
+              });
+            }
+
+            if (
+              scholarshipDetails?.scholarshipRequestor?.currentEducations &&
+              scholarshipDetails?.scholarshipRequestor?.currentEducations
+                ?.length
+            ) {
+              tags.push({
+                code: "current_education",
+                name: "Current Education",
+                list: scholarshipDetails?.scholarshipRequestor?.currentEducations.map(
+                  (education: any) => {
+                    return {
+                      code: education?.code,
+                      name: education?.name,
+                      value: education?.value
+                    };
+                  }
+                )
+              });
+            }
+
+            return {
+              id: scholarshipDetails?.id,
+              type: scholarshipDetails?.type,
+              customer: {
+                person: {
+                  id: scholarshipDetails?.scholarshipRequestor?.id,
+                  name: scholarshipDetails?.scholarshipRequestor?.name,
+                  gender: scholarshipDetails?.scholarshipRequestor?.gender,
+                  tags
+                },
+                contact: {
+                  address: {
+                    full: scholarshipDetails?.scholarshipRequestor
+                      ?.scholarshipRequestorContact?.address,
+                    format:
+                      scholarshipDetails?.scholarshipRequestor
+                        ?.scholarshipRequestorContact?.addressFormat
+                  }
+                }
+              }
+            };
+          }
+        ),
+        items: scholarshipProvider?.scholarships.map((scholarship: any) => {
+          return {
+            id: scholarship?.id,
+            descriptor: {
+              name: scholarship?.name
+            },
+            price: {
+              currency: scholarship?.amount?.currency,
+              value: scholarship?.amount?.amount
+            },
+            category_id: scholarshipProvider.categoryId,
+            fulfillment_id: scholarship?.scholarshipDetails?.id,
+            xinput_required: {
+              xinput: {
+                form: {
+                  url: scholarship?.additionalForm?.url,
+                  mime_type: scholarship?.additionalForm?.urmimeTypel,
+                  submission_id: scholarship?.additionalForm?.submissionId
+                }
+              }
+            }
+          };
+        })
+      }
+    }
+  };
+  return { payload: { context, message } };
 };
-export const buildConfirmResponse = (response: any = {}, input: any = {}) => {};
+export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
+  const context = {
+    transactionId: response?.context?.message_id,
+    bppId: response?.context?.bpp_id,
+    bppUri: response?.context?.bpp_uri
+  };
+
+  const { order = {} } = response?.message;
+
+  const scholarshipApplicationId = order?.id;
+
+  const scholarshipProvider: any = {
+    id: order?.provider?.id,
+    name: order?.provider?.descriptor?.name,
+
+    scholarships: order?.provider?.items.map((scholarship: any) => {
+      const fulfillmentFound: any = order?.provider?.fulfillments?.find(
+        (elem: any) => elem?.id === scholarship?.fulfillment_id
+      );
+
+      return {
+        id: scholarship?.id,
+        name: order?.provider?.descriptor?.name,
+        amount: {
+          amount: scholarship?.price?.value,
+          currency: scholarship?.price?.currency
+        },
+
+        scholarshipDetails: {
+          id: fulfillmentFound ? fulfillmentFound?.id : "",
+          type: fulfillmentFound ? fulfillmentFound?.type : "",
+          scholarshipStatus: {
+            code: fulfillmentFound
+              ? fulfillmentFound?.state?.descriptor?.code
+              : "",
+            description: fulfillmentFound
+              ? fulfillmentFound?.state?.descriptor?.short_desc
+              : "",
+            updatedAt: fulfillmentFound
+              ? fulfillmentFound?.state?.updated_at
+              : "",
+            updatedBy: fulfillmentFound
+              ? fulfillmentFound?.state?.updated_by
+              : ""
+          }
+        }
+      };
+    })
+  };
+
+  return { context, scholarshipApplicationId, scholarshipProvider };
+};
 
 export const buildStatusRequest = (input: any = {}) => {
-  return { payload: {} };
+  const context = buildContext({
+    ...input?.context,
+    category: "scholarships",
+    action: "status"
+  });
+  const message = {
+    order: {
+      id: input?.scholarshipApplicationId
+    }
+  };
+  return { payload: { context, message } };
 };
-export const buildStatusResponse = (response: any = {}, input: any = {}) => {};
+export const buildStatusResponse = (response: any = {}, input: any = {}) => {
+  const context = {
+    transactionId: response?.context?.message_id,
+    bppId: response?.context?.bpp_id,
+    bppUri: response?.context?.bpp_uri
+  };
+
+  const { order = {} } = response?.message;
+
+  const scholarshipApplicationId = order?.id;
+
+  const scholarshipProvider: any = {
+    id: order?.provider?.id,
+    name: order?.provider?.descriptor?.name,
+
+    scholarships: order?.provider?.items.map((scholarship: any) => {
+      const fulfillmentFound: any = order?.provider?.fulfillments?.find(
+        (elem: any) => elem?.id === scholarship?.fulfillment_id
+      );
+
+      return {
+        id: scholarship?.id,
+        name: order?.provider?.descriptor?.name,
+        description: scholarship?.descriptor?.name,
+        amount: {
+          amount: scholarship?.price?.value,
+          currency: scholarship?.price?.currency
+        },
+
+        scholarshipDetails: {
+          id: fulfillmentFound ? fulfillmentFound?.id : "",
+          type: fulfillmentFound ? fulfillmentFound?.type : "",
+          scholarshipStatus: {
+            code: fulfillmentFound
+              ? fulfillmentFound?.state?.descriptor?.code
+              : "",
+            description: fulfillmentFound
+              ? fulfillmentFound?.state?.descriptor?.short_desc
+              : "",
+            updatedAt: fulfillmentFound
+              ? fulfillmentFound?.state?.updated_at
+              : "",
+            updatedBy: fulfillmentFound
+              ? fulfillmentFound?.state?.updated_by
+              : ""
+          }
+        }
+      };
+    })
+  };
+
+  return { context, scholarshipApplicationId, scholarshipProvider };
+};
