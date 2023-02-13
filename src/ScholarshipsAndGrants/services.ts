@@ -20,7 +20,6 @@ const scholarshipNetwork = process.env.SCHOLARSHIP_NETWORK;
 export const searchScholarshipService = async (body: any): Promise<any> => {
   try {
     const searchRequest = buildSearchRequest(body);
-
     console.log(JSON.stringify(searchRequest.payload));
     let searchResponse: any = {};
     if (scholarshipNetwork !== "local") {

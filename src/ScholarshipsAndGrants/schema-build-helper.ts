@@ -75,18 +75,8 @@ export const buildSearchRequest = (input: any = {}) => {
       });
     });
   }
-
-  if (input?.categories && input.categories.length) {
-    const categoryArray: any = [];
-    input.categories.forEach((category: any) => {
-      categoryArray.push({
-        descriptor: {
-          code: category?.code
-        }
-      });
-    });
-    message.intent.provider.categories = categoryArray;
-  }
+  message.intent.provider = input?.categories?.map((category: any) => ({ desciptor :{ code: category?.code}}));
+  
   if (Object.keys(fulfillment.customer.person).length) {
     message.intent.item.fulfillment = fulfillment;
   }
