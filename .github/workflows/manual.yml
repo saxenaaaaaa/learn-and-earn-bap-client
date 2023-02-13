@@ -26,5 +26,4 @@ jobs:
           sleep 10
           pm2 kill
           pm2 start
-          sleep 10 
-          pm2 logs
+          sleep 10
