@@ -21,14 +21,14 @@ import cancelMentorShipResponse from "./mocks/cancelMentorShipResponse.json";
 import initMentorShipResponse from "./mocks/initMentorShipResponse.json";
 
 const gatewayUrl = "https://dev.elevate-apis.shikshalokam.org/bpp";
-const jobNetwork = process.env.JOB_NETWORK;
+const mentorshipNetwork = process.env.MENTORSHIP_NETWORK;
 
 export const searchMentorShipService = async (body: any): Promise<any> => {
   try {
     const searchRequest = buildSearchRequest(body);
     console.log(JSON.stringify(searchRequest.payload));
     let searchResponse: any = {};
-    if (jobNetwork !== "local") {
+    if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(
         `${gatewayUrl}/search`,
@@ -51,7 +51,7 @@ export const selectMentorshipService = async (body: any): Promise<any> => {
     const selectRequest = buildSelectRequest(body);
     console.log(JSON.stringify(selectRequest.payload));
     let selectResponse: any = {};
-    if (jobNetwork !== "local") {
+    if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(
         `${gatewayUrl}/select`,
@@ -73,7 +73,7 @@ export const confirmMentorshipService = async (body: any): Promise<any> => {
     const confirmRequest = buildConfirmRequest(body);
     console.log(JSON.stringify(confirmRequest.payload));
     let confirmResponse: any = {};
-    if (jobNetwork !== "local") {
+    if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(
         `${gatewayUrl}/confirm`,
@@ -95,7 +95,7 @@ export const initMentorshipService = async (body: any): Promise<any> => {
     const initRequest = buildInitRequest(body);
     console.log(JSON.stringify(initRequest.payload));
     let initResponse: any = {};
-    if (jobNetwork !== "local") {
+    if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/init`, initRequest.payload, {
         headers
@@ -115,7 +115,7 @@ export const statusMentorshipService = async (body: any): Promise<any> => {
     const statusRequest = buildStatusRequest(body);
     console.log(JSON.stringify(statusRequest.payload));
     let statusResponse: any = {};
-    if (jobNetwork !== "local") {
+    if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(
         `${gatewayUrl}/status`,
@@ -139,7 +139,7 @@ export const cancelMentorshipService = async (body: any): Promise<any> => {
     console.log(JSON.stringify(cancelRequest));
     let cancelResponse: any = {};
 
-    if (jobNetwork !== "local") {
+    if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(
         `${gatewayUrl}/cancel`,
