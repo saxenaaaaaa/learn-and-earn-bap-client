@@ -45,6 +45,7 @@ export const initScholarshipService = async (body: any): Promise<any> => {
   try {
     const initRequest = buildInitRequest(body);
     console.log(JSON.stringify(initRequest.payload));
+
     let initResponse: any = {};
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
