@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.13
+  version: 0.1.14
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1444,6 +1444,93 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/scholarship/search"
+  /scholarship/select:
+    post:
+      tags:
+        - Scholarships & Grants
+      summary: Select scholarship
+      requestBody:
+        description: Scholarship selection
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectScholarship'
+            example:
+              scholarshipProiderId: BX213573733
+              scholarshipId: SCM_00420068
+              context:
+                transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                bppId: https://xyzbpp.com/
+                bppUri: https://api.xyzbpp.com/v0/
+      responses:
+        '200':
+          description: Scholarship select request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SelectScholarshipResponse'
+              example:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                scholarshipProviders:
+                  - id: BX213573733
+                    name: XYZ Education Foundation
+                    scholarships:
+                      - id: SCM_00420068
+                        name: XYZ Foundation Undergraduation scholarship
+                        description: XYZ Foundation Undergraduation scholarship
+                        amount:
+                          amount: 30000
+                          currency: INR
+                        category:
+                          id: DSEP_CAT_1
+                          name: Under Graduate
+                          code: ug
+                        scholarshipDetails:
+                          id: DSEP_FUL_01
+                          type: SCHOLARSHIP
+                          gender: Female
+                          applicationStartDate: '2022-12-01'
+                          applicationEndDate: '2022-12-31'
+                          supportContact:
+                            name: Mary G
+                            phone: '9876543210'
+                            email: maryg@xyz.com
+                          academicQualifications:
+                            - code: gr
+                              name: Grade
+                              value: Grade 12
+                            - code: percentage_grade
+                              name: Percentage/Grade
+                              value: '50'
+                            - code: passing_year
+                              name: Passing Year
+                              value: '2021'
+        '404':
+          description: Scholarship select request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Scholarship select request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/scholarship/select"
+        '500':
+          description: Scholarship search request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/scholarship/select"
   /scholarship/init:
     post:
       tags:
@@ -3356,16 +3443,30 @@ components:
       description: Schema for scholarship selection
       type: object
       required:
-        - scholarshipItemId
-        - scholarshipFulfillmentId
+        - scholarshipProiderId
+        - scholarshipId
         - context
       properties:
-        scholarshipItemId:
+        scholarshipProiderId:
           type: string
-        scholarshipFulfillmentId:
+        scholarshipId:
           type: string
         context:
           $ref: '#/components/schemas/Context'
+    SelectScholarshipResponse:
+      description: Schema for selected scholarship
+      type: object
+      required:
+        - context
+        - scholarshipProviders
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        scholarshipProviders:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/ScholarshipProvider'
     InitScholarshipRequest:
       description: Schema for scholarship init
       type: object
