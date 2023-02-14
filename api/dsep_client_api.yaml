@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.12
+  version: 0.1.13
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1878,6 +1878,143 @@ paths:
                 data: "Additional error message/logs"
                 type: "System error"
                 path: "/course/select"
+  /course/init:
+    post:
+      tags:
+        - Training & Courses
+      summary: Initialize course
+      requestBody:
+        description: Initialize specific course
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitCourse'
+      responses:
+        '200':
+          description: Course init request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitCourseResponse'
+        '404':
+          description: Course init request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Course init request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/course/init"
+        '500':
+          description: Course init request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/course/init"
+  /course/confirm:
+    post:
+      tags:
+        - Training & Courses
+      summary: Confirm course
+      requestBody:
+        description: Course confirmation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmCourseRequest'
+      responses:
+        '200':
+          description: Course confirmation request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmCourseResponse'
+        '404':
+          description: Course confirm request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Course confirm could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/course/confirm"
+        '500':
+          description: Course confirmation request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/course/confirm"
+  /course/status:
+    post:
+      tags:
+        - Training & Courses
+      summary: Course Status
+      requestBody:
+        description: Status of specific course
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseStatusRequest'
+            examples:
+              Course status request:
+                value:
+                  applicationId: '123456'
+                  context:
+                    transactionId: a9aaecca-10b7-4d19-b640-b047a7c62210
+                    bppId: bpp.dsep.samagra.io
+                    bppUri: https://bpp.dsep.samagra.io
+      responses:
+        '200':
+          description: Course status request sent to network
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseStatusResponse'
+        '404':
+          description: Course status request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "404"
+                message: "Course status request could not be created"
+                data: "Long descriptive message"
+                type: "Application error"
+                path: "/course/status"
+        '500':
+          description: Course status request could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "500"
+                message: "Error processing request {specific error log from exception/error}"
+                data: "Additional error message/logs"
+                type: "System error"
+                path: "/course/status"
 components:
   schemas:
     SearchJob:
@@ -2855,10 +2992,10 @@ components:
         - billing
       properties:
         mentorshipId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          description: Mentorship id
           type: string
         mentorshipSessionId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          description: Session id
           type: string
         context:
           $ref: '#/components/schemas/Context'
@@ -2885,10 +3022,10 @@ components:
         - billing
       properties:
         mentorshipId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          description: mentorshipId
           type: string
         mentorshipSessionId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
+          description: mentorshipSessionId
           type: string
         context:
           $ref: '#/components/schemas/Context'
@@ -3609,7 +3746,7 @@ components:
             oneOf:
             - $ref: '#/components/schemas/CourseDeepSearch'
     CourseDeepSearch:
-      description: Course searcj criteria for deep search object
+      description: Course search criteria for deep search object
       type: object
       properties:
         searchCriteria:
@@ -3722,6 +3859,7 @@ components:
       required:
         - context
         - Course
+        - courseDetails
       properties:
         context:
           $ref: '#/components/schemas/Context'
@@ -3731,15 +3869,20 @@ components:
           $ref: '#/components/schemas/CourseDetails'
         additionalFormUrl:
           type: string
-          description: Additional form from job provider
+          description: Additional form from course provider
     CourseDetails:
       description: Course details object
       type: object
       required:
-        - id
-        - language
-        - type
-        - mentor
+        - price
+        - startDate
+        - endDate
+        - rating
+        - credits
+        - instructors
+        - offeringInstitue
+        - courseUrl
+        - enrollmentEndDate
       properties:
         price:
           description: Course price
@@ -3768,102 +3911,159 @@ components:
         enrollmentEndDate:
           description: Enrollment End Date
           type: string
-    1MentorshipRecommendation:
-      description: Mentorship recommendation object
+    InitCourse:
+      description: Schema for Course initialization
       type: object
       required:
-        - recommendationForCode
-        - recommendationForName
-      properties:
-        recommendationForCode:
-          description: Mentorship recommendationForCode
-          type: string
-        recommendationForName:
-          description: Mentorship recommendationForName
-          type: string
-    1Mentor:
-      description: Mentor object
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          description: Mentor id
-          type: string
-        name:
-          description: Mentor name
-          type: string
-        gender:
-          description: Mentor gender - not listed in schema
-          type: string
-        image:
-          description: Mentor image link - not listed in schema
-          type: string
-        rating:
-          description: Mentor rating - not listed in schema
-          type: string
-    ConfirmMentorship1:
-      description: Schema for Mentorship confirmation
-      type: object
-      required:
-        - mentorshipId
         - context
-        - billing
+        - courseId
+        - CourseProviderId
+        - applicantProfile
       properties:
-        mentorshipId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
-        mentorshipSessionId:
-          description: QQ for items and fulfillments, listed as arrays and why 2. I think this is session id
-          type: string
         context:
           $ref: '#/components/schemas/Context'
-        billing:
-          $ref: '#/components/schemas/MentorshipBilling'
-    MentorshipBilling1:
-      description: Mentorship billing object
+        courseId:
+          type: string
+        CourseProviderId:
+          type: string
+        applicantProfile:
+          $ref: '#/components/schemas/CourseApplicantProfile' 
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/CourseAdditionalFormData'
+    CourseApplicantProfile:
+      description: Schema for course Fulfillment/applicant object
       type: object
       required:
         - name
-        - phone
         - email
-        - time
+        - contact
       properties:
-        name:       
-          description: Name
+        name:
           type: string
-        phone:
-          description: Phone number
-          type: string
+          description: User full name
         email:
-          description: Email
           type: string
-        time:
-          type: object
-          properties:
-            timezone:
-              type: string
-    Acknowledgement:
+          description: User email
+        contact:
+          type: string
+          description: User contact number
+    CourseAdditionalFormData:
+      type: object
+      properties:
+        formInputKey:
+          description: Additional form key
+          type: string
+        formInputValue:
+          description: Additional form value for key
+          type: string
+    InitCourseResponse:
+      description: Schema for init course response
       type: object
       required:
         - context
-        - message
+        - course
+        - applicantProfile
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        message:
-          description: Acknowledgement message
-          type: object
-          properties:
-            ack:
-              type: object
-              properties:
-                status:
-                  type: string
-                  enum:
-                    - ACK
-                    - NACK
+        course:
+          $ref: '#/components/schemas/Course'
+        applicantProfile:
+          $ref: '#/components/schemas/CourseApplicantProfile' 
+        additionalFormUrl:
+          type: string
+          description: Additional form from course provider
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/CourseAdditionalFormData'
+    ConfirmCourseRequest:
+      description: Schema for Course confirmation
+      type: object
+      required:
+        - context
+        - courseId
+        - CourseProviderId
+        - jobApplicantProfile
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        courseId:
+          type: string
+        CourseProviderId:
+          type: string
+        applicantProfile:
+          $ref: '#/components/schemas/CourseApplicantProfile' 
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/CourseAdditionalFormData'
+    ConfirmCourseResponse:
+      description: Schema for confirmed course response
+      type: object
+      required:
+        - context
+        - applicationId
+        - course
+        - applicantProfile
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        applicationId:
+          type: string
+        course:
+          $ref: '#/components/schemas/Course'
+        applicantProfile:
+          $ref: '#/components/schemas/CourseApplicantProfile' 
+        additionalFormUrl:
+          type: string
+          description: Additional form from course provider
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/CourseAdditionalFormData'  
+    CourseStatusRequest:
+      description: Schema for course status request
+      type: object
+      required:
+        - applicationId
+        - context
+      properties:
+        applicationId:
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    CourseStatusResponse:
+      description: Schema for course status response
+      type: object
+      required:
+        - context
+        - applicationId
+        - course
+        - applicantProfile
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        applicationId:
+          type: string
+        course:
+          $ref: '#/components/schemas/Course'
+        applicantProfile:
+          $ref: '#/components/schemas/CourseApplicantProfile' 
+        additionalFormUrl:
+          type: string
+          description: Additional form from course provider
+        additionalFormData:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/CourseAdditionalFormData'
     Context:
       description: schema context object
       type: object
@@ -3920,6 +4120,26 @@ components:
             type:
               description: Error type
               type: string
+    Acknowledgement:
+      type: object
+      required:
+        - context
+        - message
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        message:
+          description: Acknowledgement message
+          type: object
+          properties:
+            ack:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - ACK
+                    - NACK
   securitySchemes:
     ApiKey:
       type: apiKey
