@@ -67,6 +67,7 @@ export const confirmScholarshipService = async (body: any): Promise<any> => {
   try {
     const confirmRequest = buildConfirmRequest(body);
     console.log(JSON.stringify(confirmRequest.payload));
+
     let confirmResponse: any = {};
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -90,6 +91,7 @@ export const statusScholarshipService = async (body: any): Promise<any> => {
   try {
     const statusRequest = buildStatusRequest(body);
     console.log(JSON.stringify(statusRequest.payload));
+
     let statusResponse: any = {};
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
