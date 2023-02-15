@@ -35,8 +35,8 @@ export const buildSearchRequest = (input: any = {}) => {
     if (input?.company?.locations) {
         intent.provider = {
             ...(intent?.provider ?? {}),
-            locations: input?.company?.locations?.map((city: any) => {
-                return city
+            locations: input?.company?.locations?.map((name: any) => {
+                return { city: { name: name.city } }
             })
         }
     }
@@ -63,8 +63,8 @@ export const buildOnSearchRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnSearchResponse = (input: any = {}, body: any = {}) => {
-
+export const buildOnSearchResponse = (response: any = {}, body: any = {}) => {
+    const input = response.responses[0]
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input.context;
     const context = { transactionId, messageId };
 
@@ -135,8 +135,8 @@ export const buildOnSelectRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
-
+export const buildOnSelectResponse = (response: any = {}, body: any = {}) => {
+    const input = response.responses[0]
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
     const context = { transactionId, bppId, bppUri };
 
@@ -265,8 +265,8 @@ export const buildOnInitRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnInitResponse = (input: any = {}) => {
-
+export const buildOnInitResponse = (response: any = {}) => {
+    const input = response.responses[0]
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
     const context = { transactionId, bppId, bppUri };
 
@@ -351,7 +351,7 @@ export const buildOnInitResponse = (input: any = {}) => {
         }
     }));
 
-    const additionalFormUrl = xinput?.form?.url
+    const additionalFormUrl = input?.message?.order?.xinput?.form?.url
     const additionalFormData = Object.entries(xinput?.data ?? {})?.map(([key, value]: any[]) => ({ formInputKey: key, formInputValue: value }));
 
     return { data: { context, company, initiatedJobs, jobFulfillments, additionalFormUrl, additionalFormData } };
@@ -409,8 +409,8 @@ export const buildOnConfirmRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnConfirmResponse = (input: any = {}) => {
-
+export const buildOnConfirmResponse = (response: any = {}) => {
+    const input = response.responses[0]
     const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
     const context = { transactionId, bppId, bppUri };
 

@@ -36,12 +36,13 @@ export async function searchJob(body: any): Promise<any> {
     const { payload } = buildSearchRequest(body);
     console.log(JSON.stringify(payload))
 
-    let response = onSearchResponse;
+    let response: any = onSearchResponse;
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/search`, payload, { headers });
-      response = res?.data;
+      response = res;
     }
+    console.log(response)
     return buildOnSearchResponse(response, body);
   } catch (error) {
     return { error: error, errorOccured: true };
@@ -64,11 +65,11 @@ export async function selectJob(body: any): Promise<any> {
   try {
     const { payload } = buildSelectRequest(body);
     console.log(JSON.stringify(payload))
-    let response = onSelectResponse;
+    let response: any = onSelectResponse;
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/select`, payload, { headers });
-      response = res?.data
+      response = res
     }
     return buildOnSelectResponse(response, body);
   } catch (error) {
@@ -93,13 +94,12 @@ export async function onSelectJob(body: any) {
 export async function initJob(body: any) {
   try {
     const { payload } = buildInitRequest(body);
-    console.log(JSON.stringify(payload))
 
-    let response = onInitResponse;
+    let response: any = onInitResponse;
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/init`, payload, { headers });
-      response = res.data
+      response = res
     }
     return buildOnInitResponse(response);
   }
@@ -126,11 +126,11 @@ export async function confirmJob(body: any): Promise<any> {
     console.log('aiia')
     const { payload } = buildConfirmRequest(body);
     console.log(JSON.stringify(payload))
-    let response = onConfirmResponse;
+    let response: any = onConfirmResponse;
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/confirm`, payload, { headers });
-      response = res?.data
+      response = res
     }
     return buildOnConfirmResponse(response);
   } catch (error) {
