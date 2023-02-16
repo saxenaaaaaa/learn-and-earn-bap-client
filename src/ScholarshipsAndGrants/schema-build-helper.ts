@@ -7,8 +7,8 @@ export const buildContext = (input: any = {}) => {
     country: process.env.COUNTRY || (input?.country ?? ""),
     city: process.env.CITY || (input?.city ?? ""),
     action: input.action ?? "",
-    version: `${process.env.CORE_VERSION || (input?.core_version ?? "")
-      }`,
+    version: `${process.env.CORE_VERSION || (input?.core_version ?? "")}`,
+    transaction_id: input?.transactionId ?? uuid(),
     bap_id: process.env.BAP_ID || (input?.bapId ?? ""),
     bap_uri: process.env.BAP_URI || (input?.bapUri ?? ""),
     bpp_id: input?.bppId,
@@ -124,6 +124,65 @@ export const buildSearchResponse = (res: any = {}, body: any = {}) => {
 
   return { data: { context, scholarshipProviders } };
 };
+
+export const buildSelectRequest = (input: any = {}) => {
+  const payload = {
+    context: buildContext({ ...(input?.context ?? {}), action: 'select' }),
+    message: {
+      order: {
+        provider: { id: input?.scholarshipProiderId }, items: [{ id: input?.scholarshipId }]
+      }
+    }
+  }
+  return { payload };
+}
+
+export const buildSelectResponse = (res: any = {}, input: any = {}) => {
+  const response = res?.data?.responses?.[0];
+  if (!response)
+    return { status: 200 };
+
+  const context = {
+    transactionId: response?.context?.transaction_id,
+    bppId: response?.context?.bpp_id,
+    bppUri: response?.context?.bpp_uri,
+  };
+
+  const provider = response?.message?.order?.provider;
+
+  const scholarshipProviders = [{
+    id: provider?.id,
+    name: provider?.descriptor?.name,
+    description: provider?.descriptor?.long_desc ?? provider?.descriptor?.short_desc,
+    scholarships: response?.message?.order?.items?.map((item: any) => ({
+      id: item?.id,
+      name: item?.desciptor?.name,
+      description: item?.descriptor?.long_desc,
+      amount: {
+        amount: item?.price?.value,
+        currency: item?.price?.currency,
+      },
+      academicQualifications: item.tags?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
+        ?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
+      categories: response?.message?.order?.categories?.filter((category: any) => item.category_ids?.find((category_id: any) => category_id == category?.id))
+        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
+      scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
+        ?.map((fulfillment: any) => ({
+          id: fulfillment?.id,
+          type: fulfillment?.type,
+          gender: fulfillment?.customer?.person?.gender,
+          applicationStartDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-START")?.time?.timestamp,
+          applicationEndDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-END")?.time?.timestamp,
+          supportContact: fulfillment?.contact,
+          academicQualifications: fulfillment?.customer?.person?.tags?.find((tag: any) => tag?.code == "edu_qual")
+            ?.list?.map((li: any) => ({ code: li?.code, name: li?.name, value: li?.value }))
+        }))
+    }))
+  }];
+
+  return { data: { context, scholarshipProviders } };
+}
+
 
 export const buildInitRequest = (input: any = {}) => {
   const context = buildContext({

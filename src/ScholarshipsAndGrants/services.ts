@@ -8,12 +8,16 @@ import {
   buildConfirmRequest,
   buildConfirmResponse,
   buildStatusRequest,
-  buildStatusResponse
+  buildStatusResponse,
+  buildSelectRequest,
+  buildSelectResponse
 } from "./schema-build-helper";
 import searchScholarshipResponse from "./mocks/searchScholarshipResponse.json";
 import initScholarshipResponse from "./mocks/initScholarshipResponse.json";
 import confirmScholarshipReponse from "./mocks/confirmScholarshipReponse.json";
 import statusScholarshipReponse from "./mocks/statusScholarshipReponse.json";
+import selectScholarshipResponse from "./mocks/selectScholarshipResponse.json";
+
 
 const gatewayUrl = process.env.GATEWAY_URL;
 const scholarshipNetwork = process.env.SCHOLARSHIP_NETWORK;
@@ -49,6 +53,29 @@ export const searchScholarshipService = async (body: any): Promise<any> => {
   }
 };
 
+export const selectScholarshipService = async (body: any): Promise<any> => {
+  try {
+    const initRequest = buildSelectRequest(body);
+    console.log(JSON.stringify(initRequest.payload));
+
+    let selectResponse: any = {};
+    if (scholarshipNetwork !== "local") {
+      const headers = { "Content-Type": "application/JSON" };
+      let res = await axios.post(`${gatewayUrl}/select`, initRequest.payload, {
+        headers
+      });
+      selectResponse = buildSelectResponse(res, body);
+    } else {
+      selectResponse = buildSelectResponse({ data: selectScholarshipResponse }, body);
+    }
+
+    return selectResponse;
+  } catch (error) {
+    console.log(error);
+    return { error: error, errorOccured: true };
+  }
+}
+
 export const initScholarshipService = async (body: any): Promise<any> => {
   try {
     const initRequest = buildInitRequest(body);
@@ -57,7 +84,7 @@ export const initScholarshipService = async (body: any): Promise<any> => {
     let initResponse: any = {};
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
-      let res = await axios.post(`${gatewayUrl}/search`, initRequest.payload, {
+      let res = await axios.post(`${gatewayUrl}/init`, initRequest.payload, {
         headers
       });
       initResponse = buildInitResponse(res?.data, body);
@@ -80,7 +107,7 @@ export const confirmScholarshipService = async (body: any): Promise<any> => {
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(
-        `${gatewayUrl}/search`,
+        `${gatewayUrl}/confirm`,
         confirmRequest.payload,
         { headers }
       );
@@ -104,7 +131,7 @@ export const statusScholarshipService = async (body: any): Promise<any> => {
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(
-        `${gatewayUrl}/search`,
+        `${gatewayUrl}/status`,
         statusRequest.payload,
         { headers }
       );

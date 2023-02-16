@@ -3,10 +3,16 @@ import {
   searchScholarshipService,
   statusScholarshipService,
   confirmScholarshipService,
-  initScholarshipService
+  initScholarshipService,
+  selectScholarshipService
 } from "./services";
 export const search = async (req: Request, res: Response) => {
   const { data, status = 200 } = await searchScholarshipService(req.body);
+  return res.status(status).json(data);
+};
+
+export const select = async (req: Request, res: Response) => {
+  const { data, status = 200 } = await selectScholarshipService(req?.body);
   return res.status(status).json(data);
 };
 

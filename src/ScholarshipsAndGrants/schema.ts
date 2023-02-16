@@ -4,6 +4,7 @@ export interface IScholarshipNetworkContext {
   city: string;
   action: string;
   version: string;
+  transaction_id: string;
   bap_id: string;
   bap_uri: string;
   bpp_id?: string;
