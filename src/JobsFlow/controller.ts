@@ -3,28 +3,28 @@ import { confirmJob, initJob, onConfirmJob, onInitJob, onSearchJob, onSelectJob,
 
 export const search = async (req: Request, res: Response) => {
   const { data, status = 200 } = await searchJob(req.body);
-  res.json(data).status(status);
+  res.status(status).json(data);
 };
 
 export const onSearch = async (req: Request, res: Response) => {
   const body = req.body
   const { data, status = 200 } = await onSearchJob(body);
-  res.json(data).status(status);
+  res.status(status).json(data);
 };
 
 export const select = async (req: Request, res: Response) => {
   const { data, status = 200 } = await selectJob(req.body);
-  res.json(data).status(status);
+  res.status(status).json(data);
 }
 
 export const onSelect = async (req: Request, res: Response) => {
   const { data, status = 200 }: any = await onSelectJob(req.body);
-  res.json(data);
+  res.status(status).json(data);
 }
 
 export const init = async (req: Request, res: Response) => {
-  const { data, }: any = await initJob(req.body)
-  res.json(data)
+  const { data, status = 200 }: any = await initJob(req?.body)
+  res.status(status).json(data);
 }
 
 export const onInit = async (req: Request, res: Response) => {

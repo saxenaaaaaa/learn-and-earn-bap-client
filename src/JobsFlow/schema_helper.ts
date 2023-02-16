@@ -5,15 +5,16 @@ export const buildContext = (input: any = {}) => {
     return {
         domain: process.env.DOMAIN + input?.category,
         action: input?.action ?? "",
-        location: { city: { code: process.env.CITY || (input?.city ?? "") }, country: { code: process.env.COUNTRY || (input?.country ?? "") } },
+        // location: { city: { code: process.env.CITY || (input?.city ?? "") }, country: { code: process.env.COUNTRY || (input?.country ?? "") } },
         version: process.env.CORE_VERSION || (input?.core_version ?? ""),
-        bap_id: process.env.BAP_ID || (input?.bapId ?? ""),
-        bap_uri: process.env.BAP_URI || (input?.bapUri ?? ""),
-        bpp_id: (input?.bppId ?? ""),
-        bpp_uri: (input?.bppUri ?? ""),
+        bap_id: process.env.BAP_ID ?? input?.bapId,
+        bap_uri: process.env.BAP_URI ?? input?.bapUri,
+        bpp_id: input?.bppId,
+        bpp_uri: input?.bppUri,
         transaction_id: input?.transactionId ?? uuid(),
         message_id: input?.messageId ?? uuid(),
         timestamp: input.timestamp ?? moment().toISOString(),
+        ttl: "P1M",
     }
 }
 
@@ -64,9 +65,11 @@ export const buildOnSearchRequest = (input: any = {}) => {
 }
 
 export const buildOnSearchResponse = (response: any = {}, body: any = {}) => {
-    const input = response.responses[0]
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input.context;
-    const context = { transactionId, messageId };
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+    const context = { transactionId, messageId, bppId, bppUri };
 
     const providers = input?.message?.catalog?.providers;
 
@@ -136,8 +139,10 @@ export const buildOnSelectRequest = (input: any = {}) => {
 }
 
 export const buildOnSelectResponse = (response: any = {}, body: any = {}) => {
-    const input = response.responses[0]
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+    const { transaction_id: transactionId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
     const context = { transactionId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
@@ -266,9 +271,11 @@ export const buildOnInitRequest = (input: any = {}) => {
 }
 
 export const buildOnInitResponse = (response: any = {}) => {
-    const input = response.responses[0]
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
-    const context = { transactionId, bppId, bppUri };
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+    const context = { transactionId, messageId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
@@ -369,21 +376,20 @@ export const buildConfirmRequest = (input: any = {}) => {
         order: {
             provider: { id: input?.companyId },
             items: [
-                { id: input?.jobId }
+                {
+                    id: input?.jobId,
+                    fulfillment_ids: [input?.confirmation?.JobFulfillmentCategoryId]
+                }
             ],
             fulfillments: [{
                 id: input?.confirmation?.JobFulfillmentCategoryId,
                 customer: {
                     person: {
                         name: input?.confirmation?.jobApplicantProfile?.name,
-                        languages: input?.confirmation?.jobApplicantProfile?.languages,
+                        languages: input?.confirmation?.jobApplicantProfile?.languages?.map((language: any) => ({ code: language })),
                         URL: input?.confirmation?.jobApplicantProfile?.url,
-                        creds: input?.confirmation?.jobApplicantProfile?.creds.map((cred: any) => {
-                            return cred
-                        }),
-                        skills: input?.confirmation?.jobApplicantProfile?.skills?.map((skill: any) => {
-                            return skill
-                        }),
+                        creds: input?.confirmation?.jobApplicantProfile?.creds.map((cred: any) => cred),
+                        tags: [{ code: "func_skills", list: input?.confirmation?.jobApplicantProfile?.skills?.map((skill: any) => ({ name: skill })) }],
                     }
                 }
             }],
@@ -410,9 +416,11 @@ export const buildOnConfirmRequest = (input: any = {}) => {
 }
 
 export const buildOnConfirmResponse = (response: any = {}) => {
-    const input = response.responses[0]
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
-    const context = { transactionId, bppId, bppUri };
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+    const context = { transactionId, messageId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
@@ -522,9 +530,7 @@ export const buildStatusRequest = (input: any = {}) => {
         transactionId: input?.context?.transactionId,
     });
     const message = {
-        order: {
-            id: input?.applicationId
-        },
+        order_id: input?.applicationId
     }
     return { payload: { context, message } };
 }
@@ -537,9 +543,13 @@ export const buildOnStatusRequest = (input: any = {}) => {
 
     return { payload: { context, message } };
 }
-export const buildOnStatusResponse = (input: any = {}) => {
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
-    const context = { transactionId, bppId, bppUri };
+export const buildOnStatusResponse = (response: any = {}) => {
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+    const context = { transactionId, messageId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
