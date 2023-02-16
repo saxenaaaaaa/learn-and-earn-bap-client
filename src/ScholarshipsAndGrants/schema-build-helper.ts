@@ -7,13 +7,12 @@ export const buildContext = (input: any = {}) => {
     country: process.env.COUNTRY || (input?.country ?? ""),
     city: process.env.CITY || (input?.city ?? ""),
     action: input.action ?? "",
-    core_version: `${
-      process.env.CORE_VERSION || (input?.core_version ?? "")
-    }-draft`,
+    version: `${process.env.CORE_VERSION || (input?.core_version ?? "")
+      }`,
     bap_id: process.env.BAP_ID || (input?.bapId ?? ""),
     bap_uri: process.env.BAP_URI || (input?.bapUri ?? ""),
-    bpp_id: input?.bppId ?? "",
-    bpp_uri: input?.bppUri ?? "",
+    bpp_id: input?.bppId,
+    bpp_uri: input?.bppUri,
     message_id: input?.messageId ?? uuid(),
     timestamp: input.timestamp ?? moment().toISOString()
   };
@@ -63,8 +62,8 @@ export const buildSearchRequest = (input: any = {}) => {
       ]
     };
   }
-  if (input?.casteCategory && input?.casteCategory.length) {
-    input.casteCategory.forEach((caste: any) => {
+  if (input?.casteCategory?.length) {
+    input?.casteCategory?.forEach((caste: any) => {
       fulfillment.customer.person.tags.push({
         code: "caste_category",
         list: [
@@ -75,88 +74,55 @@ export const buildSearchRequest = (input: any = {}) => {
       });
     });
   }
-  message.intent.provider = input?.categories?.map((category: any) => ({ desciptor :{ code: category?.code}}));
-  
-  if (Object.keys(fulfillment.customer.person).length) {
-    message.intent.item.fulfillment = fulfillment;
+  message.intent.provider = { categories: input?.categories?.map((category: any) => ({ descriptor: { code: category?.code } })) };
+
+  if (Object.keys(fulfillment?.customer?.person ?? {})?.length) {
+    message.intent.fulfillment = fulfillment;
   }
 
   return { payload: { context, message } };
 };
-export const buildSearchResponse = (response: any = {}, input: any = {}) => {
+export const buildSearchResponse = (res: any = {}, body: any = {}) => {
+  const response = res?.data?.responses?.[0];
+  console.log("response", response);
+  if (!response)
+    return { status: 200 };
+
   const context = {
-    transactionId: response?.context?.message_id
+    transactionId: response?.context?.transaction_id,
+    bppId: response?.context?.bpp_id,
+    bppUri: response?.context?.bpp_uri,
   };
 
-  let scholarshipProviders: any = [];
 
-  response?.message?.catalog["bpp/providers"].forEach((provider: any) => {
-    const providerObj: any = {
-      id: provider?.id,
-      name: provider?.descriptor?.name,
+  const scholarshipProviders = response?.message?.catalog?.providers?.map((provider: any) => ({
+    id: provider?.id,
+    name: provider?.descriptor?.name,
+    scholarships: provider?.items?.map((item: any) => ({
+      id: item?.id,
+      name: item?.desciptor?.name,
+      description: item?.descriptor?.long_desc,
+      amount: {
+        amount: item?.price?.value,
+        currency: item?.price?.currency,
+      },
+      categories: provider?.categories?.filter((category: any) => item.category_ids?.find((category_id: any) => category_id == category?.id))
+        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
+      scholarshipDetails: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
+        ?.map((fulfillment: any) => ({
+          id: fulfillment?.id,
+          type: fulfillment?.type,
+          gender: fulfillment?.customer?.person?.gender,
+          applicationStartDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-START")?.time?.timestamp,
+          applicationEndDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-END")?.time?.timestamp,
+          supportContact: fulfillment?.contact,
+          academicQualifications: fulfillment?.customer?.person?.tags?.find((tag: any) => tag?.code == "academic_qualifications")
+            ?.list?.map((li: any) => ({ code: li?.code, name: li?.name, value: li?.value }))
+        }))
+    }))
+  }));
 
-      scholarships: provider?.items.map((scholarship: any) => {
-        const categoryFound: any = provider?.categories?.find(
-          (category: any) => category.id === scholarship.category_id
-        );
-        const fulfillmentFound: any = provider?.fulfillments?.find(
-          (fullfilment: any) => fullfilment?.id === scholarship?.fulfillment_id
-        );
-
-        return {
-          id: scholarship?.id,
-          name: scholarship?.descriptor?.name,
-          description: scholarship?.descriptor?.long_desc,
-          amount: {
-            amount: scholarship?.price?.value,
-            currency: scholarship?.price?.currency
-          },
-          category: {
-            id: categoryFound ? categoryFound?.id : "",
-            name: categoryFound ? categoryFound?.descriptor?.name : "",
-            code: categoryFound ? categoryFound?.descriptor?.code : ""
-          },
-          scholarshipDetails: {
-            id: fulfillmentFound ? fulfillmentFound?.id : "",
-            type: fulfillmentFound ? fulfillmentFound?.type : "",
-            gender: fulfillmentFound
-              ? fulfillmentFound?.customer?.person?.gender
-              : "",
-            applicationStartDate: fulfillmentFound
-              ? fulfillmentFound?.start?.time?.timestamp
-              : "",
-            applicationEndDate: fulfillmentFound
-              ? fulfillmentFound?.end?.time?.timestamp
-              : "",
-            supportContact: {
-              name: fulfillmentFound ? fulfillmentFound?.contact?.name : "",
-              phone: fulfillmentFound ? fulfillmentFound?.contact?.phone : "",
-              email: fulfillmentFound ? fulfillmentFound?.contact?.email : ""
-            },
-            academicQualifications: fulfillmentFound
-              ? fulfillmentFound?.customer?.person?.tags.find(
-                  (tag: any) => tag.code === "academic_qualifications"
-                )
-                ? fulfillmentFound?.customer?.person?.tags
-                    .find((tag: any) => tag.code === "academic_qualifications")
-                    ?.list.map((li: any) => {
-                      return {
-                        code: li?.code,
-                        name: li?.name,
-                        value: li?.value
-                      };
-                    })
-                : []
-              : ""
-          }
-        };
-      })
-    };
-
-    scholarshipProviders.push(providerObj);
-  });
-
-  return { context, scholarshipProviders };
+  return { data: { context, scholarshipProviders } };
 };
 
 export const buildInitRequest = (input: any = {}) => {
@@ -284,21 +250,21 @@ export const buildInitResponse = (response: any = {}, input: any = {}) => {
 
       const academicQualifications = fulfillmentFound
         ? fulfillmentFound?.customer?.person?.tags.find(
-            (tag: any) => tag?.code === "academic_qualifications"
-          )
+          (tag: any) => tag?.code === "academic_qualifications"
+        )
           ? fulfillmentFound?.customer?.person?.tags
-              .find((tag: any) => tag?.code === "academic_qualifications")
-              .list.map((li: any) => li)
+            .find((tag: any) => tag?.code === "academic_qualifications")
+            .list.map((li: any) => li)
           : []
         : "";
 
       const currentEducations = fulfillmentFound
         ? fulfillmentFound?.customer?.person?.tags.find(
-            (tag: any) => tag?.code === "current_education"
-          )
+          (tag: any) => tag?.code === "current_education"
+        )
           ? fulfillmentFound?.customer?.person?.tags
-              .find((tag: any) => tag?.code === "current_education")
-              .list.map((li: any) => li)
+            .find((tag: any) => tag?.code === "current_education")
+            .list.map((li: any) => li)
           : []
         : "";
 

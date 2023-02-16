@@ -1,4 +1,5 @@
-import axios from "axios";
+import axiosInstance from "axios";
+import https from 'https';
 import {
   buildSearchRequest,
   buildSearchResponse,
@@ -14,13 +15,20 @@ import initScholarshipResponse from "./mocks/initScholarshipResponse.json";
 import confirmScholarshipReponse from "./mocks/confirmScholarshipReponse.json";
 import statusScholarshipReponse from "./mocks/statusScholarshipReponse.json";
 
-const gatewayUrl = "https://api.examplebap.io/v0/";
+const gatewayUrl = process.env.GATEWAY_URL;
 const scholarshipNetwork = process.env.SCHOLARSHIP_NETWORK;
+
+const axios = axiosInstance.create({
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  })
+});
 
 export const searchScholarshipService = async (body: any): Promise<any> => {
   try {
     const searchRequest = buildSearchRequest(body);
     console.log(JSON.stringify(searchRequest.payload));
+
     let searchResponse: any = {};
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -29,12 +37,12 @@ export const searchScholarshipService = async (body: any): Promise<any> => {
         searchRequest.payload,
         { headers }
       );
-      searchResponse = buildSearchResponse(res?.data, body);
+      searchResponse = buildSearchResponse(res, body);
     } else {
-      searchResponse = buildSearchResponse(searchScholarshipResponse, body);
+      searchResponse = buildSearchResponse({ data: searchScholarshipResponse }, body);
     }
 
-    return { data: searchResponse };
+    return searchResponse;
   } catch (error) {
     console.log(error);
     return { error: error, errorOccured: true };
