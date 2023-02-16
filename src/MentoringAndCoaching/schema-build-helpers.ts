@@ -6,14 +6,21 @@ export const buildContext = (input: any = {}) => {
   const context: MentoringContext = {
     domain: `${process.env.DOMAIN}${input?.category ?? "mentoring"}`,
     action: input.action ?? "",
-    bap_id: process.env.MENTORSHIP_BAP_ID || (input?.bppId ?? ""),
-    bap_uri: process.env.MENTORSHIP_BAP_URI || (input?.bppUri ?? ""),
+    bap_id: process.env.BAP_ID || "",
+    bap_uri: process.env.BAP_URI || "",
     timestamp: input.timestamp ?? moment().toISOString(),
+
     message_id: input?.messageId ?? uuid(),
     version: process.env.CORE_VERSION || (input?.core_version ?? ""),
     ttl: "PT10M", // ask Ajay for its significance
     transaction_id: input?.transactionId ?? uuid()
   };
+  if (input?.bppId) {
+    context.bpp_id = input?.bppId;
+  }
+  if (input?.bppUri) {
+    context.bpp_uri = input?.bppUri;
+  }
   return context;
 };
 
@@ -44,10 +51,14 @@ export const buildSearchRequest = (input: any = {}) => {
 };
 
 export const buildSearchResponse = (response: any = {}, input: any = {}) => {
-  const context = { transactionId: response?.context?.transaction_id };
+  const context = {
+    transactionId: response?.responses[0]?.context?.transaction_id,
+    bppId: response?.responses[0]?.context?.bpp_id,
+    bppUri: response?.responses[0]?.context?.bpp_uri
+  };
   const mentorshipProviders: any = [];
   const responseMentorShipProviders: any =
-    response?.message?.catalog?.providers ?? [];
+    response?.responses[0]?.message?.catalog?.providers ?? [];
 
   responseMentorShipProviders.forEach((provider: any) => {
     let rawProviderObjects: any = {};
@@ -71,7 +82,9 @@ export const buildSearchResponse = (response: any = {}, input: any = {}) => {
         name: mentorShip?.descriptor?.name,
         description: mentorShip?.descriptor?.short_desc,
         longDescription: mentorShip?.descriptor?.long_desc,
-        imageLocations: mentorShip?.descriptor?.images,
+        imageLocations: mentorShip?.descriptor?.images?.map(
+          (img: any) => img?.url
+        ),
         available: mentorShip?.quantity?.available?.count,
         allocated: mentorShip?.quantity?.allocated?.count,
         price: mentorShip?.price?.value
@@ -148,13 +161,16 @@ export const buildSelectRequest = (input: any = {}) => {
   return { payload: { context, message } };
 };
 export const buildSelectResponse = (response: any = {}, input: any = {}) => {
+  if (!response?.responses.length) {
+    return { context: {}, mentorshipProvider: [] };
+  }
   const context = {
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
+    transactionId: response?.responses[0]?.context?.transaction_id,
+    bppId: response?.responses[0]?.context?.bpp_id,
+    bppUri: response?.responses[0]?.context?.bpp_uri
   };
 
-  const { provider } = response?.message?.order;
+  const { provider } = response?.responses[0]?.message?.order;
   const mentorshipProvider: any = {
     id: provider?.id,
     code: provider?.descriptor?.code,
@@ -169,7 +185,9 @@ export const buildSelectResponse = (response: any = {}, input: any = {}) => {
       name: mentorship?.descriptor?.name,
       description: mentorship?.descriptor?.short_desc,
       longDescription: mentorship?.descriptor?.long_desc,
-      imageLocations: mentorship?.descriptor?.images,
+      imageLocations: mentorship?.descriptor?.images?.map(
+        (img: any) => img?.url
+      ),
       categories: provider?.categories.map((category: any) => {
         let categoryResponse: any = {
           id: category?.id,
@@ -245,7 +263,7 @@ export const buildConfirmRequest = (input: any = {}) => {
   const context = buildContext({
     ...input?.context,
     category: "mentoring",
-    action: "search"
+    action: "confirm"
   });
 
   const message = {
@@ -268,11 +286,11 @@ export const buildConfirmRequest = (input: any = {}) => {
 };
 export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
   const context = {
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
+    transactionId: response?.responses[0]?.context?.transaction_id,
+    bppId: response?.responses[0]?.context?.bpp_id,
+    bppUri: response?.responses[0]?.context?.bpp_uri
   };
-  const { order } = response?.message ?? {};
+  const { order } = response?.responses[0]?.message ?? {};
   const mentorshipApplicationId = order?.id;
   const fulfillment = order?.fulfillments.length ? order?.fulfillments[0] : {};
   const sessionJoinLinks = Object.keys(
@@ -326,7 +344,7 @@ export const buildStatusRequest = (input: any = {}) => {
   });
 
   const message = {
-    order_id: { id: input?.mentorshipApplicationId }
+    order_id: input?.mentorshipApplicationId
   };
 
   return { payload: { context, message } };
@@ -334,11 +352,11 @@ export const buildStatusRequest = (input: any = {}) => {
 
 export const buildStatusResponse = (response: any = {}, input: any = {}) => {
   const context = {
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
+    transactionId: response?.responses[0]?.context?.transaction_id,
+    bppId: response?.responses[0]?.context?.bpp_id,
+    bppUri: response?.responses[0]?.context?.bpp_uri
   };
-  const { order } = response?.message;
+  const { order } = response?.responses[0]?.message;
   const mentorshipApplicationId = order?.id;
   const mentorshipApplicationStatus = order?.state;
   const { provider } = order;
@@ -354,7 +372,7 @@ export const buildStatusResponse = (response: any = {}, input: any = {}) => {
         name: item?.descriptor?.name,
         description: item?.descriptor?.short_desc,
         longDescription: item?.descriptor?.long_desc,
-        imageLocations: item?.descriptor?.images,
+        imageLocations: item?.descriptor?.images.map((img: any) => img?.url),
         categories: item?.category_ids.map((categoryId: string) => {
           const categoryFound = provider?.categories.find((category: any) => {
             return category?.id.split(" ").join("-") === categoryId;
@@ -445,23 +463,22 @@ export const buildCancelRequest = (input: any = {}) => {
       cancellation_reason_id: `${input?.mentorshipCancellationReasonId}`
     };
   }
-  if (input?.mentorshipCancellationReasonDescription) {
+  if (input?.mentorshipCancellationReason) {
     message = {
       ...message,
-      cancellation_reason_description:
-        input?.mentorshipCancellationReasonDescription
+      descriptor: { name: input?.mentorshipCancellationReason }
     };
   }
   return { payload: { context, message } };
 };
 export const buildCancelResponse = (response: any = {}, input: any = {}) => {
   const context = {
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
+    transactionId: response?.responses[0]?.context?.transaction_id,
+    bppId: response?.responses[0]?.context?.bpp_id,
+    bppUri: response?.responses[0]?.context?.bpp_uri
   };
 
-  const mentorshipApplicationId = response?.message?.order?.id;
+  const mentorshipApplicationId = response?.responses[0]?.message?.order?.id;
 
   return { context, mentorshipApplicationId };
 };
@@ -469,7 +486,7 @@ export const buildCancelResponse = (response: any = {}, input: any = {}) => {
 export const buildInitRequest = (input: any = {}) => {
   const context = buildContext({
     ...input.context,
-    action: "search",
+    action: "init",
     category: "mentoring"
   });
 
@@ -489,13 +506,12 @@ export const buildInitRequest = (input: any = {}) => {
 };
 export const buildInitResponse = (response: any = {}, input: any = {}) => {
   const context = {
-    ...input.context,
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
+    transactionId: response?.responses[0]?.context?.transaction_id,
+    bppId: response?.responses[0]?.context?.bpp_id,
+    bppUri: response?.responses[0]?.context?.bpp_uri
   };
 
-  const mentorshipSessionId = response?.message?.order?.id;
+  const mentorshipSessionId = response?.responses[0]?.message?.order?.id;
 
   return { context, mentorshipSessionId };
 };
