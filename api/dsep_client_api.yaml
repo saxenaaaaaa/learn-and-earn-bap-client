@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.14
+  version: 0.1.15
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -316,6 +316,9 @@ paths:
                           - Project Management
                           - Enterprise Architecture
                   additionalFormData:
+                    submissionId:
+                      123456
+                    data:
                     - formInputKey: resume
                       formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                     - formInputKey: work-mode
@@ -445,6 +448,9 @@ paths:
                             - Enterprise Architecture
                     additionalFormUrl: "https://affinidi.com/path/to/application/form" 
                     additionalFormData:
+                      submissionId:
+                        123456
+                      data:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
@@ -453,7 +459,6 @@ paths:
                         formInputValue: '10'
                       - formInputKey: sop
                         formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
-                    
         '404':
           description: Job init request failed
           content:
@@ -644,6 +649,9 @@ paths:
                             - Project Management
                             - Enterprise Architecture
                     additionalFormData:
+                      submissionId:
+                        123456
+                      data:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
@@ -822,6 +830,9 @@ paths:
                           statusCode: application-accepted
                     additionalFormUrl: https://affinidi.com/path/to/application/form
                     additionalFormData:
+                      submissionId:
+                        123456
+                      data:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
@@ -830,7 +841,6 @@ paths:
                         formInputValue: '10'
                       - formInputKey: sop
                         formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
-                    
         '404':
           description: Job status request failed
           content:
@@ -2484,10 +2494,16 @@ components:
           items:
             $ref: '#/components/schemas/JobFulfillment' 
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     JobFulfillment:
       description: Schema for Job Fulfillment object
       type: object
@@ -2571,10 +2587,16 @@ components:
           type: string
           description: Additional form from job provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     initiatedJobs:
       description: Schema for initiated Job
       type: object
@@ -2698,10 +2720,16 @@ components:
           type: string
           description: Additional form from job provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     ConfirmedJob:
       description: Schema for confirmed Job
       type: object
@@ -2822,10 +2850,16 @@ components:
           type: string
           description: Additional form from job provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     JobStatusFulfillment:
       description: Schema for Job status Fulfillment object
       type: object
