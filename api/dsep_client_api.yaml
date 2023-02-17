@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.16
+  version: 0.1.17
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1399,6 +1399,7 @@ paths:
                 scholarshipProviders:
                   - id: BX213573733
                     name: XYZ Education Foundation
+                    description: XYZ Education Foundation
                     scholarships:
                       - id: SCM_00420068
                         name: XYZ Foundation Undergraduation scholarship
@@ -1420,16 +1421,6 @@ paths:
                             name: Mary G
                             phone: '9876543210'
                             email: maryg@xyz.com
-                          academicQualifications:
-                            - code: gr
-                              name: Grade
-                              value: Grade 12
-                            - code: percentage_grade
-                              name: Percentage/Grade
-                              value: '50'
-                            - code: passing_year
-                              name: Passing Year
-                              value: '2021'
         '404':
           description: Scholarship search request failed
           content:
@@ -1467,8 +1458,9 @@ paths:
             schema:
               $ref: '#/components/schemas/SelectScholarship'
             example:
-              scholarshipProiderId: BX213573733
-              scholarshipId: SCM_00420068
+              scholarshipProiderId: ZQU31169990
+              scholarshipId: SCM_58741444
+              scholarshipDetailsId: DSEP_FUL_58741444
               context:
                 transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
                 bppId: https://xyzbpp.com/
@@ -1483,40 +1475,33 @@ paths:
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                scholarshipProviders:
-                  - id: BX213573733
-                    name: XYZ Education Foundation
-                    scholarships:
-                      - id: SCM_00420068
-                        name: XYZ Foundation Undergraduation scholarship
-                        description: XYZ Foundation Undergraduation scholarship
-                        amount:
-                          amount: 30000
-                          currency: INR
-                        category:
-                          id: DSEP_CAT_1
-                          name: Under Graduate
-                          code: ug
-                        scholarshipDetails:
-                          id: DSEP_FUL_01
-                          type: SCHOLARSHIP
-                          gender: Female
-                          applicationStartDate: '2022-12-01'
-                          applicationEndDate: '2022-12-31'
-                          supportContact:
-                            name: Mary G
-                            phone: '9876543210'
-                            email: maryg@xyz.com
-                          academicQualifications:
-                            - code: gr
-                              name: Grade
-                              value: Grade 12
-                            - code: percentage_grade
-                              name: Percentage/Grade
-                              value: '50'
-                            - code: passing_year
-                              name: Passing Year
-                              value: '2021'
+                scholarshipProvider:
+                  id: BX213573733
+                  name: XYZ Education Foundation
+                  scholarships:
+                    - id: SCM_00420068
+                      name: XYZ Foundation Undergraduation scholarship
+                      description: XYZ Foundation Undergraduation scholarship
+                      amount:
+                        amount: 30000
+                        currency: INR
+                      category:
+                        id: DSEP_CAT_1
+                        name: Under Graduate
+                        code: ug
+                      scholarshipDetails:
+                        id: DSEP_FUL_01
+                        type: SCHOLARSHIP
+                        gender: Female
+                        applicationStartDate: '2022-12-01'
+                        applicationEndDate: '2022-12-31'
+                        supportContact:
+                          name: Mary G
+                          phone: '9876543210'
+                          email: maryg@xyz.com
+                      additionalFormData:
+                        formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                        formMimeType: text/html
         '404':
           description: Scholarship select request failed
           content:
@@ -3352,6 +3337,9 @@ components:
         name:
           description: Scholarship provider name
           type: string
+        description:
+          description: Scholarship description
+          type: string
         scholarships:
           type: array
           items:
@@ -3424,7 +3412,7 @@ components:
           description: fulfillment type
           type: string
         gender:
-          description: application end date
+          description: gender 
           type: string
         applicationStartDate:
           description: application start date
@@ -3434,27 +3422,99 @@ components:
           type: string
         supportContact:
           $ref: '#/components/schemas/SupportContact'
-        academicQualifications:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/AcademicQualification'
     SupportContact:
       description: Support contact
       type: object
       required:
-        - id
-        - name
-        - code
+        - phone
+        - email
       properties:
         name:
           description: contact person name
           type: string
         phone:
-          description: contact person name
+          description: contact person phone
           type: string
         email:
           description: contact person email
+          type: string
+    SelectScholarship:
+      description: Schema for scholarship selection
+      type: object
+      required:
+        - scholarshipProiderId
+        - scholarshipId
+        - context
+      properties:
+        scholarshipProiderId:
+          description: Scholarship provider id
+          type: string
+        scholarshipId:
+          description: Scholarship item id
+          type: string
+        scholarshipDetailsId:
+          description: Scholarship fulfillment id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    SelectScholarshipResponse:
+      description: Schema for selected scholarship
+      type: object
+      required:
+        - context
+        - scholarshipProvider
+        - additionalFormData
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        scholarshipProvider:
+          $ref: '#/components/schemas/ScholarshipProvider'
+        additionalForm:
+          $ref: '#/components/schemas/ScholarshipAdditionalForm'
+        academicQualificationsCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+        finStatusCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FinancialStatus'
+        benefits:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Benefit'
+    ScholarshipAdditionalForm:
+      description: Scholarship additional form
+      type: object
+      required:
+        - formUrl
+      properties:
+        formUrl:
+          description: additional form url
+          type: string
+        formMimeType:
+          description: additional form mimeType
+          type: string
+        submissionId:
+          description: Id returned as part of xinupt form submission
+          type: string
+        data:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/ScholarshipAdditionalFormData'
+    ScholarshipAdditionalFormData:
+      description: Scholarship additional form data
+      type: object
+      properties:
+        formInputKey:
+          description: Additional form key
+          type: string
+        formInputValue:
+          description: Additional form value for key
           type: string
     AcademicQualification:
       description: Academic Qualification
@@ -3473,34 +3533,40 @@ components:
         value:
           description: Academic qualification value
           type: string
-    SelectScholarship:
-      description: Schema for scholarship selection
+    FinancialStatus:
+      description: Financial Status Criteria
       type: object
       required:
-        - scholarshipProiderId
-        - scholarshipId
-        - context
+        - code
+        - name
+        - value
       properties:
-        scholarshipProiderId:
+        code:
+          description: Academic qualification code
           type: string
-        scholarshipId:
+        name:
+          description: Academic qualification name
           type: string
-        context:
-          $ref: '#/components/schemas/Context'
-    SelectScholarshipResponse:
-      description: Schema for selected scholarship
+        value:
+          description: Academic qualification value
+          type: string
+    Benefit:
+      description: Benefits
       type: object
       required:
-        - context
-        - scholarshipProviders
+        - code
+        - name
+        - value
       properties:
-        context:
-          $ref: '#/components/schemas/Context'
-        scholarshipProviders:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/ScholarshipProvider'
+        code:
+          description: Academic qualification code
+          type: string
+        name:
+          description: Academic qualification name
+          type: string
+        value:
+          description: Academic qualification value
+          type: string
     InitScholarshipRequest:
       description: Schema for scholarship init
       type: object
@@ -3518,7 +3584,6 @@ components:
       required:
         - id
         - name
-        - categoryId
         - scholarships
       properties:
         id:
@@ -3527,8 +3592,8 @@ components:
         name:
           description: Scholarship provider name
           type: string
-        categoryId:
-          description: Scholarship category id
+        description:
+          description: Scholarship provider description
           type: string
         scholarships:
           type: array
@@ -3552,6 +3617,23 @@ components:
         description:
           description: Scholarship description
           type: string
+        additionalForm:
+          $ref: '#/components/schemas/ScholarshipAdditionalForm'
+        academicQualificationsCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+        finStatusCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FinancialStatus'
+        benefits:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Benefit'
         amount:
           $ref: '#/components/schemas/ScholarshipAmount'
         scholarshipDetails:
@@ -3579,9 +3661,6 @@ components:
         - id
         - name
         - gender
-        - academicQualifications
-        - currentEducations
-        - scholarshipRequestorContact
       properties:
         id:
           description: person id
@@ -3594,33 +3673,6 @@ components:
           type: string
         scholarshipRequestorContact:
           $ref: '#/components/schemas/ScholarshipRequestorContact'
-        academicQualifications:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/AcademicQualification'
-        currentEducations:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CurrentEducation'
-    CurrentEducation:
-      description: Current Education
-      type: object
-      required:
-        - code
-        - name
-        - value
-      properties:
-        code:
-          description: Current Education code
-          type: string
-        name:
-          description: Current Education name
-          type: string
-        value:
-          description: Current Education value
-          type: string
     ScholarshipRequestorContact:
       description: Scholarship Requestor Contact
       type: object
@@ -3639,13 +3691,10 @@ components:
       type: object
       required:
         - context
-        - scholarshipApplicationId
         - scholarshipProviders
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        scholarshipApplicationId:
-          type: string
         scholarshipProvider:
           $ref: '#/components/schemas/InitScholarshipResponseProvider'
     InitScholarshipResponseProvider:
@@ -3663,8 +3712,8 @@ components:
         name:
           description: Scholarship provider name
           type: string
-        categoryId:
-          description: Scholarship category id
+        descriptor:
+          description: Scholarship provider descriptor
           type: string
         scholarships:
           type: array
@@ -3695,25 +3744,23 @@ components:
           type: string
         additionalForm:
           $ref: '#/components/schemas/ScholarshipAdditionalForm'
+        academicQualificationsCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+        finStatusCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FinancialStatus'
+        benefits:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Benefit'
         scholarshipDetails:
           $ref: '#/components/schemas/InitResponseScholarshipDetails'
-    ScholarshipAdditionalForm:
-      description: Scholarship additional form
-      type: object
-      required:
-        - url
-        - mimeType
-        - submissionId
-      properties:
-        url:
-          description: additional form url
-          type: string
-        mimeType:
-          description: additional form mimeType
-          type: string
-        submissionId:
-          description: additional form submissionId
-          type: string
     InitResponseScholarshipDetails:
       description: Scholarship init response details object
       type: object
@@ -3728,42 +3775,17 @@ components:
         type:
           description: scholarship type name
           type: string
-        scholarshipStatus:
-          $ref: '#/components/schemas/ScholarshipStatus'
         scholarshipRequestor:
           $ref: '#/components/schemas/InitScholarshipRequestor'
-    ScholarshipStatus:
-      description: Scholarship status object
-      type: object
-      required:
-        - id
-        - type
-        - scholarshipRequestor
-      properties:
-        code:
-          description: code
-          type: string
-        description:
-          description: description
-          type: string
-        updatedAt:
-          description: updated at timestamp
-          type: string
-        updatedBy:
-          description: updated by
-          type: string
     ConfirmScholarshipRequest:
       description: Schema for scholarship confirm request
       type: object
       required:
         - context
-        - scholarshipApplicationId
         - scholarshipProviders
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        scholarshipApplicationId:
-          type: string
         scholarshipProvider:
           $ref: '#/components/schemas/InitScholarshipResponseProvider'
     ConfirmScholarshipResponse:
@@ -3772,11 +3794,14 @@ components:
       required:
         - context
         - scholarshipApplicationId
+        - scholarshipApplicationStatus
         - scholarshipProviders
       properties:
         context:
           $ref: '#/components/schemas/Context'
         scholarshipApplicationId:
+          type: string
+        scholarshipApplicationStatus:
           type: string
         scholarshipProvider:
           $ref: '#/components/schemas/ConfirmScholarshipResponseProvider'
@@ -3793,6 +3818,9 @@ components:
           type: string
         name:
           description: Scholarship provider name
+          type: string
+        description:
+          description: Scholarship provider description
           type: string
         scholarships:
           type: array
@@ -3818,6 +3846,26 @@ components:
           type: string
         amount:
           $ref: '#/components/schemas/ScholarshipAmount'
+        categoryId:
+          description: Scholarship category id
+          type: string
+        additionalForm:
+          $ref: '#/components/schemas/ScholarshipAdditionalForm'
+        academicQualificationsCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+        finStatusCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FinancialStatus'
+        benefits:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Benefit'
         scholarshipDetails:
           $ref: '#/components/schemas/ConfirmResponseScholarshipDetails'
     ConfirmResponseScholarshipDetails:
@@ -3834,8 +3882,10 @@ components:
         type:
           description: scholarship type name
           type: string
-        scholarshipStatus:
-          $ref: '#/components/schemas/ScholarshipStatus'
+        supportContact:
+          $ref: '#/components/schemas/SupportContact'
+        scholarshipRequestor:
+          $ref: '#/components/schemas/InitScholarshipRequestor'
     ScholarshipStatusRequest:
       description: Schema for scholarship status request
       type: object
@@ -3854,11 +3904,14 @@ components:
       required:
         - context
         - scholarshipApplicationId
+        - scholarshipApplicationStatus
         - scholarshipProviders
       properties:
         context:
           $ref: '#/components/schemas/Context'
         scholarshipApplicationId:
+          type: string
+        scholarshipApplicationStatus:
           type: string
         scholarshipProvider:
           $ref: '#/components/schemas/ConfirmScholarshipResponseProvider'
@@ -4336,3 +4389,4 @@ security:
 servers:
   - url: https://api.dsep.client.becknprotocol.io/v1
     variables: {}
+ 
