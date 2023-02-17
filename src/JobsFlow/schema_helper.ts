@@ -181,7 +181,7 @@ export const buildOnSelectResponse = (response: any = {}, body: any = {}) => {
                 ?.filter((tag: any) => tag?.descriptor?.name?.toLowerCase()?.includes('qualifications'))
                 ?.map((tag: any) => ({
                     category: tag?.descriptor?.name,
-                    qualification: tag?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+                    qualification: tag?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
                 }))
         };
 
