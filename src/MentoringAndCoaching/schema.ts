@@ -8,4 +8,6 @@ export interface MentoringContext {
   version: string;
   ttl: string;
   transaction_id: string;
+  bpp_id?: string;
+  bpp_uri?: string;
 }
