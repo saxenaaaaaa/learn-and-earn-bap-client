@@ -135,12 +135,12 @@ export const statusScholarshipService = async (body: any): Promise<any> => {
         statusRequest.payload,
         { headers }
       );
-      statusResponse = buildStatusResponse(res?.data, body);
+      statusResponse = buildStatusResponse(res, body);
     } else {
-      statusResponse = buildStatusResponse(statusScholarshipReponse, body);
+      statusResponse = buildStatusResponse({ data: statusScholarshipReponse }, body);
     }
 
-    return { data: statusResponse };
+    return statusResponse;
   } catch (error) {
     return { error: error, errorOccured: true };
   }

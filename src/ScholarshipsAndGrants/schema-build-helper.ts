@@ -557,62 +557,50 @@ export const buildStatusRequest = (input: any = {}) => {
     action: "status"
   });
   const message = {
-    order: {
-      id: input?.scholarshipApplicationId
-    }
+    order_id: input?.scholarshipApplicationId
   };
   return { payload: { context, message } };
 };
-export const buildStatusResponse = (response: any = {}, input: any = {}) => {
+export const buildStatusResponse = (res: any = {}, input: any = {}) => {
+  const response = res?.data?.responses?.[0];
+  if (!response)
+    return { status: 200 };
+
   const context = {
-    transactionId: response?.context?.message_id,
+    transactionId: response?.context?.transaction_id,
     bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
+    bppUri: response?.context?.bpp_uri,
   };
 
-  const { order = {} } = response?.message;
+  const provider = response?.message?.order?.provider;
+  const scholarshipApplicationId = response?.message?.order?.id;
 
-  const scholarshipApplicationId = order?.id;
-
-  const scholarshipProvider: any = {
-    id: order?.provider?.id,
-    name: order?.provider?.descriptor?.name,
-
-    scholarships: order?.provider?.items.map((scholarship: any) => {
-      const fulfillmentFound: any = order?.provider?.fulfillments?.find(
-        (elem: any) => elem?.id === scholarship?.fulfillment_id
-      );
-
-      return {
-        id: scholarship?.id,
-        name: order?.provider?.descriptor?.name,
-        description: scholarship?.descriptor?.name,
+  const scholarshipProviders = [{
+    id: provider?.id,
+    name: provider?.descriptor?.name,
+    description: provider?.descriptor?.long_desc ?? provider?.descriptor?.short_desc,
+    scholarships: response?.message?.order?.items?.map((item: any) => ({
+      id: item?.id,
+      name: item?.desciptor?.name,
+      description: item?.descriptor?.long_desc,
         amount: {
-          amount: scholarship?.price?.value,
-          currency: scholarship?.price?.currency
+        amount: item?.price?.value,
+        currency: item?.price?.currency,
         },
+      // scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
+      //   ?.map((fulfillment: any) => ({
+      //     id: fulfillment?.id,
+      //     type: fulfillment?.type,
 
-        scholarshipDetails: {
-          id: fulfillmentFound ? fulfillmentFound?.id : "",
-          type: fulfillmentFound ? fulfillmentFound?.type : "",
-          scholarshipStatus: {
-            code: fulfillmentFound
-              ? fulfillmentFound?.state?.descriptor?.code
-              : "",
-            description: fulfillmentFound
-              ? fulfillmentFound?.state?.descriptor?.short_desc
-              : "",
-            updatedAt: fulfillmentFound
-              ? fulfillmentFound?.state?.updated_at
-              : "",
-            updatedBy: fulfillmentFound
-              ? fulfillmentFound?.state?.updated_by
-              : ""
-          }
-        }
-      };
-    })
-  };
+      //   })),
 
-  return { context, scholarshipApplicationId, scholarshipProvider };
+      scholarshipDetails: response?.message?.order?.fulfillments?.map((fulfillment: any) => ({
+        id: fulfillment?.id,
+        type: fulfillment?.type,
+        scholarshipStatus: { code: response?.message?.order?.status }
+      }))?.[0]
+    }))
+  }];
+
+  return { data: { context, scholarshipApplicationId, scholarshipProviders } };
 };
