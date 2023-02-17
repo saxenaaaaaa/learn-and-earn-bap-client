@@ -55,13 +55,13 @@ export const searchScholarshipService = async (body: any): Promise<any> => {
 
 export const selectScholarshipService = async (body: any): Promise<any> => {
   try {
-    const initRequest = buildSelectRequest(body);
-    console.log(JSON.stringify(initRequest.payload));
+    const selectRequest = buildSelectRequest(body);
+    console.log(JSON.stringify(selectRequest.payload));
 
     let selectResponse: any = {};
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
-      let res = await axios.post(`${gatewayUrl}/select`, initRequest.payload, {
+      let res = await axios.post(`${gatewayUrl}/select`, selectRequest.payload, {
         headers
       });
       selectResponse = buildSelectResponse(res, body);
@@ -79,6 +79,7 @@ export const selectScholarshipService = async (body: any): Promise<any> => {
 export const initScholarshipService = async (body: any): Promise<any> => {
   try {
     const initRequest = buildInitRequest(body);
+    return { data: initRequest.payload };
     console.log(JSON.stringify(initRequest.payload));
 
     let initResponse: any = {};
@@ -101,6 +102,7 @@ export const initScholarshipService = async (body: any): Promise<any> => {
 export const confirmScholarshipService = async (body: any): Promise<any> => {
   try {
     const confirmRequest = buildConfirmRequest(body);
+    return { data: confirmRequest.payload }
     console.log(JSON.stringify(confirmRequest.payload));
 
     let confirmResponse: any = {};

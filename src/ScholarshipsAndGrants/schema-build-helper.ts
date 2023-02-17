@@ -162,21 +162,36 @@ export const buildSelectResponse = (res: any = {}, input: any = {}) => {
         amount: item?.price?.value,
         currency: item?.price?.currency,
       },
+      additionalForm: {
+        url: item?.xinput?.form?.url,
+        mime_type: item?.xinput?.form?.mime_type,
+      },
       academicQualifications: item.tags?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
         ?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
       categories: response?.message?.order?.categories?.filter((category: any) => item.category_ids?.find((category_id: any) => category_id == category?.id))
         ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
-      scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
-        ?.map((fulfillment: any) => ({
-          id: fulfillment?.id,
-          type: fulfillment?.type,
-          gender: fulfillment?.customer?.person?.gender,
-          applicationStartDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-START")?.time?.timestamp,
-          applicationEndDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-END")?.time?.timestamp,
-          supportContact: fulfillment?.contact,
-          academicQualifications: fulfillment?.customer?.person?.tags?.find((tag: any) => tag?.code == "edu_qual")
-            ?.list?.map((li: any) => ({ code: li?.code, name: li?.name, value: li?.value }))
-        }))
+      // scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
+      //   ?.map((fulfillment: any) => ({
+      //     id: fulfillment?.id,
+      //     type: fulfillment?.type,
+      //     gender: fulfillment?.customer?.person?.gender,
+      //     applicationStartDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-START")?.time?.timestamp,
+      //     applicationEndDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-END")?.time?.timestamp,
+      //     supportContact: fulfillment?.contact,
+      //     academicQualifications: fulfillment?.customer?.person?.tags?.find((tag: any) => tag?.code == "edu_qual")
+      //       ?.list?.map((li: any) => ({ code: li?.code, name: li?.name, value: li?.value }))
+      //   }))
+
+      scholarshipDetails: response?.message?.order?.fulfillments?.map((fulfillment: any) => ({
+        id: fulfillment?.id,
+        type: fulfillment?.type,
+        gender: fulfillment?.customer?.person?.gender,
+        applicationStartDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-START")?.time?.timestamp,
+        applicationEndDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-END")?.time?.timestamp,
+        supportContact: fulfillment?.contact,
+        academicQualifications: fulfillment?.customer?.person?.tags?.find((tag: any) => tag?.code == "edu_qual")
+          ?.list?.map((li: any) => ({ code: li?.code, name: li?.name, value: li?.value }))
+      }))
     }))
   }];
 
@@ -199,50 +214,44 @@ export const buildInitRequest = (input: any = {}) => {
         descriptor: {
           name: scholarshipProvider?.name
         },
-        fulfillments: scholarshipProvider?.scholarships.map(
+        items: scholarshipProvider?.scholarships?.map((scholarship: any) => {
+          return {
+            id: scholarship?.id,
+            descriptor: {
+              name: scholarship?.name
+            },
+            price: {
+              currency: scholarship?.amount?.currency,
+              value: scholarship?.amount?.amount?.toString()
+            },
+            xinput: {
+              required: true,
+              form: {
+                url: scholarship?.additionalForm?.url,
+                mime_type: scholarship?.additionalForm?.urmimeTypel,
+                submission_id: scholarship?.additionalForm?.submissionId
+              }
+            },
+            tags: [{
+              code: "academic_qualifications",
+              name: "Academic Qualifications",
+              list: scholarship.scholarshipDetails?.scholarshipRequestor?.academicQualifications.map(
+                (qualification: any) => ({ descriptor: { code: qualification?.code, name: qualification?.name }, value: qualification?.value })
+              )
+            }, {
+              code: "current_education",
+              name: "Current Education",
+              list: scholarship?.scholarshipDetails?.scholarshipRequestor?.currentEducations.map(
+                (education: any) => ({ descriptor: { code: education?.code, name: education?.name }, value: education?.value })
+              )
+            }],
+            category_ids: [scholarshipProvider?.categoryId]
+          };
+        }),
+        fulfillments: scholarshipProvider?.scholarships?.map(
           (scholarship: any) => {
             let tags: any = [];
             const { scholarshipDetails = {} } = scholarship;
-            if (
-              scholarshipDetails?.scholarshipRequestor
-                ?.academicQualifications &&
-              scholarshipDetails?.scholarshipRequestor?.academicQualifications
-                ?.length
-            ) {
-              tags.push({
-                code: "academic_qualifications",
-                name: "Academic Qualifications",
-                list: scholarshipDetails?.scholarshipRequestor?.academicQualifications.map(
-                  (qualification: any) => {
-                    return {
-                      code: qualification?.code,
-                      name: qualification?.name,
-                      value: qualification?.value
-                    };
-                  }
-                )
-              });
-            }
-
-            if (
-              scholarshipDetails?.scholarshipRequestor?.currentEducations &&
-              scholarshipDetails?.scholarshipRequestor?.currentEducations
-                ?.length
-            ) {
-              tags.push({
-                code: "current_education",
-                name: "Current Education",
-                list: scholarshipDetails?.scholarshipRequestor?.currentEducations.map(
-                  (education: any) => {
-                    return {
-                      code: education?.code,
-                      name: education?.name,
-                      value: education?.value
-                    };
-                  }
-                )
-              });
-            }
 
             return {
               id: scholarshipDetails?.id,
@@ -252,7 +261,6 @@ export const buildInitRequest = (input: any = {}) => {
                   id: scholarshipDetails?.scholarshipRequestor?.id,
                   name: scholarshipDetails?.scholarshipRequestor?.name,
                   gender: scholarshipDetails?.scholarshipRequestor?.gender,
-                  tags
                 },
                 contact: {
                   address: {
@@ -266,21 +274,7 @@ export const buildInitRequest = (input: any = {}) => {
               }
             };
           }
-        ),
-        items: scholarshipProvider?.scholarships.map((scholarship: any) => {
-          return {
-            id: scholarship?.id,
-            descriptor: {
-              name: scholarship?.name
-            },
-            price: {
-              currency: scholarship?.amount?.currency,
-              value: scholarship?.amount?.amount
-            },
-            category_id: scholarshipProvider.categoryId,
-            fulfillment_id: scholarship?.scholarshipDetails?.id
-          };
-        })
+        )
       }
     }
   };
@@ -454,7 +448,6 @@ export const buildConfirmRequest = (input: any = {}) => {
                   id: scholarshipDetails?.scholarshipRequestor?.id,
                   name: scholarshipDetails?.scholarshipRequestor?.name,
                   gender: scholarshipDetails?.scholarshipRequestor?.gender,
-                  tags
                 },
                 contact: {
                   address: {
@@ -481,15 +474,27 @@ export const buildConfirmRequest = (input: any = {}) => {
             },
             category_id: scholarshipProvider.categoryId,
             fulfillment_id: scholarship?.scholarshipDetails?.id,
-            xinput_required: {
-              xinput: {
-                form: {
-                  url: scholarship?.additionalForm?.url,
-                  mime_type: scholarship?.additionalForm?.urmimeTypel,
-                  submission_id: scholarship?.additionalForm?.submissionId
-                }
+            xinput: {
+              "required": true,
+              form: {
+                url: scholarship?.additionalForm?.url,
+                mime_type: scholarship?.additionalForm?.urmimeTypel,
+                submission_id: scholarship?.additionalForm?.submissionId
               }
-            }
+            },
+            tags: [{
+              code: "academic_qualifications",
+              name: "Academic Qualifications",
+              list: scholarship.scholarshipDetails?.scholarshipRequestor?.academicQualifications.map(
+                (qualification: any) => ({ descriptor: { code: qualification?.code, name: qualification?.name }, value: qualification?.value })
+              )
+            }, {
+              code: "current_education",
+              name: "Current Education",
+              list: scholarship?.scholarshipDetails?.scholarshipRequestor?.currentEducations.map(
+                (education: any) => ({ descriptor: { code: education?.code, name: education?.name }, value: education?.value })
+              )
+            }]
           };
         })
       }
@@ -583,10 +588,10 @@ export const buildStatusResponse = (res: any = {}, input: any = {}) => {
       id: item?.id,
       name: item?.desciptor?.name,
       description: item?.descriptor?.long_desc,
-        amount: {
+      amount: {
         amount: item?.price?.value,
         currency: item?.price?.currency,
-        },
+      },
       // scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
       //   ?.map((fulfillment: any) => ({
       //     id: fulfillment?.id,
