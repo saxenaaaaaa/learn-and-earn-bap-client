@@ -1,5 +1,6 @@
-import axios from "axios";
+import axiosInstance from "axios";
 import dotenv from "dotenv";
+import https from 'https';
 import {
   buildSelectRequest,
   buildOnSearchResponse,
@@ -26,25 +27,30 @@ import onSearchResponse from './mock/onSearchResponse.json'
 import onInitResponse from './mock/onInitResponse.json'
 import onConfirmResponse from './mock/onConfirmResponse.json'
 import onStatusResponse from './mock/onStatusResponse.json'
-import { json } from "stream/consumers";
 dotenv.config();
 const gatewayUrl = process.env.GATEWAY_URL || "";
-const jobNetwork = process.env.JOB_NETWORK
+const jobNetwork = process.env.JOB_NETWORK;
+
+const axios = axiosInstance.create({
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  })
+});
 
 export async function searchJob(body: any): Promise<any> {
   try {
     const { payload } = buildSearchRequest(body);
     console.log(JSON.stringify(payload))
 
-    let response = onSearchResponse;
+    let response: any = { data: onSearchResponse };
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
-      let res = await axios.post(`${gatewayUrl}/search`, payload, { headers });
-      response = res?.data;
+      const res = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      response = res;
     }
     return buildOnSearchResponse(response, body);
   } catch (error) {
-    return { error: error, errorOccured: true };
+    return { error: JSON.stringify(error), errorOccured: true };
   }
 }
 
@@ -63,15 +69,16 @@ export async function onSearchJob(body: any): Promise<any> {
 export async function selectJob(body: any): Promise<any> {
   try {
     const { payload } = buildSelectRequest(body);
-    console.log(JSON.stringify(payload))
-    let response = onSelectResponse;
+    console.log(JSON.stringify(payload));
+
+    let response: any = { data: onSelectResponse };
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/select`, payload, { headers });
-      response = res?.data
+      response = res;
     }
     return buildOnSelectResponse(response, body);
-  } catch (error) {
+  } catch (error: any) {
     return { error: error, errorOccured: true };
   }
 }
@@ -93,13 +100,13 @@ export async function onSelectJob(body: any) {
 export async function initJob(body: any) {
   try {
     const { payload } = buildInitRequest(body);
-    console.log(JSON.stringify(payload))
+    console.log(JSON.stringify(payload));
 
-    let response = onInitResponse;
+    let response: any = { data: onInitResponse };
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/init`, payload, { headers });
-      response = res.data
+      response = res
     }
     return buildOnInitResponse(response);
   }
@@ -123,17 +130,17 @@ export async function onInitJob(body: any) {
 
 export async function confirmJob(body: any): Promise<any> {
   try {
-    console.log('aiia')
     const { payload } = buildConfirmRequest(body);
-    console.log(JSON.stringify(payload))
-    let response = onConfirmResponse;
+    console.log(JSON.stringify(payload));
+
+    let response: any = { data: onConfirmResponse };
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/confirm`, payload, { headers });
-      response = res?.data
+      response = res
     }
     return buildOnConfirmResponse(response);
-  } catch (error) {
+  } catch (error: any) {
     return { error: error, errorOccured: true };
   }
 }
@@ -156,15 +163,16 @@ export async function statusJob(body: any) {
   try {
     const { payload } = buildStatusRequest(body);
     console.log(JSON.stringify(payload));
-    let response = onStatusResponse;
+
+    let response = { data: onStatusResponse };
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/status`, payload, { headers });
-      response = res?.data
+      response = res
     }
     return buildOnStatusResponse(response);
   }
-  catch (error) {
+  catch (error: any) {
     return { error: error, errorOccured: true };
   }
 }

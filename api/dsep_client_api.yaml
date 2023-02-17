@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.14
+  version: 0.1.16
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -316,6 +316,9 @@ paths:
                           - Project Management
                           - Enterprise Architecture
                   additionalFormData:
+                    submissionId:
+                      123456
+                    data:
                     - formInputKey: resume
                       formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                     - formInputKey: work-mode
@@ -445,6 +448,9 @@ paths:
                             - Enterprise Architecture
                     additionalFormUrl: "https://affinidi.com/path/to/application/form" 
                     additionalFormData:
+                      submissionId:
+                        123456
+                      data:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
@@ -453,7 +459,6 @@ paths:
                         formInputValue: '10'
                       - formInputKey: sop
                         formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
-                    
         '404':
           description: Job init request failed
           content:
@@ -644,6 +649,9 @@ paths:
                             - Project Management
                             - Enterprise Architecture
                     additionalFormData:
+                      submissionId:
+                        123456
+                      data:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
@@ -822,6 +830,9 @@ paths:
                           statusCode: application-accepted
                     additionalFormUrl: https://affinidi.com/path/to/application/form
                     additionalFormData:
+                      submissionId:
+                        123456
+                      data:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
@@ -830,7 +841,6 @@ paths:
                         formInputValue: '10'
                       - formInputKey: sop
                         formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
-                    
         '404':
           description: Job status request failed
           content:
@@ -2484,10 +2494,16 @@ components:
           items:
             $ref: '#/components/schemas/JobFulfillment' 
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     JobFulfillment:
       description: Schema for Job Fulfillment object
       type: object
@@ -2571,10 +2587,16 @@ components:
           type: string
           description: Additional form from job provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     initiatedJobs:
       description: Schema for initiated Job
       type: object
@@ -2698,10 +2720,16 @@ components:
           type: string
           description: Additional form from job provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     ConfirmedJob:
       description: Schema for confirmed Job
       type: object
@@ -2822,10 +2850,16 @@ components:
           type: string
           description: Additional form from job provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     JobStatusFulfillment:
       description: Schema for Job status Fulfillment object
       type: object
@@ -3945,12 +3979,11 @@ components:
       type: object
       required:
         - courseId
-        - CourseProviderId
         - context
       properties:
         courseId:
           type: string
-        CourseProviderId:
+        courseProviderId:
           type: string
         context:
           $ref: '#/components/schemas/Context'
@@ -4012,13 +4045,42 @@ components:
         enrollmentEndDate:
           description: Enrollment End Date
           type: string
+        eligibility:
+          description: Course eligibility
+          type: array
+          items:
+            type: object
+            properties: 
+              name:
+                type: string
+              value:
+                type: string
+        courseHighlights:
+          description: Course highlights
+          type: array
+          items:
+            type: object
+            properties: 
+              name:
+                type: string
+              value:
+                type: string
+        prerequisites:
+          description: Course prerequisites
+          type: array
+          items:
+            type: object
+            properties: 
+              name:
+                type: string
+              value:
+                type: string
     InitCourse:
       description: Schema for Course initialization
       type: object
       required:
         - context
         - courseId
-        - CourseProviderId
         - applicantProfile
       properties:
         context:
@@ -4030,10 +4092,16 @@ components:
         applicantProfile:
           $ref: '#/components/schemas/CourseApplicantProfile' 
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/CourseAdditionalFormData'
     CourseApplicantProfile:
       description: Schema for course Fulfillment/applicant object
       type: object
@@ -4072,16 +4140,24 @@ components:
           $ref: '#/components/schemas/Context'
         course:
           $ref: '#/components/schemas/Course'
+        courseDetails:
+          $ref: '#/components/schemas/CourseDetails'
         applicantProfile:
           $ref: '#/components/schemas/CourseApplicantProfile' 
         additionalFormUrl:
           type: string
           description: Additional form from course provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/CourseAdditionalFormData'
     ConfirmCourseRequest:
       description: Schema for Course confirmation
       type: object
@@ -4098,12 +4174,7 @@ components:
         CourseProviderId:
           type: string
         applicantProfile:
-          $ref: '#/components/schemas/CourseApplicantProfile' 
-        additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'
+          $ref: '#/components/schemas/CourseApplicantProfile'
     ConfirmCourseResponse:
       description: Schema for confirmed course response
       type: object
@@ -4117,6 +4188,8 @@ components:
           $ref: '#/components/schemas/Context'
         applicationId:
           type: string
+        applicationState:
+          type: string
         course:
           $ref: '#/components/schemas/Course'
         applicantProfile:
@@ -4125,10 +4198,16 @@ components:
           type: string
           description: Additional form from course provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'  
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/CourseAdditionalFormData'  
     CourseStatusRequest:
       description: Schema for course status request
       type: object
@@ -4161,10 +4240,16 @@ components:
           type: string
           description: Additional form from course provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/CourseAdditionalFormData'
     Context:
       description: schema context object
       type: object
