@@ -147,7 +147,7 @@ export const buildOnSelectResponse = (response: any = {}, body: any = {}) => {
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
-    const xinput = input?.message?.order?.xinput;
+
 
     const company = {
         id: provider?.id,
@@ -210,7 +210,7 @@ export const buildOnSelectResponse = (response: any = {}, body: any = {}) => {
             salaryInfo: compensation?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
         }
 
-        job.additionalFormUrl = xinput?.form?.url
+        job.additionalFormUrl = item?.xinput?.form?.url
 
         selectedJobs.push(job);
     });
@@ -253,7 +253,10 @@ export const buildInitRequest = (input: any) => {
                     }
                 }
             }),
-            xinput: { data: Object.fromEntries(input?.additionalFormData?.map((formData: any) => [formData?.formInputKey, formData?.formInputValue]) ?? []) }
+            xinput: {
+                submission_id: input?.additionalFormData?.submissionId,
+                data: Object.fromEntries(input?.additionalFormData?.data?.map((formData: any) => [formData?.formInputKey, formData?.formInputValue]) ?? [])
+            }
         },
     }
     return { payload: { context, message } }
@@ -264,7 +267,7 @@ export const buildInitResponse = (input: any = {}, body: any = {}) => {
 }
 
 export const buildOnInitRequest = (input: any = {}) => {
-    const context = buildContext({ category: 'jobs', action: 'on_init', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input.bppUri });
+    const context = buildContext({ category: 'jobs', action: 'on_init', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input?.bppUri });
     const message = {};
 
     return { payload: { context, message } };
@@ -392,8 +395,7 @@ export const buildConfirmRequest = (input: any = {}) => {
                         tags: [{ code: "func_skills", list: input?.confirmation?.jobApplicantProfile?.skills?.map((skill: any) => ({ name: skill })) }],
                     }
                 }
-            }],
-            xinput: input?.xinput
+            }]
         },
 
     }

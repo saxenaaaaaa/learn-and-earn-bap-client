@@ -40,7 +40,7 @@ const axios = axiosInstance.create({
 export async function searchJob(body: any): Promise<any> {
   try {
     const { payload } = buildSearchRequest(body);
-    console.log(JSON.stringify(payload))
+    console.log(JSON.stringify(payload));
 
     let response: any = { data: onSearchResponse };
     if (jobNetwork != 'local') {
@@ -77,6 +77,7 @@ export async function selectJob(body: any): Promise<any> {
       let res = await axios.post(`${gatewayUrl}/select`, payload, { headers });
       response = res;
     }
+
     return buildOnSelectResponse(response, body);
   } catch (error: any) {
     return { error: error, errorOccured: true };
@@ -111,6 +112,7 @@ export async function initJob(body: any) {
     return buildOnInitResponse(response);
   }
   catch (error) {
+    console.log(error);
     return { error: error, errorOccured: true };
   }
 }
