@@ -12,7 +12,9 @@ import {
   buildCancelRequest,
   buildCancelResponse
 } from "./schema-build-helpers";
-import axios from "axios";
+import axiosInstance from "axios";
+import https from "https";
+
 import searchMentorShipResp from "./mocks/searchMentorShipReponse.json";
 import selectMentorshipResp from "./mocks/selectMentorShipResponse.json";
 import confirmMentorShipResponse from "./mocks/confirmMentorShipResponse.json";
@@ -20,13 +22,18 @@ import statusMentorShipResponse from "./mocks/statusMentorShipResponse.json";
 import cancelMentorShipResponse from "./mocks/cancelMentorShipResponse.json";
 import initMentorShipResponse from "./mocks/initMentorShipResponse.json";
 
-const gatewayUrl = "https://dev.elevate-apis.shikshalokam.org/bpp";
+const gatewayUrl = "https://dsep-protocol-client.becknprotocol.io";
 const mentorshipNetwork = process.env.MENTORSHIP_NETWORK;
-
+const axios = axiosInstance.create({
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  })
+});
 export const searchMentorShipService = async (body: any): Promise<any> => {
   try {
     const searchRequest = buildSearchRequest(body);
     console.log(JSON.stringify(searchRequest.payload));
+
     let searchResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -35,13 +42,14 @@ export const searchMentorShipService = async (body: any): Promise<any> => {
         searchRequest.payload,
         { headers }
       );
+
       searchResponse = buildSearchResponse(res?.data, body);
     } else {
       searchResponse = buildSearchResponse(searchMentorShipResp, body);
     }
 
     return { data: searchResponse };
-  } catch (error) {
+  } catch (error: any) {
     return { error: error, errorOccured: true };
   }
 };
@@ -50,6 +58,7 @@ export const selectMentorshipService = async (body: any): Promise<any> => {
   try {
     const selectRequest = buildSelectRequest(body);
     console.log(JSON.stringify(selectRequest.payload));
+
     let selectResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -63,7 +72,7 @@ export const selectMentorshipService = async (body: any): Promise<any> => {
       selectResponse = buildSelectResponse(selectMentorshipResp, body);
     }
     return { data: selectResponse };
-  } catch (error) {
+  } catch (error: any) {
     return { error: error, errorOccured: true };
   }
 };
@@ -72,6 +81,7 @@ export const confirmMentorshipService = async (body: any): Promise<any> => {
   try {
     const confirmRequest = buildConfirmRequest(body);
     console.log(JSON.stringify(confirmRequest.payload));
+
     let confirmResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -137,6 +147,7 @@ export const cancelMentorshipService = async (body: any): Promise<any> => {
   try {
     const cancelRequest = buildCancelRequest(body);
     console.log(JSON.stringify(cancelRequest));
+
     let cancelResponse: any = {};
 
     if (mentorshipNetwork !== "local") {
