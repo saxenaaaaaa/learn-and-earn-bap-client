@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.17
+  version: 0.1.18
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -1397,7 +1397,7 @@ paths:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
                 scholarshipProviders:
-                  - id: BX213573733
+                  - id: ZQU31169990
                     name: XYZ Education Foundation
                     description: XYZ Education Foundation
                     scholarships:
@@ -1463,8 +1463,8 @@ paths:
               scholarshipDetailsId: DSEP_FUL_58741444
               context:
                 transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                bppId: https://xyzbpp.com/
-                bppUri: https://api.xyzbpp.com/v0/
+                bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
       responses:
         '200':
           description: Scholarship select request sent to network
@@ -1475,33 +1475,54 @@ paths:
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
                 scholarshipProvider:
                   id: BX213573733
                   name: XYZ Education Foundation
                   scholarships:
-                    - id: SCM_00420068
-                      name: XYZ Foundation Undergraduation scholarship
-                      description: XYZ Foundation Undergraduation scholarship
-                      amount:
-                        amount: 30000
-                        currency: INR
-                      category:
-                        id: DSEP_CAT_1
-                        name: Under Graduate
-                        code: ug
-                      scholarshipDetails:
-                        id: DSEP_FUL_01
-                        type: SCHOLARSHIP
-                        gender: Female
-                        applicationStartDate: '2022-12-01'
-                        applicationEndDate: '2022-12-31'
-                        supportContact:
-                          name: Mary G
-                          phone: '9876543210'
-                          email: maryg@xyz.com
-                      additionalFormData:
-                        formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
-                        formMimeType: text/html
+                  - id: SCM_00420068
+                    name: XYZ Foundation Undergraduation scholarship
+                    description: XYZ Foundation Undergraduation scholarship
+                    amount:
+                      amount: 30000
+                      currency: INR
+                    category:
+                      id: DSEP_CAT_1
+                      name: Under Graduate
+                      code: ug
+                    scholarshipDetails:
+                      id: DSEP_FUL_01
+                      type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 
+                      data: []
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: '<= 2000000'
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
         '404':
           description: Scholarship select request failed
           content:
@@ -1541,46 +1562,68 @@ paths:
             example:
               context:
                 transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                bppId: https://xyzbpp.com/
-                bppUri: https://api.xyzbpp.com/v0/
+                bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
               scholarshipProvider:
                 id: BX213573733
                 name: XYZ Education Foundation
-                categoryId: DSEP_CAT_1
                 scholarships:
-                  - id: SCM_00420068
-                    name: XYZ Foundation Undergraduation scholarship
-                    description: XYZ Foundation Undergraduation scholarship
-                    amount:
-                      amount: 30000
-                      currency: INR
-                    scholarshipDetails:
-                      id: DSEP_FUL_01
-                      type: SCHOLARSHIP
-                      scholarshipRequestor:
-                        id: candidate_101
-                        name: Jane D
-                        gender: Female
-                        scholarshipRequestorContact:
-                          address: AB apartment|Mumbai|Maharashtra
-                          addressFormat: addressLine1|city|state
-                        academicQualifications:
-                          - code: gr
-                            name: Grade
-                            value: Grade 12
-                          - code: percentage_grade
-                            name: Percentage/Grade
-                            value: '75'
-                          - code: passing_year
-                            name: Passing Year
-                            value: '2022'
-                        currentEducations:
-                          - code: ug
-                            name: Under Graduate
-                            value: BSc IT
-                          - code: academic_year
-                            name: Academic Year
-                            value: 2022-2023
+                - id: SCM_00420068
+                  name: XYZ Foundation Undergraduation scholarship
+                  description: XYZ Foundation Undergraduation scholarship
+                  amount:
+                    amount: 30000
+                    currency: INR
+                  categoryId: DSEP_CAT_1
+                  scholarshipDetails:
+                    id: DSEP_FUL_01
+                    type: SCHOLARSHIP
+                    applicationStartDate: '2022-12-01'
+                    applicationEndDate: '2022-12-31'
+                    supportContact:
+                      name: Mary G
+                      phone: '9876543210'
+                      email: maryg@xyz.com
+                    scholarshipRequestor:
+                      id: 1234
+                      name: Test User
+                      gender: Male
+                      scholarshipRequestorContact:
+                        address: Mumbai
+                        addressFormat: City
+                  additionalFormData:
+                    formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                    formMimeType: text/html
+                    submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                    data:
+                    - formInputKey: name
+                      formInputValue: James
+                    - formInputKey: phone
+                      formInputValue: 498674
+                    - formInputKey: address
+                      formInputValue: Mumbai
+                    - formInputKey: needOfScholarship
+                      formInputValue: higher education
+                    - formInputKey: docUrl
+                      formInputValue: http://abc.co/docs
+                  academicQualificationsCriteria: 
+                  - code: gr
+                    name: Grade
+                    value: Grade 12
+                  - code: percentage_grade
+                    name: Percentage/Grade
+                    value: '>= 50'
+                  - code: passing_year
+                    name: Passing Year
+                    value: 2021
+                  finStatusCriteria: 
+                  - code: family_income
+                    name: Family Income
+                    value: <= 2000000
+                  benefits: 
+                  - code: scholarship-amount
+                    name: Scholarship Amount
+                    value: Upto Rs.30000 per year
       responses:
         '200':
           description: Scholarship init request sent to network
@@ -1591,56 +1634,69 @@ paths:
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                  bppId: https://xyzbpp.com/
-                  bppUri: https://api.xyzbpp.com/v0/
-                scholarshipApplicationId: '123456'
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
                 scholarshipProvider:
                   id: BX213573733
                   name: XYZ Education Foundation
-                  categoryId: DSEP_CAT_1
+                  description: XYZ Education Foundation
                   scholarships:
-                    - id: SCM_00420068
-                      name: XYZ Foundation Undergraduation scholarship
-                      description: XYZ Foundation Undergraduation scholarship
-                      amount:
-                        amount: 30000
-                        currency: INR
-                      categoryId: DSEP_CAT_1
-                      additionalForm:
-                        url:   https://api.example-bpp.com/getForm?id=t8923y4ryu328473y4
-                        mime_type: text/html
-                      scholarshipDetails:
-                        id: DSEP_FUL_01
-                        type: SCHOLARSHIP
-                        scholarshipStatus:
-                          code: INIT
-                          description: Application initiated
-                          updatedAt: 2023-01-01 10:00:000
-                          updatedBy: candidate_101
-                        scholarshipRequestor:
-                          id: candidate_101
-                          name: Jane D
-                          gender: Female
-                          scholarshipRequestorContact:
-                            address: AB apartment|Mumbai|Maharashtra
-                            addressFormat: addressLine1|city|state
-                          academicQualifications:
-                            - code: gr
-                              name: Grade
-                              value: Grade 12
-                            - code: percentage_grade
-                              name: Percentage/Grade
-                              value: '75'
-                            - code: passing_year
-                              name: Passing Year
-                              value: '2022'
-                          currentEducations:
-                            - code: ug
-                              name: Under Graduate
-                              value: BSc IT
-                            - code: academic_year
-                              name: Academic Year
-                              value: 2022-2023
+                  - id: SCM_00420068
+                    name: XYZ Foundation Undergraduation scholarship
+                    description: XYZ Foundation Undergraduation scholarship
+                    categoryId: DSEP_CAT_1
+                    amount:
+                      amount: 30000
+                      currency: INR
+                    scholarshipDetails:
+                      id: DSEP_FUL_01
+                      type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
+                      scholarshipRequestor:
+                        id: 1234
+                        name: Test User
+                        gender: Male
+                        scholarshipRequestorContact:
+                          address: Mumbai
+                          addressFormat: City
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                      data:
+                      - formInputKey: name
+                        formInputValue: James
+                      - formInputKey: phone
+                        formInputValue: 498674
+                      - formInputKey: address
+                        formInputValue: Mumbai
+                      - formInputKey: needOfScholarship
+                        formInputValue: higher education
+                      - formInputKey: docUrl
+                        formInputValue: http://abc.co/docs
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: <= 2000000
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
         '404':
           description: Scholarship init request failed
           content:
@@ -1678,54 +1734,71 @@ paths:
             schema:
               $ref: '#/components/schemas/ConfirmScholarshipRequest'
             example:
-              context:
-                transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                bppId: https://xyzbpp.com/
-                bppUri: https://api.xyzbpp.com/v0/
-              scholarshipApplicationId: '123456'
-              scholarshipProvider:
-                id: BX213573733
-                name: XYZ Education Foundation
-                categoryId: DSEP_CAT_1
-                scholarships:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
+                scholarshipProvider:
+                  id: BX213573733
+                  name: XYZ Education Foundation
+                  description: XYZ Education Foundation
+                  scholarships:
                   - id: SCM_00420068
                     name: XYZ Foundation Undergraduation scholarship
                     description: XYZ Foundation Undergraduation scholarship
+                    categoryId: DSEP_CAT_1
                     amount:
                       amount: 30000
                       currency: INR
-                    categoryId: DSEP_CAT_1
-                    additionalForm:
-                      url: https://api.example-bpp.com/getForm?id=t8923y4ryu328473y4
-                      urmimeTypel: text/html
-                      submissionId: jhg84n0jhs8
                     scholarshipDetails:
                       id: DSEP_FUL_01
                       type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
                       scholarshipRequestor:
-                        id: candidate_101
-                        name: Jane D
-                        gender: Female
+                        id: 1234
+                        name: Test User
+                        gender: Male
                         scholarshipRequestorContact:
-                          address: AB apartment|Mumbai|Maharashtra
-                          addressFormat: addressLine1|city|state
-                        academicQualifications:
-                          - code: gr
-                            name: Grade
-                            value: Grade 12
-                          - code: percentage_grade
-                            name: Percentage/Grade
-                            value: '75'
-                          - code: passing_year
-                            name: Passing Year
-                            value: '2022'
-                        currentEducations:
-                          - code: ug
-                            name: Under Graduate
-                            value: BSc IT
-                          - code: academic_year
-                            name: Academic Year
-                            value: 2022-2023
+                          address: Mumbai
+                          addressFormat: City
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                      data:
+                      - formInputKey: name
+                        formInputValue: James
+                      - formInputKey: phone
+                        formInputValue: 498674
+                      - formInputKey: address
+                        formInputValue: Mumbai
+                      - formInputKey: needOfScholarship
+                        formInputValue: higher education
+                      - formInputKey: docUrl
+                        formInputValue: http://abc.co/docs
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: <= 2000000
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
       responses:
         '200':
           description: Scholarship confirmation request sent to network
@@ -1736,26 +1809,71 @@ paths:
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                  bppId: https://xyzbpp.com/
-                  bppUri: https://api.xyzbpp.com/v0/
-                scholarshipApplicationId: '123456'
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
+                scholarshipApplicationId: APP_32620371
+                scholarshipApplicationStatus: ACTIVE
                 scholarshipProvider:
                   id: BX213573733
                   name: XYZ Education Foundation
+                  description: XYZ Education Foundation
                   scholarships:
-                    - id: SCM_00420068
-                      name: XYZ Foundation Undergraduation scholarship
-                      amount:
-                        amount: 30000
-                        currency: INR
-                      scholarshipDetails:
-                        id: DSEP_FUL_01
-                        type: SCHOLARSHIP
-                        scholarshipStatus:
-                          code: INPROGRESS
-                          description: Your application is under review
-                          updatedAt: 2023-01-01 11:00:000
-                          updatedBy: reviewer-1
+                  - id: SCM_00420068
+                    name: XYZ Foundation Undergraduation scholarship
+                    description: XYZ Foundation Undergraduation scholarship
+                    categoryId: DSEP_CAT_1
+                    amount:
+                      amount: 30000
+                      currency: INR
+                    scholarshipDetails:
+                      id: DSEP_FUL_01
+                      type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
+                      scholarshipRequestor:
+                        id: 1234
+                        name: Test User
+                        gender: Male
+                        scholarshipRequestorContact:
+                          address: Mumbai
+                          addressFormat: City
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                      data:
+                      - formInputKey: name
+                        formInputValue: James
+                      - formInputKey: phone
+                        formInputValue: 498674
+                      - formInputKey: address
+                        formInputValue: Mumbai
+                      - formInputKey: needOfScholarship
+                        formInputValue: higher education
+                      - formInputKey: docUrl
+                        formInputValue: http://abc.co/docs
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: <= 2000000
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
         '404':
           description: Scholarship confirm request failed
           content:
@@ -1793,7 +1911,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ScholarshipStatusRequest'
             example:
-              scholarshipApplicationId: '123456'
+              scholarshipApplicationId: 'APP_32620371'
               context:
                 transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
                 bppId: https://xyzbpp.com/
@@ -1808,27 +1926,71 @@ paths:
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                  bppId: https://xyzbpp.com/
-                  bppUri: https://api.xyzbpp.com/v0/
-                scholarshipApplicationId: '123456'
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
+                scholarshipApplicationId: APP_32620371
+                scholarshipApplicationStatus: ACTIVE
                 scholarshipProvider:
                   id: BX213573733
                   name: XYZ Education Foundation
+                  description: XYZ Education Foundation
                   scholarships:
-                    - id: SCM_00420068
-                      name: XYZ Foundation Undergraduation scholarship
-                      description: XYZ Foundation Undergraduation scholarship
-                      amount:
-                        amount: 30000
-                        currency: INR
-                      scholarshipDetails:
-                        id: DSEP_FUL_01
-                        type: SCHOLARSHIP
-                        scholarshipStatus:
-                          code: INPROGRESS
-                          description: Your application is under review
-                          updatedAt: 2023-01-01 11:00:000
-                          updatedBy: reviewer-1
+                  - id: SCM_00420068
+                    name: XYZ Foundation Undergraduation scholarship
+                    description: XYZ Foundation Undergraduation scholarship
+                    categoryId: DSEP_CAT_1
+                    amount:
+                      amount: 30000
+                      currency: INR
+                    scholarshipDetails:
+                      id: DSEP_FUL_01
+                      type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
+                      scholarshipRequestor:
+                        id: 1234
+                        name: Test User
+                        gender: Male
+                        scholarshipRequestorContact:
+                          address: Mumbai
+                          addressFormat: City
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                      data:
+                      - formInputKey: name
+                        formInputValue: James
+                      - formInputKey: phone
+                        formInputValue: 498674
+                      - formInputKey: address
+                        formInputValue: Mumbai
+                      - formInputKey: needOfScholarship
+                        formInputValue: higher education
+                      - formInputKey: docUrl
+                        formInputValue: http://abc.co/docs
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: <= 2000000
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
         '404':
           description: Scholarship status request failed
           content:
@@ -3411,9 +3573,6 @@ components:
         type:
           description: fulfillment type
           type: string
-        gender:
-          description: gender 
-          type: string
         applicationStartDate:
           description: application start date
           type: string
@@ -3617,6 +3776,13 @@ components:
         description:
           description: Scholarship description
           type: string
+        categoryId:
+          description: Category Id
+          type: string
+        amount:
+          $ref: '#/components/schemas/ScholarshipAmount'
+        scholarshipDetails:
+          $ref: '#/components/schemas/InitScholarshipDetails'
         additionalForm:
           $ref: '#/components/schemas/ScholarshipAdditionalForm'
         academicQualificationsCriteria:
@@ -3634,10 +3800,6 @@ components:
           items:
             oneOf:
             - $ref: '#/components/schemas/Benefit'
-        amount:
-          $ref: '#/components/schemas/ScholarshipAmount'
-        scholarshipDetails:
-          $ref: '#/components/schemas/InitScholarshipDetails'
     InitScholarshipDetails:
       description: Scholarship init details object
       type: object
@@ -3652,6 +3814,14 @@ components:
         type:
           description: scholarship type name
           type: string
+        applicationStartDate:
+          description: application start date
+          type: string
+        applicationEndDate:
+          description: application end date
+          type: string
+        supportContact:
+          $ref: '#/components/schemas/SupportContact'
         scholarshipRequestor:
           $ref: '#/components/schemas/InitScholarshipRequestor'
     InitScholarshipRequestor:
@@ -3737,11 +3907,13 @@ components:
         description:
           description: Scholarship description
           type: string
-        amount:
-          $ref: '#/components/schemas/ScholarshipAmount'
         categoryId:
           description: Scholarship category id
           type: string
+        amount:
+          $ref: '#/components/schemas/ScholarshipAmount'
+        scholarshipDetails:
+          $ref: '#/components/schemas/InitResponseScholarshipDetails'
         additionalForm:
           $ref: '#/components/schemas/ScholarshipAdditionalForm'
         academicQualificationsCriteria:
@@ -3759,8 +3931,6 @@ components:
           items:
             oneOf:
             - $ref: '#/components/schemas/Benefit'
-        scholarshipDetails:
-          $ref: '#/components/schemas/InitResponseScholarshipDetails'
     InitResponseScholarshipDetails:
       description: Scholarship init response details object
       type: object
@@ -3775,6 +3945,14 @@ components:
         type:
           description: scholarship type name
           type: string
+        applicationStartDate:
+          description: application start date
+          type: string
+        applicationEndDate:
+          description: application end date
+          type: string
+        supportContact:
+          $ref: '#/components/schemas/SupportContact'
         scholarshipRequestor:
           $ref: '#/components/schemas/InitScholarshipRequestor'
     ConfirmScholarshipRequest:
@@ -3844,11 +4022,13 @@ components:
         description:
           description: Scholarship description
           type: string
-        amount:
-          $ref: '#/components/schemas/ScholarshipAmount'
         categoryId:
           description: Scholarship category id
           type: string
+        amount:
+          $ref: '#/components/schemas/ScholarshipAmount'
+        scholarshipDetails:
+          $ref: '#/components/schemas/ConfirmResponseScholarshipDetails'
         additionalForm:
           $ref: '#/components/schemas/ScholarshipAdditionalForm'
         academicQualificationsCriteria:
@@ -3866,8 +4046,6 @@ components:
           items:
             oneOf:
             - $ref: '#/components/schemas/Benefit'
-        scholarshipDetails:
-          $ref: '#/components/schemas/ConfirmResponseScholarshipDetails'
     ConfirmResponseScholarshipDetails:
       description: Scholarship confirm response details object
       type: object
@@ -3881,6 +4059,12 @@ components:
           type: string
         type:
           description: scholarship type name
+          type: string
+        applicationStartDate:
+          description: application start date
+          type: string
+        applicationEndDate:
+          description: application end date
           type: string
         supportContact:
           $ref: '#/components/schemas/SupportContact'
