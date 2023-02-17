@@ -4,8 +4,16 @@ import { IScholarshipNetworkContext } from "./schema";
 export const buildContext = (input: any = {}) => {
   const context: IScholarshipNetworkContext = {
     domain: `${process.env.DOMAIN}${input?.category ?? "scholarships"}`,
-    country: process.env.COUNTRY || (input?.country ?? ""),
-    city: process.env.CITY || (input?.city ?? ""),
+    location: {
+      city: {
+        name: process.env.CITY || "",
+        code: process.env.CITY_CODE || ""
+      },
+      country: {
+        name: process.env.COUNTRY || "",
+        code: process.env.COUNTRY_CODE || ""
+      }
+    },
     action: input.action ?? "",
     version: `${process.env.CORE_VERSION || (input?.core_version ?? "")}`,
     transaction_id: input?.transactionId ?? uuid(),
@@ -74,7 +82,11 @@ export const buildSearchRequest = (input: any = {}) => {
       });
     });
   }
-  message.intent.provider = { categories: input?.categories?.map((category: any) => ({ descriptor: { code: category?.code } })) };
+  message.intent.provider = {
+    categories: input?.categories?.map((category: any) => ({
+      descriptor: { code: category?.code }
+    }))
+  };
 
   if (Object.keys(fulfillment?.customer?.person ?? {})?.length) {
     message.intent.fulfillment = fulfillment;
@@ -85,119 +97,169 @@ export const buildSearchRequest = (input: any = {}) => {
 export const buildSearchResponse = (res: any = {}, body: any = {}) => {
   const response = res?.data?.responses?.[0];
   console.log("response", response);
-  if (!response)
-    return { status: 200 };
+  if (!response) return { status: 200 };
 
   const context = {
     transactionId: response?.context?.transaction_id,
     bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri,
+    bppUri: response?.context?.bpp_uri
   };
 
-
-  const scholarshipProviders = response?.message?.catalog?.providers?.map((provider: any) => ({
-    id: provider?.id,
-    name: provider?.descriptor?.name,
-    scholarships: provider?.items?.map((item: any) => ({
-      id: item?.id,
-      name: item?.desciptor?.name,
-      description: item?.descriptor?.long_desc,
-      amount: {
-        amount: item?.price?.value,
-        currency: item?.price?.currency,
-      },
-      categories: provider?.categories?.filter((category: any) => item.category_ids?.find((category_id: any) => category_id == category?.id))
-        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
-      scholarshipDetails: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
-        ?.map((fulfillment: any) => ({
-          id: fulfillment?.id,
-          type: fulfillment?.type,
-          gender: fulfillment?.customer?.person?.gender,
-          applicationStartDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-START")?.time?.timestamp,
-          applicationEndDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-END")?.time?.timestamp,
-          supportContact: fulfillment?.contact,
-          academicQualifications: fulfillment?.customer?.person?.tags?.find((tag: any) => tag?.code == "academic_qualifications")
-            ?.list?.map((li: any) => ({ code: li?.code, name: li?.name, value: li?.value }))
-        }))
-    }))
-  }));
+  const scholarshipProviders = response?.message?.catalog?.providers?.map(
+    (provider: any) => ({
+      id: provider?.id,
+      name: provider?.descriptor?.name,
+      scholarships: provider?.items?.map((item: any) => ({
+        id: item?.id,
+        name: item?.desciptor?.name,
+        description: item?.descriptor?.long_desc,
+        amount: {
+          amount: item?.price?.value,
+          currency: item?.price?.currency
+        },
+        categories: provider?.categories
+          ?.filter((category: any) =>
+            item.category_ids?.find(
+              (category_id: any) => category_id == category?.id
+            )
+          )
+          ?.map((category: any) => ({
+            id: category?.id,
+            code: category?.descriptor?.code,
+            name: category?.descriptor?.name
+          })),
+        scholarshipDetails: provider?.fulfillments
+          ?.filter((fulfillment: any) =>
+            item?.fulfillment_ids?.find(
+              (fulfillment_id: any) => fulfillment_id == fulfillment?.id
+            )
+          )
+          ?.map((fulfillment: any) => ({
+            id: fulfillment?.id,
+            type: fulfillment?.type,
+            gender: fulfillment?.customer?.person?.gender,
+            applicationStartDate: fulfillment.stops?.find(
+              (stop: any) => stop?.type == "APPLICATION-START"
+            )?.time?.timestamp,
+            applicationEndDate: fulfillment.stops?.find(
+              (stop: any) => stop?.type == "APPLICATION-END"
+            )?.time?.timestamp,
+            supportContact: fulfillment?.contact,
+            academicQualifications: fulfillment?.customer?.person?.tags
+              ?.find((tag: any) => tag?.code == "academic_qualifications")
+              ?.list?.map((li: any) => ({
+                code: li?.code,
+                name: li?.name,
+                value: li?.value
+              }))
+          }))
+      }))
+    })
+  );
 
   return { data: { context, scholarshipProviders } };
 };
 
 export const buildSelectRequest = (input: any = {}) => {
   const payload = {
-    context: buildContext({ ...(input?.context ?? {}), action: 'select' }),
+    context: buildContext({ ...(input?.context ?? {}), action: "select" }),
     message: {
       order: {
-        provider: { id: input?.scholarshipProiderId }, items: [{ id: input?.scholarshipId }]
+        provider: { id: input?.scholarshipProiderId },
+        items: [{ id: input?.scholarshipId }]
       }
     }
-  }
+  };
   return { payload };
-}
+};
 
 export const buildSelectResponse = (res: any = {}, input: any = {}) => {
   const response = res?.data?.responses?.[0];
-  if (!response)
-    return { status: 200 };
+  if (!response) return { status: 200 };
 
   const context = {
     transactionId: response?.context?.transaction_id,
     bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri,
+    bppUri: response?.context?.bpp_uri
   };
 
   const provider = response?.message?.order?.provider;
 
-  const scholarshipProviders = [{
-    id: provider?.id,
-    name: provider?.descriptor?.name,
-    description: provider?.descriptor?.long_desc ?? provider?.descriptor?.short_desc,
-    scholarships: response?.message?.order?.items?.map((item: any) => ({
-      id: item?.id,
-      name: item?.desciptor?.name,
-      description: item?.descriptor?.long_desc,
-      amount: {
-        amount: item?.price?.value,
-        currency: item?.price?.currency,
-      },
-      additionalForm: {
-        url: item?.xinput?.form?.url,
-        mime_type: item?.xinput?.form?.mime_type,
-      },
-      academicQualifications: item.tags?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
-        ?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
-      categories: response?.message?.order?.categories?.filter((category: any) => item.category_ids?.find((category_id: any) => category_id == category?.id))
-        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
-      // scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
-      //   ?.map((fulfillment: any) => ({
-      //     id: fulfillment?.id,
-      //     type: fulfillment?.type,
-      //     gender: fulfillment?.customer?.person?.gender,
-      //     applicationStartDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-START")?.time?.timestamp,
-      //     applicationEndDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-END")?.time?.timestamp,
-      //     supportContact: fulfillment?.contact,
-      //     academicQualifications: fulfillment?.customer?.person?.tags?.find((tag: any) => tag?.code == "edu_qual")
-      //       ?.list?.map((li: any) => ({ code: li?.code, name: li?.name, value: li?.value }))
-      //   }))
+  const scholarshipProviders = [
+    {
+      id: provider?.id,
+      name: provider?.descriptor?.name,
+      description:
+        provider?.descriptor?.long_desc ?? provider?.descriptor?.short_desc,
+      scholarships: response?.message?.order?.items?.map((item: any) => ({
+        id: item?.id,
+        name: item?.desciptor?.name,
+        description: item?.descriptor?.long_desc,
+        amount: {
+          amount: item?.price?.value,
+          currency: item?.price?.currency
+        },
+        additionalForm: {
+          url: item?.xinput?.form?.url,
+          mime_type: item?.xinput?.form?.mime_type
+        },
+        academicQualifications: item.tags
+          ?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
+          ?.list?.map((li: any) => ({
+            code: li?.descriptor?.code,
+            name: li?.descriptor?.name,
+            value: li?.value
+          })),
+        categories: response?.message?.order?.categories
+          ?.filter((category: any) =>
+            item.category_ids?.find(
+              (category_id: any) => category_id == category?.id
+            )
+          )
+          ?.map((category: any) => ({
+            id: category?.id,
+            code: category?.descriptor?.code,
+            name: category?.descriptor?.name
+          })),
+        // scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
+        //   ?.map((fulfillment: any) => ({
+        //     id: fulfillment?.id,
+        //     type: fulfillment?.type,
+        //     gender: fulfillment?.customer?.person?.gender,
+        //     applicationStartDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-START")?.time?.timestamp,
+        //     applicationEndDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-END")?.time?.timestamp,
+        //     supportContact: fulfillment?.contact,
+        //     academicQualifications: fulfillment?.customer?.person?.tags?.find((tag: any) => tag?.code == "edu_qual")
+        //       ?.list?.map((li: any) => ({ code: li?.code, name: li?.name, value: li?.value }))
+        //   }))
 
-      scholarshipDetails: response?.message?.order?.fulfillments?.map((fulfillment: any) => ({
-        id: fulfillment?.id,
-        type: fulfillment?.type,
-        gender: fulfillment?.customer?.person?.gender,
-        applicationStartDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-START")?.time?.timestamp,
-        applicationEndDate: fulfillment.stops?.find((stop: any) => stop?.type == "APPLICATION-END")?.time?.timestamp,
-        supportContact: fulfillment?.contact,
-        academicQualifications: fulfillment?.customer?.person?.tags?.find((tag: any) => tag?.code == "edu_qual")
-          ?.list?.map((li: any) => ({ code: li?.code, name: li?.name, value: li?.value }))
+        scholarshipDetails: response?.message?.order?.fulfillments?.map(
+          (fulfillment: any) => ({
+            id: fulfillment?.id,
+            type: fulfillment?.type,
+            gender: fulfillment?.customer?.person?.gender,
+            applicationStartDate: fulfillment.stops?.find(
+              (stop: any) => stop?.type == "APPLICATION-START"
+            )?.time?.timestamp,
+            applicationEndDate: fulfillment.stops?.find(
+              (stop: any) => stop?.type == "APPLICATION-END"
+            )?.time?.timestamp,
+            supportContact: fulfillment?.contact,
+            academicQualifications: fulfillment?.customer?.person?.tags
+              ?.find((tag: any) => tag?.code == "edu_qual")
+              ?.list?.map((li: any) => ({
+                code: li?.code,
+                name: li?.name,
+                value: li?.value
+              }))
+          })
+        )
       }))
-    }))
-  }];
+    }
+  ];
 
   return { data: { context, scholarshipProviders } };
-}
-
+};
 
 export const buildInitRequest = (input: any = {}) => {
   const context = buildContext({
@@ -206,76 +268,165 @@ export const buildInitRequest = (input: any = {}) => {
     action: "init"
   });
   const { scholarshipProvider = {} } = input;
+
   const message: any = {
     order: {
+      type: "DEFAULT",
       provider: {
         id: scholarshipProvider?.id,
-        category_id: scholarshipProvider?.categoryId,
         descriptor: {
-          name: scholarshipProvider?.name
+          name: scholarshipProvider?.name,
+          short_desc: scholarshipProvider?.name
         },
-        items: scholarshipProvider?.scholarships?.map((scholarship: any) => {
-          return {
-            id: scholarship?.id,
+        rateable: false
+      },
+      items: scholarshipProvider?.scholarships?.map((scholarship: any) => {
+        const tags: any[] = [];
+
+        if (
+          scholarship?.academicQualificationsCriteria &&
+          scholarship?.academicQualificationsCriteria.length
+        ) {
+          tags.push({
+            display: true,
             descriptor: {
-              name: scholarship?.name
+              code: "edu_qual",
+              name: "Academic Eligibility"
             },
-            price: {
-              currency: scholarship?.amount?.currency,
-              value: scholarship?.amount?.amount?.toString()
+            list: scholarship?.academicQualificationsCriteria?.map(
+              (quali: any) => {
+                return {
+                  descriptor: {
+                    code: quali?.code,
+                    name: quali?.name
+                  },
+                  value: quali?.value,
+                  display: true
+                };
+              }
+            )
+          });
+        }
+
+        if (
+          scholarship?.finStatusCriteria &&
+          scholarship?.finStatusCriteria.length
+        ) {
+          tags.push({
+            display: true,
+            descriptor: {
+              code: "fin_status",
+              name: "Financial Status"
             },
-            xinput: {
-              required: true,
-              form: {
-                url: scholarship?.additionalForm?.url,
-                mime_type: scholarship?.additionalForm?.urmimeTypel,
-                submission_id: scholarship?.additionalForm?.submissionId
+            list: scholarship?.finStatusCriteria?.map((stats: any) => {
+              return {
+                descriptor: {
+                  code: stats?.code,
+                  name: stats?.name
+                },
+                value: stats?.value,
+                display: true
+              };
+            })
+          });
+        }
+
+        if (scholarship?.benefits && scholarship?.benefits.length) {
+          tags.push({
+            display: true,
+            descriptor: {
+              code: "benefits",
+              name: "Benefits"
+            },
+            list: scholarship?.benefits?.map((benef: any) => {
+              return {
+                descriptor: {
+                  code: benef?.code,
+                  name: benef?.name
+                },
+                value: benef?.value,
+                display: true
+              };
+            })
+          });
+        }
+
+        return {
+          id: scholarship?.id,
+          descriptor: {
+            name: scholarship?.name,
+            short_desc: scholarship?.name
+          },
+          price: {
+            currency: scholarship?.amount?.currency,
+            value: scholarship?.amount?.amount?.toString()
+          },
+          xinput: {
+            required: true,
+            form: {
+              url: scholarship?.additionalFormData?.formUrl,
+              mime_type: scholarship?.additionalFormData?.formMimeType,
+              submission_id: scholarship?.additionalFormData?.submissionId
+            },
+            data: {
+              name: scholarship?.additionalFormData?.data.find(
+                (elem: any) => elem?.formInputKey === "name"
+              )?.formInputValue,
+              phone: scholarship?.additionalFormData?.data.find(
+                (elem: any) => elem?.formInputKey === "phone"
+              )?.formInputValue,
+              address: scholarship?.additionalFormData?.data.find(
+                (elem: any) => elem?.formInputKey === "address"
+              )?.formInputValue,
+              needOfScholarship: scholarship?.additionalFormData?.data.find(
+                (elem: any) => elem?.formInputKey === "needOfScholarship"
+              )?.formInputValue,
+              docUrl: scholarship?.additionalFormData?.data.find(
+                (elem: any) => elem?.formInputKey === "docUrl"
+              )?.formInputValue
+            }
+          },
+          tags: tags,
+
+          category_ids: [scholarshipProvider?.categoryId]
+        };
+      }),
+      fulfillments: scholarshipProvider?.scholarships?.map(
+        (scholarship: any) => {
+          return {
+            id: scholarship?.scholarshipDetails?.id,
+            type: scholarship?.scholarshipDetails?.type,
+            tracking: false,
+            customer: {
+              person: {
+                gender:
+                  scholarship?.scholarshipDetails?.scholarshipRequestor?.gender,
+                name: scholarship?.scholarshipDetails?.scholarshipRequestor
+                  ?.name
               }
             },
-            tags: [{
-              code: "academic_qualifications",
-              name: "Academic Qualifications",
-              list: scholarship.scholarshipDetails?.scholarshipRequestor?.academicQualifications.map(
-                (qualification: any) => ({ descriptor: { code: qualification?.code, name: qualification?.name }, value: qualification?.value })
-              )
-            }, {
-              code: "current_education",
-              name: "Current Education",
-              list: scholarship?.scholarshipDetails?.scholarshipRequestor?.currentEducations.map(
-                (education: any) => ({ descriptor: { code: education?.code, name: education?.name }, value: education?.value })
-              )
-            }],
-            category_ids: [scholarshipProvider?.categoryId]
-          };
-        }),
-        fulfillments: scholarshipProvider?.scholarships?.map(
-          (scholarship: any) => {
-            let tags: any = [];
-            const { scholarshipDetails = {} } = scholarship;
-
-            return {
-              id: scholarshipDetails?.id,
-              type: scholarshipDetails?.type,
-              customer: {
-                person: {
-                  id: scholarshipDetails?.scholarshipRequestor?.id,
-                  name: scholarshipDetails?.scholarshipRequestor?.name,
-                  gender: scholarshipDetails?.scholarshipRequestor?.gender,
-                },
-                contact: {
-                  address: {
-                    full: scholarshipDetails?.scholarshipRequestor
-                      ?.scholarshipRequestorContact?.address,
-                    format:
-                      scholarshipDetails?.scholarshipRequestor
-                        ?.scholarshipRequestorContact?.addressFormat
-                  }
+            contact: {
+              phone: scholarship?.scholarshipDetails?.supportContact?.phone,
+              email: scholarship?.scholarshipDetails?.supportContact?.email
+            },
+            stops: [
+              {
+                type: "APPLICATION-START",
+                time: {
+                  timestamp:
+                    scholarship?.scholarshipDetails?.applicationStartDate
+                }
+              },
+              {
+                type: "APPLICATION-END",
+                time: {
+                  timestamp: scholarship?.scholarshipDetails?.applicationEndDate
                 }
               }
-            };
-          }
-        )
-      }
+            ]
+          };
+        }
+      )
     }
   };
 
@@ -303,21 +454,21 @@ export const buildInitResponse = (response: any = {}, input: any = {}) => {
 
       const academicQualifications = fulfillmentFound
         ? fulfillmentFound?.customer?.person?.tags.find(
-          (tag: any) => tag?.code === "academic_qualifications"
-        )
+            (tag: any) => tag?.code === "academic_qualifications"
+          )
           ? fulfillmentFound?.customer?.person?.tags
-            .find((tag: any) => tag?.code === "academic_qualifications")
-            .list.map((li: any) => li)
+              .find((tag: any) => tag?.code === "academic_qualifications")
+              .list.map((li: any) => li)
           : []
         : "";
 
       const currentEducations = fulfillmentFound
         ? fulfillmentFound?.customer?.person?.tags.find(
-          (tag: any) => tag?.code === "current_education"
-        )
+            (tag: any) => tag?.code === "current_education"
+          )
           ? fulfillmentFound?.customer?.person?.tags
-            .find((tag: any) => tag?.code === "current_education")
-            .list.map((li: any) => li)
+              .find((tag: any) => tag?.code === "current_education")
+              .list.map((li: any) => li)
           : []
         : "";
 
@@ -447,7 +598,7 @@ export const buildConfirmRequest = (input: any = {}) => {
                 person: {
                   id: scholarshipDetails?.scholarshipRequestor?.id,
                   name: scholarshipDetails?.scholarshipRequestor?.name,
-                  gender: scholarshipDetails?.scholarshipRequestor?.gender,
+                  gender: scholarshipDetails?.scholarshipRequestor?.gender
                 },
                 contact: {
                   address: {
@@ -475,26 +626,41 @@ export const buildConfirmRequest = (input: any = {}) => {
             category_id: scholarshipProvider.categoryId,
             fulfillment_id: scholarship?.scholarshipDetails?.id,
             xinput: {
-              "required": true,
+              required: true,
               form: {
                 url: scholarship?.additionalForm?.url,
                 mime_type: scholarship?.additionalForm?.urmimeTypel,
                 submission_id: scholarship?.additionalForm?.submissionId
               }
             },
-            tags: [{
-              code: "academic_qualifications",
-              name: "Academic Qualifications",
-              list: scholarship.scholarshipDetails?.scholarshipRequestor?.academicQualifications.map(
-                (qualification: any) => ({ descriptor: { code: qualification?.code, name: qualification?.name }, value: qualification?.value })
-              )
-            }, {
-              code: "current_education",
-              name: "Current Education",
-              list: scholarship?.scholarshipDetails?.scholarshipRequestor?.currentEducations.map(
-                (education: any) => ({ descriptor: { code: education?.code, name: education?.name }, value: education?.value })
-              )
-            }]
+            tags: [
+              {
+                code: "academic_qualifications",
+                name: "Academic Qualifications",
+                list: scholarship.scholarshipDetails?.scholarshipRequestor?.academicQualifications.map(
+                  (qualification: any) => ({
+                    descriptor: {
+                      code: qualification?.code,
+                      name: qualification?.name
+                    },
+                    value: qualification?.value
+                  })
+                )
+              },
+              {
+                code: "current_education",
+                name: "Current Education",
+                list: scholarship?.scholarshipDetails?.scholarshipRequestor?.currentEducations.map(
+                  (education: any) => ({
+                    descriptor: {
+                      code: education?.code,
+                      name: education?.name
+                    },
+                    value: education?.value
+                  })
+                )
+              }
+            ]
           };
         })
       }
@@ -568,44 +734,48 @@ export const buildStatusRequest = (input: any = {}) => {
 };
 export const buildStatusResponse = (res: any = {}, input: any = {}) => {
   const response = res?.data?.responses?.[0];
-  if (!response)
-    return { status: 200 };
+  if (!response) return { status: 200 };
 
   const context = {
     transactionId: response?.context?.transaction_id,
     bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri,
+    bppUri: response?.context?.bpp_uri
   };
 
   const provider = response?.message?.order?.provider;
   const scholarshipApplicationId = response?.message?.order?.id;
 
-  const scholarshipProviders = [{
-    id: provider?.id,
-    name: provider?.descriptor?.name,
-    description: provider?.descriptor?.long_desc ?? provider?.descriptor?.short_desc,
-    scholarships: response?.message?.order?.items?.map((item: any) => ({
-      id: item?.id,
-      name: item?.desciptor?.name,
-      description: item?.descriptor?.long_desc,
-      amount: {
-        amount: item?.price?.value,
-        currency: item?.price?.currency,
-      },
-      // scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
-      //   ?.map((fulfillment: any) => ({
-      //     id: fulfillment?.id,
-      //     type: fulfillment?.type,
+  const scholarshipProviders = [
+    {
+      id: provider?.id,
+      name: provider?.descriptor?.name,
+      description:
+        provider?.descriptor?.long_desc ?? provider?.descriptor?.short_desc,
+      scholarships: response?.message?.order?.items?.map((item: any) => ({
+        id: item?.id,
+        name: item?.desciptor?.name,
+        description: item?.descriptor?.long_desc,
+        amount: {
+          amount: item?.price?.value,
+          currency: item?.price?.currency
+        },
+        // scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
+        //   ?.map((fulfillment: any) => ({
+        //     id: fulfillment?.id,
+        //     type: fulfillment?.type,
 
-      //   })),
+        //   })),
 
-      scholarshipDetails: response?.message?.order?.fulfillments?.map((fulfillment: any) => ({
-        id: fulfillment?.id,
-        type: fulfillment?.type,
-        scholarshipStatus: { code: response?.message?.order?.status }
-      }))?.[0]
-    }))
-  }];
+        scholarshipDetails: response?.message?.order?.fulfillments?.map(
+          (fulfillment: any) => ({
+            id: fulfillment?.id,
+            type: fulfillment?.type,
+            scholarshipStatus: { code: response?.message?.order?.status }
+          })
+        )?.[0]
+      }))
+    }
+  ];
 
   return { data: { context, scholarshipApplicationId, scholarshipProviders } };
 };

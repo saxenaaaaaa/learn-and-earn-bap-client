@@ -1,7 +1,16 @@
 export interface IScholarshipNetworkContext {
   domain: string;
-  country: string;
-  city: string;
+
+  location: {
+    city: {
+      name: string;
+      code: string;
+    };
+    country: {
+      name: string;
+      code: string;
+    };
+  };
   action: string;
   version: string;
   transaction_id: string;
