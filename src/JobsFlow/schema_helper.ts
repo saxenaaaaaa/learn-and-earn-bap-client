@@ -192,13 +192,13 @@ export const buildOnSelectResponse = (response: any = {}, body: any = {}) => {
 
         job.workExperience = {
             key: workExperience?.descriptor?.name,
-            experience: workExperience?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+            experience: workExperience?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
         }
-        job.responsibilities = responsibilities?.descriptor?.list?.map((li: any) => li.value)
+        job.responsibilities = responsibilities?.list?.map((li: any) => li.value)
         job.employmentInformation = {
             code: employmentInformation?.descriptor?.code,
             name: employmentInformation?.descriptor?.name,
-            employmentInfo: employmentInformation?.descriptor?.list?.map((li: any) => ({
+            employmentInfo: employmentInformation?.list?.map((li: any) => ({
                 code: li?.descriptor?.code,
                 name: li?.descriptor?.name,
                 value: li?.value
@@ -207,7 +207,7 @@ export const buildOnSelectResponse = (response: any = {}, body: any = {}) => {
         job.compensation = {
             code: compensation?.descriptor?.code,
             name: compensation?.descriptor?.name,
-            salaryInfo: compensation?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
+            salaryInfo: compensation?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
         }
 
         job.additionalFormUrl = item?.xinput?.form?.url
