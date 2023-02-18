@@ -11,6 +11,7 @@ export interface IScholarshipNetworkContext {
       code: string;
     };
   };
+  ttl: string;
   action: string;
   version: string;
   transaction_id: string;

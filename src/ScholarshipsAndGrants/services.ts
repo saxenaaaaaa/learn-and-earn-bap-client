@@ -1,5 +1,5 @@
 import axiosInstance from "axios";
-import https from 'https';
+import https from "https";
 import {
   buildSearchRequest,
   buildSearchResponse,
@@ -18,8 +18,7 @@ import confirmScholarshipReponse from "./mocks/confirmScholarshipReponse.json";
 import statusScholarshipReponse from "./mocks/statusScholarshipReponse.json";
 import selectScholarshipResponse from "./mocks/selectScholarshipResponse.json";
 
-
-const gatewayUrl = process.env.GATEWAY_URL;
+const gatewayUrl = "https://dsep-protocol-client.becknprotocol.io";
 const scholarshipNetwork = process.env.SCHOLARSHIP_NETWORK;
 
 const axios = axiosInstance.create({
@@ -43,12 +42,14 @@ export const searchScholarshipService = async (body: any): Promise<any> => {
       );
       searchResponse = buildSearchResponse(res, body);
     } else {
-      searchResponse = buildSearchResponse({ data: searchScholarshipResponse }, body);
+      searchResponse = buildSearchResponse(
+        { data: searchScholarshipResponse },
+        body
+      );
     }
 
     return searchResponse;
   } catch (error) {
-    console.log(error);
     return { error: error, errorOccured: true };
   }
 };
@@ -61,25 +62,31 @@ export const selectScholarshipService = async (body: any): Promise<any> => {
     let selectResponse: any = {};
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
-      let res = await axios.post(`${gatewayUrl}/select`, selectRequest.payload, {
-        headers
-      });
+      let res = await axios.post(
+        `${gatewayUrl}/select`,
+        selectRequest.payload,
+        {
+          headers
+        }
+      );
       selectResponse = buildSelectResponse(res, body);
     } else {
-      selectResponse = buildSelectResponse({ data: selectScholarshipResponse }, body);
+      selectResponse = buildSelectResponse(
+        { data: selectScholarshipResponse },
+        body
+      );
     }
 
     return selectResponse;
   } catch (error) {
-    console.log(error);
     return { error: error, errorOccured: true };
   }
-}
+};
 
 export const initScholarshipService = async (body: any): Promise<any> => {
   try {
     const initRequest = buildInitRequest(body);
-    return { data: initRequest.payload };
+
     console.log(JSON.stringify(initRequest.payload));
 
     let initResponse: any = {};
@@ -94,7 +101,7 @@ export const initScholarshipService = async (body: any): Promise<any> => {
     }
 
     return { data: initResponse };
-  } catch (error) {
+  } catch (error: any) {
     return { error: error, errorOccured: true };
   }
 };
@@ -102,7 +109,7 @@ export const initScholarshipService = async (body: any): Promise<any> => {
 export const confirmScholarshipService = async (body: any): Promise<any> => {
   try {
     const confirmRequest = buildConfirmRequest(body);
-    return { data: confirmRequest.payload }
+
     console.log(JSON.stringify(confirmRequest.payload));
 
     let confirmResponse: any = {};
@@ -119,7 +126,7 @@ export const confirmScholarshipService = async (body: any): Promise<any> => {
     }
 
     return { data: confirmResponse };
-  } catch (error) {
+  } catch (error: any) {
     return { error: error, errorOccured: true };
   }
 };
@@ -139,7 +146,10 @@ export const statusScholarshipService = async (body: any): Promise<any> => {
       );
       statusResponse = buildStatusResponse(res, body);
     } else {
-      statusResponse = buildStatusResponse({ data: statusScholarshipReponse }, body);
+      statusResponse = buildStatusResponse(
+        { data: statusScholarshipReponse },
+        body
+      );
     }
 
     return statusResponse;
