@@ -89,7 +89,7 @@ export const buildSearchResponse = (response: any = {}, body: any = {}) => {
           timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
           mentor: {
             id: fulfillment?.agent?.person?.id,
-            name: fulfillment?.agent?.person?.id,
+            name: fulfillment?.agent?.person?.name,
             gender: fulfillment?.agent?.person?.gender,
             image: fulfillment?.agent?.person?.image,
             rating: fulfillment?.agent?.person?.rating
@@ -154,7 +154,7 @@ export const buildSelectResponse = (response: any = {}, body: any = {}) => {
           timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
           mentor: {
             id: fulfillment?.agent?.person?.id,
-            name: fulfillment?.agent?.person?.id,
+            name: fulfillment?.agent?.person?.name,
             gender: fulfillment?.agent?.person?.gender,
             image: fulfillment?.agent?.person?.image,
             rating: fulfillment?.agent?.person?.rating
