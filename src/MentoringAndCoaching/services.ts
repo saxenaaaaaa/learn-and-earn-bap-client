@@ -57,7 +57,7 @@ export const searchMentorShipService = async (body: any): Promise<any> => {
 export const selectMentorshipService = async (body: any): Promise<any> => {
   try {
     const selectRequest = buildSelectRequest(body);
-    console.log(JSON.stringify(selectRequest.payload));
+    console.log(JSON.stringify(selectRequest?.payload));
 
     let selectResponse: any = {};
     if (mentorshipNetwork !== "local") {
@@ -67,11 +67,11 @@ export const selectMentorshipService = async (body: any): Promise<any> => {
         selectRequest.payload,
         { headers }
       );
-      selectResponse = buildSelectResponse(res?.data, body);
+      selectResponse = buildSelectResponse(res, body);
     } else {
-      selectResponse = buildSelectResponse(selectMentorshipResp, body);
+      selectResponse = buildSelectResponse({ data: selectMentorshipResp }, body);
     }
-    return { data: selectResponse };
+    return selectResponse;
   } catch (error: any) {
     return { error: error, errorOccured: true };
   }
