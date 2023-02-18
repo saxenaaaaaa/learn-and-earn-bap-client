@@ -50,104 +50,57 @@ export const buildSearchRequest = (input: any = {}) => {
   return { payload: { context, message: { intent } } };
 };
 
-export const buildSearchResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    transactionId: response?.responses[0]?.context?.transaction_id,
-    bppId: response?.responses[0]?.context?.bpp_id,
-    bppUri: response?.responses[0]?.context?.bpp_uri
-  };
-  const mentorshipProviders: any = [];
-  const responseMentorShipProviders: any =
-    response?.responses[0]?.message?.catalog?.providers ?? [];
+export const buildSearchResponse = (response: any = {}, body: any = {}) => {
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
 
-  responseMentorShipProviders.forEach((provider: any) => {
-    let rawProviderObjects: any = {};
+  const { providers } = input.message?.catalog;
 
-    rawProviderObjects = {
-      id: provider?.id,
-      code: provider?.descriptor?.code,
-      name: provider?.descriptor?.name,
-      description: provider?.descriptor?.short_desc
-    };
+  const mentorshipProviders = providers?.map((provider: any) => ({
+    id: provider?.id,
+    code: provider?.descriptor?.code,
+    name: provider?.descriptor?.name,
+    description: provider?.descriptor?.short_desc,
 
-    const mentorships: any = [];
-    const responseMentorships: any = provider?.items ?? [];
+    mentorships: provider?.items?.map((item: any) => ({
+      id: item?.id,
+      code: item?.descriptor?.code,
+      name: item?.descriptor?.name,
+      description: item?.descriptor?.short_desc,
+      longDescription: item?.descriptor?.long_desc,
 
-    responseMentorships.forEach((mentorShip: any, index: any) => {
-      let rawMentorShipObject: any = {};
-
-      rawMentorShipObject = {
-        id: mentorShip?.id,
-        code: mentorShip?.descriptor?.code,
-        name: mentorShip?.descriptor?.name,
-        description: mentorShip?.descriptor?.short_desc,
-        longDescription: mentorShip?.descriptor?.long_desc,
-        imageLocations: mentorShip?.descriptor?.images?.map(
-          (img: any) => img?.url
-        ),
-        available: mentorShip?.quantity?.available?.count,
-        allocated: mentorShip?.quantity?.allocated?.count,
-        price: mentorShip?.price?.value
-      };
-
-      rawMentorShipObject.categories = provider?.categories.map(
-        (category: any) => {
-          return {
-            id: category?.id,
-            code: category?.descriptor?.code,
-            name: category?.descriptor?.name
-          };
-        }
-      );
-
-      rawMentorShipObject.recommendedFor = mentorShip?.tags
-        .filter((elem: any) => elem.code === "recommended_for")
-        .map((elem: any) => ({
-          recommendationForCode: elem?.list?.[0]?.code,
-          recommendationForName: elem?.list?.[0]?.name
-        }));
-      rawMentorShipObject.mentorshipSessions = mentorShip?.fulfillment_ids.map(
-        (id: string) => {
-          let rawFulfillmentObj: any = {};
-          const fullfilementFound = provider?.fulfillments.find(
-            (elem: any) => elem.id === id
-          );
-          if (Object.keys(fullfilementFound).length) {
-            rawFulfillmentObj = {
-              id: fullfilementFound?.id,
-              language: fullfilementFound?.language[0],
-              timingStart: fullfilementFound?.time?.range?.start,
-              timingEnd: fullfilementFound?.time?.range?.end,
-              type: fullfilementFound?.type,
-              status: fullfilementFound?.tags.find(
-                (elem: any) => elem.code === "status"
-              )?.list?.[0]?.name,
-              timezone: fullfilementFound?.tags.find(
-                (elem: any) => elem.code === "timeZone"
-              )?.list?.[0]?.name,
-              mentor: {
-                id: fullfilementFound?.agent?.person?.id,
-                name: fullfilementFound?.agent?.person?.name,
-                gender: fullfilementFound?.agent?.person?.gender ?? "Male",
-                image:
-                  fullfilementFound?.agent?.person?.image ?? "image location",
-                rating: fullfilementFound?.agent?.person?.rating ?? "4.9"
-              }
-            };
+      imageLocations: item?.descriptor?.images?.map((image: any) => image?.url),
+      categories: provider?.categories?.filter((category: any) => item?.category_ids?.find((categoryId: any) => categoryId == category?.id))
+        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
+      available: item?.quantity?.available?.count,
+      allocated: item?.quantity?.allocated?.count,
+      price: item?.price?.value,
+      mentorShipSessions: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillmentId == fulfillment?.id))
+        ?.map((fulfillment: any) => ({
+          id: fulfillment?.id,
+          language: fulfillment?.language?.[0],
+          timingStart: fulfillment?.time?.range?.start,
+          timingEnd: fulfillment?.time?.range?.end,
+          type: fulfillment?.type,
+          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          mentor: {
+            id: fulfillment?.agent?.person?.id,
+            name: fulfillment?.agent?.person?.id,
+            gender: fulfillment?.agent?.person?.gender,
+            image: fulfillment?.agent?.person?.image,
+            rating: fulfillment?.agent?.person?.rating
           }
-          return rawFulfillmentObj;
-        }
-      );
+        })),
+      recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+    })),
+  }));
 
-      mentorships.push(rawMentorShipObject);
-      rawProviderObjects = {
-        ...rawProviderObjects,
-        mentorships
-      };
-    });
-    mentorshipProviders.push(rawProviderObjects);
-  });
-  return { context, mentorshipProviders };
+  return { data: { context, mentorshipProviders } };
 };
 
 export const buildSelectRequest = (input: any = {}) => {
@@ -218,7 +171,7 @@ export const buildSelectResponse = (response: any = {}, input: any = {}) => {
               fullfilementFound?.tags.find((tag: any) => tag.code === "status")
             ).length
               ? fullfilementFound?.tags.find(
-                  (tag: any) => tag.code === "status"
+                (tag: any) => tag.code === "status"
               )?.list?.[0]?.name
               : "",
             timezone: Object.keys(
@@ -227,7 +180,7 @@ export const buildSelectResponse = (response: any = {}, input: any = {}) => {
               )
             ).length
               ? fullfilementFound?.tags.find(
-                  (tag: any) => tag.code === "timeZone"
+                (tag: any) => tag.code === "timeZone"
               )?.list?.[0]?.name
               : "",
             mentor: {
@@ -314,11 +267,11 @@ export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
     type: fulfillment?.type,
     status: fulfillment?.tags.find((tag: any) => tag.code === "status")
       ? fulfillment?.tags.find((tag: any) => tag.code === "status")?.list?.[0]
-          ?.name
+        ?.name
       : "Live",
     timezone: fulfillment?.tags.find((tag: any) => tag.code === "timeZone")
       ? fulfillment?.tags.find((tag: any) => tag.code === "timeZone")?.list?.[0]
-          ?.name
+        ?.name
       : "Asia/Calcutta",
     mentor: {
       id: fulfillment?.agent?.person?.id,
@@ -407,14 +360,14 @@ export const buildStatusResponse = (response: any = {}, input: any = {}) => {
                 (tag: any) => tag.code === "status"
               )
                 ? fullfilementFound?.tags.find(
-                    (tag: any) => tag.code === "status"
+                  (tag: any) => tag.code === "status"
                 )?.list?.[0]?.name
                 : "",
               timezone: fullfilementFound?.tags.find(
                 (tag: any) => tag.code === "timeZone"
               )
                 ? fullfilementFound?.tags.find(
-                    (tag: any) => tag.code === "timeZone"
+                  (tag: any) => tag.code === "timeZone"
                 )?.list?.[0]?.name
                 : "",
               mentor: {

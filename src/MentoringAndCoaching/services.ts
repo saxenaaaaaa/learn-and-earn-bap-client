@@ -43,12 +43,12 @@ export const searchMentorShipService = async (body: any): Promise<any> => {
         { headers }
       );
 
-      searchResponse = buildSearchResponse(res?.data, body);
+      searchResponse = buildSearchResponse(res, body);
     } else {
-      searchResponse = buildSearchResponse(searchMentorShipResp, body);
+      searchResponse = buildSearchResponse({ data: searchMentorShipResp }, body);
     }
 
-    return { data: searchResponse };
+    return searchResponse;
   } catch (error: any) {
     return { error: error, errorOccured: true };
   }
