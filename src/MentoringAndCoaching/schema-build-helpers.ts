@@ -193,56 +193,38 @@ export const buildConfirmRequest = (input: any = {}) => {
 
   return { payload: { context, message } };
 };
-export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    transactionId: response?.responses[0]?.context?.transaction_id,
-    bppId: response?.responses[0]?.context?.bpp_id,
-    bppUri: response?.responses[0]?.context?.bpp_uri
-  };
-  const { order } = response?.responses[0]?.message ?? {};
-  const mentorshipApplicationId = order?.id;
-  const fulfillment = order?.fulfillments.length ? order?.fulfillments[0] : {};
-  const sessionJoinLinks = Object.keys(
-    fulfillment?.tags.find((tag: any) => tag.code === "joinLink")
-  ).length
-    ? fulfillment?.tags.find((tag: any) => tag.code === "joinLink")?.list?.[0]
-    : { code: "", name: "" };
 
-  const mentorshipSession: any = {
-    id: fulfillment?.id,
-    sessionJoinLinks: [
-      {
-        id: sessionJoinLinks.code,
-        link: sessionJoinLinks.name
-      }
-    ],
+export const buildConfirmResponse = (response: any = {}, body: any = {}) => {
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
 
-    language: fulfillment?.language[0],
-    timingStart: fulfillment?.time?.range?.start,
-    timingEnd: fulfillment?.time?.range?.end,
-    type: fulfillment?.type,
-    status: fulfillment?.tags.find((tag: any) => tag.code === "status")
-      ? fulfillment?.tags.find((tag: any) => tag.code === "status")?.list?.[0]
-        ?.name
-      : "Live",
-    timezone: fulfillment?.tags.find((tag: any) => tag.code === "timeZone")
-      ? fulfillment?.tags.find((tag: any) => tag.code === "timeZone")?.list?.[0]
-        ?.name
-      : "Asia/Calcutta",
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
+
+  const order = input?.message?.order;
+
+  const mentorshipSession = {
+    id: order?.id,
+    sessionJoinLinks: order?.fulfillments?.[0]?.tags?.find((fulfillment: any) => fulfillment?.code == 'joinLink')?.list?.map((li: any) => ({ id: li?.code, link: li?.name })),
+    language: order?.fulfillments?.[0]?.language?.[0],
+    timingStart: order?.fulfillments?.[0]?.time?.range?.start,
+    timingEnd: order?.fulfillments?.[0]?.time?.range?.ends,
+    type: order?.type,
+    status: order?.fulfillments?.[0]?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
+    timezone: order?.fulfillments?.[0]?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
     mentor: {
-      id: fulfillment?.agent?.person?.id,
-      name: fulfillment?.agent?.person?.name,
-      gender: "Male",
-      image: "image location",
-      rating: "4.9"
+      id: order?.fulfillments?.[0]?.agent?.person?.id,
+      name: order?.fulfillments?.[0]?.agent?.person?.name,
+      gender: order?.fulfillments?.[0]?.agent?.person?.gender,
+      image: order?.fulfillments?.[0]?.agent?.person?.image,
+      rating: order?.fulfillments?.[0]?.agent?.person?.rating
     }
-  };
+  }
 
-  return {
-    mentorshipApplicationId,
-    context,
-    mentorshipSession
-  };
+  return { data: { context, mentorshipSession } };
+
+
 };
 
 export const buildStatusRequest = (input: any = {}) => {
