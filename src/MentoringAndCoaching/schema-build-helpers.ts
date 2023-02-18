@@ -241,103 +241,63 @@ export const buildStatusRequest = (input: any = {}) => {
   return { payload: { context, message } };
 };
 
-export const buildStatusResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    transactionId: response?.responses[0]?.context?.transaction_id,
-    bppId: response?.responses[0]?.context?.bpp_id,
-    bppUri: response?.responses[0]?.context?.bpp_uri
-  };
-  const { order } = response?.responses[0]?.message;
-  const mentorshipApplicationId = order?.id;
-  const mentorshipApplicationStatus = order?.state;
-  const { provider } = order;
-  const mentorshipProvider: any = {
+export const buildStatusResponse = (response: any = {}, body: any = {}) => {
+
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
+
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
+
+  const order = input.message?.order;
+  const provider = order?.provider;
+
+  const mentorshipApplicationId = order?.id
+  const mentorshipApplicationStatus = order?.id;
+
+  const mentorshipProvider = {
     id: provider?.id,
     code: provider?.descriptor?.code,
     name: provider?.descriptor?.name,
     description: provider?.descriptor?.short_desc,
-    mentorships: provider?.items.map((item: any) => {
-      const itemObj: any = {
-        id: item?.id,
-        code: item?.descriptor?.code,
-        name: item?.descriptor?.name,
-        description: item?.descriptor?.short_desc,
-        longDescription: item?.descriptor?.long_desc,
-        imageLocations: item?.descriptor?.images.map((img: any) => img?.url),
-        categories: item?.category_ids.map((categoryId: string) => {
-          const categoryFound = provider?.categories.find((category: any) => {
-            return category?.id.split(" ").join("-") === categoryId;
-          });
 
-          let categoryObj: any = {};
-          if (categoryFound) {
-            categoryObj = {
-              id: categoryFound?.id,
-              code: categoryFound?.descriptor?.code,
-              name: categoryFound?.descriptor?.name
-            };
+    mentorships: provider?.items?.map((item: any) => ({
+      id: item?.id,
+      code: item?.descriptor?.code,
+      name: item?.descriptor?.name,
+      description: item?.descriptor?.short_desc,
+      longDescription: item?.descriptor?.long_desc,
+
+      imageLocations: item?.descriptor?.images?.map((image: any) => image?.url),
+      categories: provider?.categories?.filter((category: any) => item?.category_ids?.find((categoryId: any) => categoryId == category?.id))
+        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
+      available: item?.quantity?.available?.count,
+      allocated: item?.quantity?.allocated?.count,
+      price: item?.price?.value,
+      mentorshipSessions: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillmentId == fulfillment?.id))
+        ?.map((fulfillment: any) => ({
+          id: fulfillment?.id,
+          language: fulfillment?.language?.[0],
+          timingStart: fulfillment?.time?.range?.start,
+          timingEnd: fulfillment?.time?.range?.end,
+          type: fulfillment?.type,
+          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          mentor: {
+            id: fulfillment?.agent?.person?.id,
+            name: fulfillment?.agent?.person?.name,
+            gender: fulfillment?.agent?.person?.gender,
+            image: fulfillment?.agent?.person?.image,
+            rating: fulfillment?.agent?.person?.rating
           }
-          return categoryObj;
-        }),
-        available: item?.quantity?.available?.count,
-        allocated: item?.quantity?.allocated?.count,
-        price: item?.price?.value,
-        mentorshipSessions: item?.fulfillment_ids.map((id: string) => {
-          let sessionObj: any = {};
-          const fullfilementFound = provider?.fulfillments.find(
-            (elem: any) => elem?.id === id
-          );
-          if (fullfilementFound) {
-            sessionObj = {
-              id: fullfilementFound?.id,
-              language: fullfilementFound?.language[0],
-              timingStart: fullfilementFound?.time?.range?.start,
-              timingEnd: fullfilementFound?.time?.range?.end,
-              type: fullfilementFound?.type,
-              status: fullfilementFound?.tags.find(
-                (tag: any) => tag.code === "status"
-              )
-                ? fullfilementFound?.tags.find(
-                  (tag: any) => tag.code === "status"
-                )?.list?.[0]?.name
-                : "",
-              timezone: fullfilementFound?.tags.find(
-                (tag: any) => tag.code === "timeZone"
-              )
-                ? fullfilementFound?.tags.find(
-                  (tag: any) => tag.code === "timeZone"
-                )?.list?.[0]?.name
-                : "",
-              mentor: {
-                id: fullfilementFound?.agent?.person?.id,
-                name: fullfilementFound?.agent?.person?.name,
-                gender: "Male",
-                image: "image location",
-                rating: "4.9"
-              }
-            };
-          }
+        })),
+      recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+    })),
+  }
 
-          return sessionObj;
-        }),
-        recommendedFor: item?.tags
-          .filter((elem: any) => elem.code === "recommended_for")
-          .map((elem: any) => ({
-            recommendationForCode: elem?.list?.[0]?.code,
-            recommendationForName: elem?.list?.[0]?.name
-          }))
-      };
-
-      return itemObj;
-    })
-  };
-
-  return {
-    context,
-    mentorshipApplicationId,
-    mentorshipApplicationStatus,
-    mentorshipProvider
-  };
+  return { data: { context, mentorshipApplicationId, mentorshipApplicationStatus, mentorshipProvider } };
 };
 
 export const buildCancelRequest = (input: any = {}) => {

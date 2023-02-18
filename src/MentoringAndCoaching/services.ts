@@ -124,7 +124,7 @@ export const initMentorshipService = async (body: any): Promise<any> => {
 export const statusMentorshipService = async (body: any): Promise<any> => {
   try {
     const statusRequest = buildStatusRequest(body);
-    console.log(JSON.stringify(statusRequest.payload));
+    console.log(JSON.stringify(statusRequest?.payload));
     let statusResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -133,12 +133,12 @@ export const statusMentorshipService = async (body: any): Promise<any> => {
         statusRequest.payload,
         { headers }
       );
-      statusResponse = buildStatusResponse(res?.data, body);
+      statusResponse = buildStatusResponse(res, body);
     } else {
-      statusResponse = buildStatusResponse(statusMentorShipResponse, body);
+      statusResponse = buildStatusResponse({ data: statusMentorShipResponse }, body);
     }
 
-    return { data: statusResponse };
+    return statusResponse;
   } catch (error) {
     return { error: error, errorOccured: true };
   }
