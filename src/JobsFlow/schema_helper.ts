@@ -316,7 +316,7 @@ export const buildOnInitResponse = (response: any = {}) => {
                 ?.filter((tag: any) => tag?.descriptor?.name?.toLowerCase()?.includes('qualifications'))
                 ?.map((tag: any) => ({
                     category: tag?.descriptor?.name,
-                    qualification: tag?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+                    qualification: tag?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
                 }))
         };
 
@@ -326,16 +326,16 @@ export const buildOnInitResponse = (response: any = {}) => {
         const employmentInformation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "employment-info");
         const compensation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "salary-info");
 
-        job.responsibilities = responsibilities?.descriptor?.list?.map((li: any) => li.value)
+        job.responsibilities = responsibilities?.list?.map((li: any) => li.value)
 
         job.workExperience = {
             key: workExperience?.descriptor?.name,
-            experience: workExperience?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+            experience: workExperience?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
         }
         job.employmentInformation = {
             code: employmentInformation?.descriptor?.code,
             name: employmentInformation?.descriptor?.name,
-            employmentInfo: employmentInformation?.descriptor?.list?.map((li: any) => ({
+            employmentInfo: employmentInformation?.list?.map((li: any) => ({
                 code: li?.descriptor?.code,
                 name: li?.descriptor?.name,
                 value: li?.value
@@ -344,7 +344,7 @@ export const buildOnInitResponse = (response: any = {}) => {
         job.compensation = {
             code: compensation?.descriptor?.code,
             name: compensation?.descriptor?.name,
-            salaryInfo: compensation?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
+            salaryInfo: compensation?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
         }
 
         initiatedJobs.push(job);
@@ -461,7 +461,7 @@ export const buildOnConfirmResponse = (response: any = {}) => {
                 ?.filter((tag: any) => tag?.descriptor?.name?.toLowerCase()?.includes('qualifications'))
                 ?.map((tag: any) => ({
                     category: tag?.descriptor?.name,
-                    qualification: tag?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+                    qualification: tag?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
                 }))
         };
 
@@ -471,25 +471,25 @@ export const buildOnConfirmResponse = (response: any = {}) => {
         const employmentInformation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "employment-info");
         const compensation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "salary-info");
 
-        job.responsibilities = responsibilities?.descriptor?.list?.map((li: any) => li.value)
+        job.responsibilities = responsibilities?.list?.map((li: any) => li.value)
 
         job.workExperience = {
             key: workExperience?.descriptor?.name,
-            experience: workExperience?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+            experience: workExperience?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
         }
         job.employmentInformation = {
             code: employmentInformation?.descriptor?.code,
             name: employmentInformation?.descriptor?.name,
             employmentInfo: {
-                code: employmentInformation?.descriptor?.list?.[0]?.descriptor?.code,
-                name: employmentInformation?.descriptor?.list?.[0]?.descriptor?.name,
-                value: employmentInformation?.descriptor?.list?.[0]?.value
+                code: employmentInformation?.list?.[0]?.descriptor?.code,
+                name: employmentInformation?.list?.[0]?.descriptor?.name,
+                value: employmentInformation?.list?.[0]?.value
             }
         }
         job.compensation = {
             code: compensation?.descriptor?.code,
             name: compensation?.descriptor?.name,
-            salaryInfo: compensation?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
+            salaryInfo: compensation?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
         }
 
         confirmedJobs.push(job);
