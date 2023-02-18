@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.18
+  version: 0.1.19
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -96,7 +96,6 @@ paths:
                                 state: Telangana
                                 country: India
                                 countryCode: IND
-                    
         '404':
           description: Job search request failed
           content:
@@ -244,7 +243,6 @@ paths:
                               name: Average Compensation
                               value: '50'
                         additionalFormUrl: https://affinidi.com/path/to/application/form
-                    
         '404':
           description: Job select request failed
           content:
@@ -527,7 +525,6 @@ paths:
                         - React
                         - Project Management
                         - Enterprise Architecture
-                  
       responses:
         '200':
           description: Job confirmation request sent to network
@@ -648,6 +645,7 @@ paths:
                             - React
                             - Project Management
                             - Enterprise Architecture
+                    additionalFormUrl: "https://affinidi.com/path/to/application/form"
                     additionalFormData:
                       submissionId:
                         123456
@@ -704,7 +702,6 @@ paths:
                     transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
                     bppId: affinidibpp.com
                     bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
-                  
       responses:
         '200':
           description: Job status request sent to network
@@ -1585,12 +1582,11 @@ paths:
                       phone: '9876543210'
                       email: maryg@xyz.com
                     scholarshipRequestor:
-                      id: 1234
-                      name: Test User
-                      gender: Male
-                      scholarshipRequestorContact:
-                        address: Mumbai
-                        addressFormat: City
+                      name: James
+                      phone: '498674'
+                      address: Mumbai
+                      needOfScholarship: higher education
+                      docUrl: ' http://abc.co/docs'
                   additionalFormData:
                     formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
                     formMimeType: text/html
@@ -1658,12 +1654,11 @@ paths:
                         phone: '9876543210'
                         email: maryg@xyz.com
                       scholarshipRequestor:
-                        id: 1234
-                        name: Test User
-                        gender: Male
-                        scholarshipRequestorContact:
-                          address: Mumbai
-                          addressFormat: City
+                        name: James
+                        phone: '498674'
+                        address: Mumbai
+                        needOfScholarship: higher education
+                        docUrl: ' http://abc.co/docs'
                     additionalFormData:
                       formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
                       formMimeType: text/html
@@ -1760,12 +1755,11 @@ paths:
                         phone: '9876543210'
                         email: maryg@xyz.com
                       scholarshipRequestor:
-                        id: 1234
-                        name: Test User
-                        gender: Male
-                        scholarshipRequestorContact:
-                          address: Mumbai
-                          addressFormat: City
+                        name: James
+                        phone: '498674'
+                        address: Mumbai
+                        needOfScholarship: higher education
+                        docUrl: ' http://abc.co/docs'
                     additionalFormData:
                       formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
                       formMimeType: text/html
@@ -1835,12 +1829,11 @@ paths:
                         phone: '9876543210'
                         email: maryg@xyz.com
                       scholarshipRequestor:
-                        id: 1234
-                        name: Test User
-                        gender: Male
-                        scholarshipRequestorContact:
-                          address: Mumbai
-                          addressFormat: City
+                        name: James
+                        phone: '498674'
+                        address: Mumbai
+                        needOfScholarship: higher education
+                        docUrl: ' http://abc.co/docs'
                     additionalFormData:
                       formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
                       formMimeType: text/html
@@ -1952,12 +1945,11 @@ paths:
                         phone: '9876543210'
                         email: maryg@xyz.com
                       scholarshipRequestor:
-                        id: 1234
-                        name: Test User
-                        gender: Male
-                        scholarshipRequestorContact:
-                          address: Mumbai
-                          addressFormat: City
+                        name: James
+                        phone: '498674'
+                        address: Mumbai
+                        needOfScholarship: higher education
+                        docUrl: ' http://abc.co/docs'
                     additionalFormData:
                       formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
                       formMimeType: text/html
@@ -3832,18 +3824,22 @@ components:
         - name
         - gender
       properties:
-        id:
-          description: person id
-          type: string
         name:
-          description: person name
+          description: Requestor name
           type: string
-        gender:
-          description: person gender
+        phone:
+          description: Requestor phone
           type: string
-        scholarshipRequestorContact:
-          $ref: '#/components/schemas/ScholarshipRequestorContact'
-    ScholarshipRequestorContact:
+        address:
+          description: Requestor address
+          type: string
+        needOfScholarship:
+          description: Purpose of scholarship
+          type: string
+        docUrl:
+          description: Additional document url
+          type: string
+    ScholarshipRequestorContactDELETE:
       description: Scholarship Requestor Contact
       type: object
       required:
