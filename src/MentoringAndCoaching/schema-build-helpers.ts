@@ -103,8 +103,8 @@ export const buildSearchResponse = (response: any = {}, input: any = {}) => {
       rawMentorShipObject.recommendedFor = mentorShip?.tags
         .filter((elem: any) => elem.code === "recommended_for")
         .map((elem: any) => ({
-          recommendationForCode: elem.list[0].code,
-          recommendationForName: elem.list[0].name
+          recommendationForCode: elem?.list?.[0]?.code,
+          recommendationForName: elem?.list?.[0]?.name
         }));
       rawMentorShipObject.mentorshipSessions = mentorShip?.fulfillment_ids.map(
         (id: string) => {
@@ -121,10 +121,10 @@ export const buildSearchResponse = (response: any = {}, input: any = {}) => {
               type: fullfilementFound?.type,
               status: fullfilementFound?.tags.find(
                 (elem: any) => elem.code === "status"
-              ).list[0]?.name,
+              )?.list?.[0]?.name,
               timezone: fullfilementFound?.tags.find(
                 (elem: any) => elem.code === "timeZone"
-              ).list[0]?.name,
+              )?.list?.[0]?.name,
               mentor: {
                 id: fullfilementFound?.agent?.person?.id,
                 name: fullfilementFound?.agent?.person?.name,
@@ -219,7 +219,7 @@ export const buildSelectResponse = (response: any = {}, input: any = {}) => {
             ).length
               ? fullfilementFound?.tags.find(
                   (tag: any) => tag.code === "status"
-                )?.list[0]?.name
+              )?.list?.[0]?.name
               : "",
             timezone: Object.keys(
               fullfilementFound?.tags.find(
@@ -228,7 +228,7 @@ export const buildSelectResponse = (response: any = {}, input: any = {}) => {
             ).length
               ? fullfilementFound?.tags.find(
                   (tag: any) => tag.code === "timeZone"
-                )?.list[0]?.name
+              )?.list?.[0]?.name
               : "",
             mentor: {
               id: fullfilementFound?.agent?.person?.id,
@@ -246,8 +246,8 @@ export const buildSelectResponse = (response: any = {}, input: any = {}) => {
     mentorshipResponse.recommendedFor = mentorship?.tags
       .filter((elem: any) => elem.code === "recommended_for")
       .map((elem: any) => ({
-        recommendationForCode: elem.list[0].code,
-        recommendationForName: elem.list[0].name
+        recommendationForCode: elem?.list?.[0]?.code,
+        recommendationForName: elem?.list?.[0]?.name
       }));
 
     return mentorshipResponse;
@@ -296,7 +296,7 @@ export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
   const sessionJoinLinks = Object.keys(
     fulfillment?.tags.find((tag: any) => tag.code === "joinLink")
   ).length
-    ? fulfillment?.tags.find((tag: any) => tag.code === "joinLink").list[0]
+    ? fulfillment?.tags.find((tag: any) => tag.code === "joinLink")?.list?.[0]
     : { code: "", name: "" };
 
   const mentorshipSession: any = {
@@ -313,11 +313,11 @@ export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
     timingEnd: fulfillment?.time?.range?.end,
     type: fulfillment?.type,
     status: fulfillment?.tags.find((tag: any) => tag.code === "status")
-      ? fulfillment?.tags.find((tag: any) => tag.code === "status")?.list[0]
+      ? fulfillment?.tags.find((tag: any) => tag.code === "status")?.list?.[0]
           ?.name
       : "Live",
     timezone: fulfillment?.tags.find((tag: any) => tag.code === "timeZone")
-      ? fulfillment?.tags.find((tag: any) => tag.code === "timeZone")?.list[0]
+      ? fulfillment?.tags.find((tag: any) => tag.code === "timeZone")?.list?.[0]
           ?.name
       : "Asia/Calcutta",
     mentor: {
@@ -408,14 +408,14 @@ export const buildStatusResponse = (response: any = {}, input: any = {}) => {
               )
                 ? fullfilementFound?.tags.find(
                     (tag: any) => tag.code === "status"
-                  ).list[0].name
+                )?.list?.[0]?.name
                 : "",
               timezone: fullfilementFound?.tags.find(
                 (tag: any) => tag.code === "timeZone"
               )
                 ? fullfilementFound?.tags.find(
                     (tag: any) => tag.code === "timeZone"
-                  ).list[0].name
+                )?.list?.[0]?.name
                 : "",
               mentor: {
                 id: fullfilementFound?.agent?.person?.id,
@@ -432,8 +432,8 @@ export const buildStatusResponse = (response: any = {}, input: any = {}) => {
         recommendedFor: item?.tags
           .filter((elem: any) => elem.code === "recommended_for")
           .map((elem: any) => ({
-            recommendationForCode: elem.list[0].code,
-            recommendationForName: elem.list[0].name
+            recommendationForCode: elem?.list?.[0]?.code,
+            recommendationForName: elem?.list?.[0]?.name
           }))
       };
 
