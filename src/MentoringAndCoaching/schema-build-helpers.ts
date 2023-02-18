@@ -413,14 +413,15 @@ export const buildInitRequest = (input: any = {}) => {
 
   return { payload: { context, message } };
 };
-export const buildInitResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    transactionId: response?.responses[0]?.context?.transaction_id,
-    bppId: response?.responses[0]?.context?.bpp_id,
-    bppUri: response?.responses[0]?.context?.bpp_uri
-  };
+export const buildInitResponse = (response: any = {}, body: any = {}) => {
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
 
-  const mentorshipSessionId = response?.responses[0]?.message?.order?.id;
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
 
-  return { context, mentorshipSessionId };
+  const mentorshipSessionId = input.message?.order?.id;
+
+  return { data: { context, mentorshipSessionId } };
 };

@@ -103,18 +103,18 @@ export const confirmMentorshipService = async (body: any): Promise<any> => {
 export const initMentorshipService = async (body: any): Promise<any> => {
   try {
     const initRequest = buildInitRequest(body);
-    console.log(JSON.stringify(initRequest.payload));
+    console.log(JSON.stringify(initRequest?.payload));
     let initResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/init`, initRequest.payload, {
         headers
       });
-      initResponse = buildInitResponse(res?.data, body);
+      initResponse = buildInitResponse(res, body);
     } else {
-      initResponse = buildInitResponse(initMentorShipResponse, body);
+      initResponse = buildInitResponse({ data: initMentorShipResponse }, body);
     }
-    return { data: initResponse };
+    return initResponse;
   } catch (error) {
     return { error: error, errorOccured: true };
   }
