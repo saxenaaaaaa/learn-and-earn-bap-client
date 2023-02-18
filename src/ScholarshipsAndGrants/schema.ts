@@ -1,13 +1,24 @@
 export interface IScholarshipNetworkContext {
   domain: string;
-  country: string;
-  city: string;
+
+  location: {
+    city: {
+      name: string;
+      code: string;
+    };
+    country: {
+      name: string;
+      code: string;
+    };
+  };
+  ttl: string;
   action: string;
-  core_version: string;
+  version: string;
+  transaction_id: string;
   bap_id: string;
   bap_uri: string;
-  bpp_id: string;
-  bpp_uri: string;
+  bpp_id?: string;
+  bpp_uri?: string;
   message_id: string;
   timestamp: string;
 }
