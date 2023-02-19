@@ -48,20 +48,19 @@ export const initTrainingService = async (body: any): Promise<any> => {
   try {
     const initRequest = buildInitRequest(body);
     console.log(JSON.stringify(initRequest.payload));
-    return { data: initRequest.payload };
+
     let initResponse: any = {};
     if (trainingNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
-      let res = await axios.post(`${gatewayUrl}/search`, initRequest.payload, {
-        headers
-      });
-      initResponse = buildInitResponse(res?.data, body);
+      let res = await axios.post(`${gatewayUrl}/init`, initRequest.payload, { headers });
+      initResponse = buildInitResponse(res, body);
     } else {
-      initResponse = buildInitResponse(initTrainingResponse, body);
+      initResponse = buildInitResponse({ data: initTrainingResponse }, body);
     }
 
-    return { data: initResponse };
-  } catch (error) {
+    return initResponse;
+  } catch (error: any) {
+    console.log(JSON.stringify(error?.response?.data));
     return { error: error, errorOccured: true };
   }
 };
