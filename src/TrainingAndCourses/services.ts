@@ -14,7 +14,7 @@ import {
 import searchTrainingResponse from "./mocks/searchTrainingResponse.json";
 import initTrainingResponse from "./mocks/initTrainingResponse.json";
 import confirmTrainingResponse from "./mocks/confirmTrainingResponse.json";
-import statusTrainingResponse from "./mocks/statusTrainingResponse.json";
+import selectTrainingResponse from "./mocks/selectTrainingResponse.json";
 
 const gatewayUrl = process.env.GATEWAY_URL;
 const trainingNetwork = process.env.TRAINING_NETWORK;
@@ -105,7 +105,7 @@ export const statusTrainingService = async (body: any): Promise<any> => {
       );
       statusResponse = buildStatusResponse(res?.data, body);
     } else {
-      statusResponse = buildStatusResponse(statusTrainingResponse, body);
+      statusResponse = buildStatusResponse(selectTrainingResponse, body);
     }
 
     return { data: statusResponse };
@@ -116,24 +116,25 @@ export const statusTrainingService = async (body: any): Promise<any> => {
 
 export const selectTrainingService = async (body: any): Promise<any> => {
   try {
-    const statusRequest = buildSelectRequest(body);
-    console.log(JSON.stringify(statusRequest.payload));
+    const selectRequest = buildSelectRequest(body);
+    console.log(JSON.stringify(selectRequest.payload));
 
-    let statusResponse: any = {};
+    let selectResponse: any = {};
     if (trainingNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(
-        `${gatewayUrl}/search`,
-        statusRequest.payload,
+        `${gatewayUrl}/select`,
+        selectRequest.payload,
         { headers }
       );
-      statusResponse = buildSelectResponse(res?.data, body);
+      selectResponse = buildSelectResponse(res, body);
     } else {
-      statusResponse = buildSelectResponse(statusTrainingResponse, body);
+      selectResponse = buildSelectResponse({ data: selectTrainingResponse }, body);
     }
 
-    return { data: statusResponse };
-  } catch (error) {
+    return selectResponse;
+  } catch (error: any) {
+    console.log(error);
     return { error: error, errorOccured: true };
   }
 };
