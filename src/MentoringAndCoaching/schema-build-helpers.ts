@@ -78,7 +78,7 @@ export const buildSearchResponse = (response: any = {}, body: any = {}) => {
       available: item?.quantity?.available?.count,
       allocated: item?.quantity?.allocated?.count,
       price: item?.price?.value,
-      mentorShipSessions: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillmentId == fulfillment?.id))
+      mentorshipSessions: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillmentId == fulfillment?.id))
         ?.map((fulfillment: any) => ({
           id: fulfillment?.id,
           language: fulfillment?.language?.[0],
