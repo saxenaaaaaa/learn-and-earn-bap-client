@@ -260,6 +260,9 @@ export const buildConfirmResponse = (response: any = {}, body: any = {}) => {
     }
   };
 
+  const applicationId = input?.message?.order?.id;
+  const applicationState = input?.message?.order?.state;
+
   let courseDetails = item?.tags?.find((tag: any) => tag?.descriptor?.name == "courseDetails");
 
   const eligibility = item?.tags?.find((tag: any) => tag?.descriptor?.name == "eligibility");
@@ -299,7 +302,7 @@ export const buildConfirmResponse = (response: any = {}, body: any = {}) => {
     data: Object.keys(item?.xinput?.form?.data ?? {}).map((key: string) => { return { formInputKey: key, formInputValue: item?.xinput?.form?.data[key] }; })
   };
 
-  return { data: { context, course, courseDetails, applicantProfile, additionalFormUrl, additionalFormData } };
+  return { data: { context, applicationId, applicationState, course, courseDetails, applicantProfile, additionalFormUrl, additionalFormData } };
 };
 
 
