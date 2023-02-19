@@ -223,19 +223,85 @@ export const buildConfirmRequest = (input: any = {}) => {
     action: "confirm"
   });
 
-  return { payload: { context } };
+  const message: any = { order: { items: [{ id: input?.courseId }] } };
+  if (input?.applicantProfile?.name) {
+    message.order.fulfillments = [{ customer: { person: { name: input?.applicantProfile?.name } } }];
+  }
+
+  return { payload: { context, message } };
 };
-export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    transactionId: response?.context?.message_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
+export const buildConfirmResponse = (response: any = {}, body: any = {}) => {
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
+
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
+
+  const provider = input?.message?.order?.provider;
+  const item = input?.message?.order?.items?.[0];
+
+  const category: any = provider?.categories?.find((category: any) => category?.id === item?.category_id);
+
+  const course = {
+    id: item?.id,
+    name: item?.descriptor?.name,
+    description: item?.descriptor?.long_desc,
+    imageLocations: item?.descriptor?.images?.map((image: any) => image?.url),
+    duration: item?.time?.duration,
+    provider: {
+      id: provider?.id,
+      name: provider?.descriptor?.name,
+      description: provider?.descriptor?.long_desc
+    },
+    category: {
+      id: category?.id,
+      name: category?.name
+    }
   };
 
-  const { order = {} } = response?.message;
+  let courseDetails = item?.tags?.find((tag: any) => tag?.descriptor?.name == "courseDetails");
 
-  return { context };
+  const eligibility = item?.tags?.find((tag: any) => tag?.descriptor?.name == "eligibility");
+  const courseHighlights = item?.tags?.find((tag: any) => tag?.descriptor?.name == "courseHighlights");
+  const prerequisites = item?.tags?.find((tag: any) => tag?.descriptor?.name == "prerequisites");
+
+  const additionalFormUrl = item?.xinput?.form?.url
+
+  courseDetails = {
+    price: courseDetails?.list?.find((detail: any) => detail?.descriptor?.name == "price")?.value,
+    startDate: courseDetails?.list?.find((detail: any) => detail?.descriptor?.name == "startDate")?.value,
+    endDate: courseDetails?.list?.find((detail: any) => detail?.descriptor?.name == "endDate")?.value,
+    rating: courseDetails?.list?.find((detail: any) => detail?.descriptor?.name == "rating")?.value,
+    credits: courseDetails?.list?.find((detail: any) => detail?.descriptor?.name == "credits")?.value,
+
+    instructors: courseDetails?.list?.find((detail: any) => detail?.descriptor?.name == "instructors")?.value,
+    offeringInstitue: courseDetails?.list?.find((detail: any) => detail?.descriptor?.name == "offeringInstitue")?.value,
+    courseUrl: courseDetails?.list?.find((detail: any) => detail?.descriptor?.name == "url")?.value,
+    enrollmentEndDate: courseDetails?.list?.find((detail: any) => detail?.descriptor?.name == "enrollmentEndDate")?.value,
+
+    eligibility: eligibility?.list?.map((li: any) => ({ name: li?.descriptor?.name, value: li?.value })),
+    courseHighlights: courseHighlights?.list?.map((li: any) => ({ name: li?.descriptor?.name, value: li?.value })),
+    prerequisites: prerequisites?.list?.map((li: any) => ({ name: li?.descriptor?.name, value: li?.value }))
+  }
+
+  const fulfillment = input?.message?.order?.fulfillments?.[0];
+  const applicantProfile = {
+    name: fulfillment?.customer?.person?.name,
+    email: fulfillment?.contact?.email,
+    contact: fulfillment?.contact?.phone,
+  };
+
+  const additionalFormData = {
+    formUrl: item?.xinput?.form?.url,
+    formMimeType: item?.xinput?.form?.mime_type,
+    submissionId: item?.xinput?.form?.submission_id,
+    data: Object.keys(item?.xinput?.form?.data ?? {}).map((key: string) => { return { formInputKey: key, formInputValue: item?.xinput?.form?.data[key] }; })
+  };
+
+  return { data: { context, course, courseDetails, applicantProfile, additionalFormUrl, additionalFormData } };
 };
+
 
 export const buildStatusRequest = (input: any = {}) => {
   const context = buildContext({

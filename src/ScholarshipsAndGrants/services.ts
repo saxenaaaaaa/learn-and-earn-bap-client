@@ -120,12 +120,12 @@ export const confirmScholarshipService = async (body: any): Promise<any> => {
         confirmRequest.payload,
         { headers }
       );
-      confirmResponse = buildConfirmResponse(res?.data, body);
+      confirmResponse = buildConfirmResponse(res, body);
     } else {
-      confirmResponse = buildConfirmResponse(confirmScholarshipReponse, body);
+      confirmResponse = buildConfirmResponse({ data: confirmScholarshipReponse }, body);
     }
 
-    return { data: confirmResponse };
+    return confirmResponse
   } catch (error: any) {
     return { error: error, errorOccured: true };
   }
