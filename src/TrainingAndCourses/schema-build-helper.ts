@@ -199,6 +199,13 @@ export const buildInitResponse = (response: any = {}, body: any = {}) => {
     prerequisites: prerequisites?.list?.map((li: any) => ({ name: li?.descriptor?.name, value: li?.value }))
   }
 
+  const fulfillment = input?.message?.order?.fulfillments?.[0];
+  const applicantProfile = {
+    name: fulfillment?.customer?.person?.name,
+    email: fulfillment?.contact?.email,
+    contact: fulfillment?.contact?.phone,
+  };
+
   const additionalFormData = {
     formUrl: item?.xinput?.form?.url,
     formMimeType: item?.xinput?.form?.mime_type,
@@ -206,7 +213,7 @@ export const buildInitResponse = (response: any = {}, body: any = {}) => {
     data: Object.keys(item?.xinput?.form?.data ?? {}).map((key: string) => { return { formInputKey: key, formInputValue: item?.xinput?.form?.data[key] }; })
   };
 
-  return { data: { context, course, courseDetails, additionalFormUrl, additionalFormData } };
+  return { data: { context, course, courseDetails, applicantProfile, additionalFormUrl, additionalFormData } };
 };
 
 export const buildConfirmRequest = (input: any = {}) => {
