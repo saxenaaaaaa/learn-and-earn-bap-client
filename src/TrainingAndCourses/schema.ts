@@ -5,7 +5,7 @@ export interface ITrainingNetworkContext {
   timestamp: string;
   country: string;
   city: string;
-  core_version: string;
+  version: string;
   bap_uri: string;
   bap_id: string;
   domain: string;

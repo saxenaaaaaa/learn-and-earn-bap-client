@@ -8,11 +8,11 @@ export const buildContext = (input: any = {}) => {
     country: process.env.COUNTRY || (input?.country ?? ""),
     city: process.env.CITY || (input?.city ?? ""),
     action: input.action ?? "",
-    core_version: `${process.env.CORE_VERSION || (input?.core_version ?? "")}`,
+    version: `${process.env.CORE_VERSION || (input?.core_version ?? "")}`,
     bap_id: process.env.BAP_ID || (input?.bapId ?? ""),
     bap_uri: process.env.BAP_URI || (input?.bapUri ?? ""),
-    bpp_id: input?.bppId ?? "",
-    bpp_uri: input?.bppUri ?? "",
+    bpp_id: input?.bppId,
+    bpp_uri: input?.bppUri,
     message_id: input?.messageId ?? uuid(),
     timestamp: input.timestamp ?? moment().toISOString()
   };
@@ -83,16 +83,16 @@ export const buildSearchRequest = (input: any = {}) => {
   return { payload: { context, message } };
 };
 
-export const buildSearchResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    transactionId: response?.context?.transaction_id,
-    messageId: response?.context?.message_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
-  };
+export const buildSearchResponse = (response: any = {}, body: any = {}) => {
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
+
   const courses: any[] = [];
 
-  const { providers = [] } = response?.message?.catalog;
+  const providers = input?.message?.catalog?.providers;
 
   providers?.forEach((provider: any) => {
     provider?.items.forEach((item: any) => {
@@ -119,7 +119,7 @@ export const buildSearchResponse = (response: any = {}, input: any = {}) => {
       });
     });
   });
-  return { context, courses };
+  return { data: { context, courses } };
 };
 
 export const buildInitRequest = (input: any = {}) => {

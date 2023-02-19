@@ -16,7 +16,7 @@ import initTrainingResponse from "./mocks/initTrainingResponse.json";
 import confirmTrainingResponse from "./mocks/confirmTrainingResponse.json";
 import statusTrainingResponse from "./mocks/statusTrainingResponse.json";
 
-const gatewayUrl = "https://api.examplebap.io/v0/";
+const gatewayUrl = process.env.GATEWAY_URL;
 const trainingNetwork = process.env.TRAINING_NETWORK;
 
 export const searchTrainingService = async (body: any): Promise<any> => {
@@ -32,13 +32,13 @@ export const searchTrainingService = async (body: any): Promise<any> => {
         searchRequest.payload,
         { headers }
       );
-      searchResponse = buildSearchResponse(res?.data, body);
+      searchResponse = buildSearchResponse(res, body);
     } else {
-      searchResponse = buildSearchResponse(searchTrainingResponse, body);
+      searchResponse = buildSearchResponse({ data: searchTrainingResponse }, body);
     }
 
-    return { data: searchResponse };
-  } catch (error) {
+    return searchResponse;
+  } catch (error: any) {
     console.log(error);
     return { error: error, errorOccured: true };
   }

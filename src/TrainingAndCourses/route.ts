@@ -4,9 +4,9 @@ const router: Router = express.Router();
 
 export const trainingRoutes = () => {
   router.post("/search", search);
+  router.post("/select", status);
   router.post("/init", init);
   router.post("/confirm", confirm);
   router.post("/status", status);
-  router.post("/select", status);
   return router;
 };
