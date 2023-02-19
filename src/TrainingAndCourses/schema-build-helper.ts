@@ -192,7 +192,7 @@ export const buildSelectRequest = (input: any = {}) => {
     action: "select"
   });
   const message = {
-    order: { items: [{ id: input?.scholarshipId }] }
+    order: { items: [{ id: input?.courseId }] }
   };
   return { payload: { context, message } };
 };
