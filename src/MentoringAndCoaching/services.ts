@@ -12,7 +12,9 @@ import {
   buildCancelRequest,
   buildCancelResponse
 } from "./schema-build-helpers";
-import axios from "axios";
+import axiosInstance from "axios";
+import https from "https";
+
 import searchMentorShipResp from "./mocks/searchMentorShipReponse.json";
 import selectMentorshipResp from "./mocks/selectMentorShipResponse.json";
 import confirmMentorShipResponse from "./mocks/confirmMentorShipResponse.json";
@@ -20,13 +22,18 @@ import statusMentorShipResponse from "./mocks/statusMentorShipResponse.json";
 import cancelMentorShipResponse from "./mocks/cancelMentorShipResponse.json";
 import initMentorShipResponse from "./mocks/initMentorShipResponse.json";
 
-const gatewayUrl = "https://dev.elevate-apis.shikshalokam.org/bpp";
+const gatewayUrl = "https://dsep-protocol-client.becknprotocol.io";
 const mentorshipNetwork = process.env.MENTORSHIP_NETWORK;
-
+const axios = axiosInstance.create({
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  })
+});
 export const searchMentorShipService = async (body: any): Promise<any> => {
   try {
     const searchRequest = buildSearchRequest(body);
     console.log(JSON.stringify(searchRequest.payload));
+
     let searchResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -35,13 +42,14 @@ export const searchMentorShipService = async (body: any): Promise<any> => {
         searchRequest.payload,
         { headers }
       );
-      searchResponse = buildSearchResponse(res?.data, body);
+
+      searchResponse = buildSearchResponse(res, body);
     } else {
-      searchResponse = buildSearchResponse(searchMentorShipResp, body);
+      searchResponse = buildSearchResponse({ data: searchMentorShipResp }, body);
     }
 
-    return { data: searchResponse };
-  } catch (error) {
+    return searchResponse;
+  } catch (error: any) {
     return { error: error, errorOccured: true };
   }
 };
@@ -49,7 +57,8 @@ export const searchMentorShipService = async (body: any): Promise<any> => {
 export const selectMentorshipService = async (body: any): Promise<any> => {
   try {
     const selectRequest = buildSelectRequest(body);
-    console.log(JSON.stringify(selectRequest.payload));
+    console.log(JSON.stringify(selectRequest?.payload));
+
     let selectResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -58,12 +67,12 @@ export const selectMentorshipService = async (body: any): Promise<any> => {
         selectRequest.payload,
         { headers }
       );
-      selectResponse = buildSelectResponse(res?.data, body);
+      selectResponse = buildSelectResponse(res, body);
     } else {
-      selectResponse = buildSelectResponse(selectMentorshipResp, body);
+      selectResponse = buildSelectResponse({ data: selectMentorshipResp }, body);
     }
-    return { data: selectResponse };
-  } catch (error) {
+    return selectResponse;
+  } catch (error: any) {
     return { error: error, errorOccured: true };
   }
 };
@@ -71,7 +80,8 @@ export const selectMentorshipService = async (body: any): Promise<any> => {
 export const confirmMentorshipService = async (body: any): Promise<any> => {
   try {
     const confirmRequest = buildConfirmRequest(body);
-    console.log(JSON.stringify(confirmRequest.payload));
+    console.log(JSON.stringify(confirmRequest?.payload));
+
     let confirmResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -80,12 +90,13 @@ export const confirmMentorshipService = async (body: any): Promise<any> => {
         confirmRequest.payload,
         { headers }
       );
-      confirmResponse = buildConfirmResponse(res?.data, body);
+      confirmResponse = buildConfirmResponse(res, body);
     } else {
-      confirmResponse = buildConfirmResponse(confirmMentorShipResponse, body);
+      confirmResponse = buildConfirmResponse({ data: confirmMentorShipResponse }, body);
     }
-    return { data: confirmResponse };
+    return confirmResponse;
   } catch (error) {
+    console.log(error);
     return { error: error, errorOccured: true };
   }
 };
@@ -93,18 +104,18 @@ export const confirmMentorshipService = async (body: any): Promise<any> => {
 export const initMentorshipService = async (body: any): Promise<any> => {
   try {
     const initRequest = buildInitRequest(body);
-    console.log(JSON.stringify(initRequest.payload));
+    console.log(JSON.stringify(initRequest?.payload));
     let initResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(`${gatewayUrl}/init`, initRequest.payload, {
         headers
       });
-      initResponse = buildInitResponse(res?.data, body);
+      initResponse = buildInitResponse(res, body);
     } else {
-      initResponse = buildInitResponse(initMentorShipResponse, body);
+      initResponse = buildInitResponse({ data: initMentorShipResponse }, body);
     }
-    return { data: initResponse };
+    return initResponse;
   } catch (error) {
     return { error: error, errorOccured: true };
   }
@@ -113,7 +124,7 @@ export const initMentorshipService = async (body: any): Promise<any> => {
 export const statusMentorshipService = async (body: any): Promise<any> => {
   try {
     const statusRequest = buildStatusRequest(body);
-    console.log(JSON.stringify(statusRequest.payload));
+    console.log(JSON.stringify(statusRequest?.payload));
     let statusResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
@@ -122,12 +133,12 @@ export const statusMentorshipService = async (body: any): Promise<any> => {
         statusRequest.payload,
         { headers }
       );
-      statusResponse = buildStatusResponse(res?.data, body);
+      statusResponse = buildStatusResponse(res, body);
     } else {
-      statusResponse = buildStatusResponse(statusMentorShipResponse, body);
+      statusResponse = buildStatusResponse({ data: statusMentorShipResponse }, body);
     }
 
-    return { data: statusResponse };
+    return statusResponse;
   } catch (error) {
     return { error: error, errorOccured: true };
   }
@@ -137,6 +148,7 @@ export const cancelMentorshipService = async (body: any): Promise<any> => {
   try {
     const cancelRequest = buildCancelRequest(body);
     console.log(JSON.stringify(cancelRequest));
+
     let cancelResponse: any = {};
 
     if (mentorshipNetwork !== "local") {

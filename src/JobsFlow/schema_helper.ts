@@ -5,15 +5,16 @@ export const buildContext = (input: any = {}) => {
     return {
         domain: process.env.DOMAIN + input?.category,
         action: input?.action ?? "",
-        location: { city: { code: process.env.CITY || (input?.city ?? "") }, country: { code: process.env.COUNTRY || (input?.country ?? "") } },
+        // location: { city: { code: process.env.CITY || (input?.city ?? "") }, country: { code: process.env.COUNTRY || (input?.country ?? "") } },
         version: process.env.CORE_VERSION || (input?.core_version ?? ""),
-        bap_id: process.env.BAP_ID || (input?.bapId ?? ""),
-        bap_uri: process.env.BAP_URI || (input?.bapUri ?? ""),
-        bpp_id: (input?.bppId ?? ""),
-        bpp_uri: (input?.bppUri ?? ""),
+        bap_id: process.env.BAP_ID ?? input?.bapId,
+        bap_uri: process.env.BAP_URI ?? input?.bapUri,
+        bpp_id: input?.bppId,
+        bpp_uri: input?.bppUri,
         transaction_id: input?.transactionId ?? uuid(),
         message_id: input?.messageId ?? uuid(),
         timestamp: input.timestamp ?? moment().toISOString(),
+        ttl: "P1M",
     }
 }
 
@@ -35,8 +36,8 @@ export const buildSearchRequest = (input: any = {}) => {
     if (input?.company?.locations) {
         intent.provider = {
             ...(intent?.provider ?? {}),
-            locations: input?.company?.locations?.map((city: any) => {
-                return city
+            locations: input?.company?.locations?.map((name: any) => {
+                return { city: { name: name.city } }
             })
         }
     }
@@ -63,10 +64,12 @@ export const buildOnSearchRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnSearchResponse = (input: any = {}, body: any = {}) => {
-
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input.context;
-    const context = { transactionId, messageId };
+export const buildOnSearchResponse = (response: any = {}, body: any = {}) => {
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+    const context = { transactionId, messageId, bppId, bppUri };
 
     const providers = input?.message?.catalog?.providers;
 
@@ -135,14 +138,16 @@ export const buildOnSelectRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
-
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
+export const buildOnSelectResponse = (response: any = {}, body: any = {}) => {
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+    const { transaction_id: transactionId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
     const context = { transactionId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
-    const xinput = input?.message?.order?.xinput;
+
 
     const company = {
         id: provider?.id,
@@ -176,7 +181,7 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
                 ?.filter((tag: any) => tag?.descriptor?.name?.toLowerCase()?.includes('qualifications'))
                 ?.map((tag: any) => ({
                     category: tag?.descriptor?.name,
-                    qualification: tag?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+                    qualification: tag?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
                 }))
         };
 
@@ -187,13 +192,13 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
 
         job.workExperience = {
             key: workExperience?.descriptor?.name,
-            experience: workExperience?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+            experience: workExperience?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
         }
-        job.responsibilities = responsibilities?.descriptor?.list?.map((li: any) => li.value)
+        job.responsibilities = responsibilities?.list?.map((li: any) => li.value)
         job.employmentInformation = {
             code: employmentInformation?.descriptor?.code,
             name: employmentInformation?.descriptor?.name,
-            employmentInfo: employmentInformation?.descriptor?.list?.map((li: any) => ({
+            employmentInfo: employmentInformation?.list?.map((li: any) => ({
                 code: li?.descriptor?.code,
                 name: li?.descriptor?.name,
                 value: li?.value
@@ -202,10 +207,10 @@ export const buildOnSelectResponse = (input: any = {}, body: any = {}) => {
         job.compensation = {
             code: compensation?.descriptor?.code,
             name: compensation?.descriptor?.name,
-            salaryInfo: compensation?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
+            salaryInfo: compensation?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
         }
 
-        job.additionalFormUrl = xinput?.form?.url
+        job.additionalFormUrl = item?.xinput?.form?.url
 
         selectedJobs.push(job);
     });
@@ -248,7 +253,10 @@ export const buildInitRequest = (input: any) => {
                     }
                 }
             }),
-            xinput: { data: Object.fromEntries(input?.additionalFormData?.map((formData: any) => [formData?.formInputKey, formData?.formInputValue]) ?? []) }
+            xinput: {
+                submission_id: input?.additionalFormData?.submissionId,
+                data: Object.fromEntries(input?.additionalFormData?.data?.map((formData: any) => [formData?.formInputKey, formData?.formInputValue]) ?? [])
+            }
         },
     }
     return { payload: { context, message } }
@@ -259,16 +267,18 @@ export const buildInitResponse = (input: any = {}, body: any = {}) => {
 }
 
 export const buildOnInitRequest = (input: any = {}) => {
-    const context = buildContext({ category: 'jobs', action: 'on_init', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input.bppUri });
+    const context = buildContext({ category: 'jobs', action: 'on_init', transactionId: input?.transactionId, messageId: input?.messageId, bppId: input?.bppId, bppUri: input?.bppUri });
     const message = {};
 
     return { payload: { context, message } };
 }
 
-export const buildOnInitResponse = (input: any = {}) => {
-
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
-    const context = { transactionId, bppId, bppUri };
+export const buildOnInitResponse = (response: any = {}) => {
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+    const context = { transactionId, messageId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
@@ -306,7 +316,7 @@ export const buildOnInitResponse = (input: any = {}) => {
                 ?.filter((tag: any) => tag?.descriptor?.name?.toLowerCase()?.includes('qualifications'))
                 ?.map((tag: any) => ({
                     category: tag?.descriptor?.name,
-                    qualification: tag?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+                    qualification: tag?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
                 }))
         };
 
@@ -316,16 +326,16 @@ export const buildOnInitResponse = (input: any = {}) => {
         const employmentInformation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "employment-info");
         const compensation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "salary-info");
 
-        job.responsibilities = responsibilities?.descriptor?.list?.map((li: any) => li.value)
+        job.responsibilities = responsibilities?.list?.map((li: any) => li.value)
 
         job.workExperience = {
             key: workExperience?.descriptor?.name,
-            experience: workExperience?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+            experience: workExperience?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
         }
         job.employmentInformation = {
             code: employmentInformation?.descriptor?.code,
             name: employmentInformation?.descriptor?.name,
-            employmentInfo: employmentInformation?.descriptor?.list?.map((li: any) => ({
+            employmentInfo: employmentInformation?.list?.map((li: any) => ({
                 code: li?.descriptor?.code,
                 name: li?.descriptor?.name,
                 value: li?.value
@@ -334,7 +344,7 @@ export const buildOnInitResponse = (input: any = {}) => {
         job.compensation = {
             code: compensation?.descriptor?.code,
             name: compensation?.descriptor?.name,
-            salaryInfo: compensation?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
+            salaryInfo: compensation?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
         }
 
         initiatedJobs.push(job);
@@ -351,7 +361,7 @@ export const buildOnInitResponse = (input: any = {}) => {
         }
     }));
 
-    const additionalFormUrl = xinput?.form?.url
+    const additionalFormUrl = input?.message?.order?.xinput?.form?.url
     const additionalFormData = Object.entries(xinput?.data ?? {})?.map(([key, value]: any[]) => ({ formInputKey: key, formInputValue: value }));
 
     return { data: { context, company, initiatedJobs, jobFulfillments, additionalFormUrl, additionalFormData } };
@@ -369,25 +379,23 @@ export const buildConfirmRequest = (input: any = {}) => {
         order: {
             provider: { id: input?.companyId },
             items: [
-                { id: input?.jobId }
+                {
+                    id: input?.jobId,
+                    fulfillment_ids: [input?.confirmation?.JobFulfillmentCategoryId]
+                }
             ],
             fulfillments: [{
                 id: input?.confirmation?.JobFulfillmentCategoryId,
                 customer: {
                     person: {
                         name: input?.confirmation?.jobApplicantProfile?.name,
-                        languages: input?.confirmation?.jobApplicantProfile?.languages,
+                        languages: input?.confirmation?.jobApplicantProfile?.languages?.map((language: any) => ({ code: language })),
                         URL: input?.confirmation?.jobApplicantProfile?.url,
-                        creds: input?.confirmation?.jobApplicantProfile?.creds.map((cred: any) => {
-                            return cred
-                        }),
-                        skills: input?.confirmation?.jobApplicantProfile?.skills?.map((skill: any) => {
-                            return skill
-                        }),
+                        creds: input?.confirmation?.jobApplicantProfile?.creds.map((cred: any) => cred),
+                        tags: [{ code: "func_skills", list: input?.confirmation?.jobApplicantProfile?.skills?.map((skill: any) => ({ name: skill })) }],
                     }
                 }
-            }],
-            xinput: input?.xinput
+            }]
         },
 
     }
@@ -409,10 +417,12 @@ export const buildOnConfirmRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnConfirmResponse = (input: any = {}) => {
-
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
-    const context = { transactionId, bppId, bppUri };
+export const buildOnConfirmResponse = (response: any = {}) => {
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+    const context = { transactionId, messageId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
@@ -451,7 +461,7 @@ export const buildOnConfirmResponse = (input: any = {}) => {
                 ?.filter((tag: any) => tag?.descriptor?.name?.toLowerCase()?.includes('qualifications'))
                 ?.map((tag: any) => ({
                     category: tag?.descriptor?.name,
-                    qualification: tag?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+                    qualification: tag?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
                 }))
         };
 
@@ -461,25 +471,25 @@ export const buildOnConfirmResponse = (input: any = {}) => {
         const employmentInformation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "employment-info");
         const compensation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "salary-info");
 
-        job.responsibilities = responsibilities?.descriptor?.list?.map((li: any) => li.value)
+        job.responsibilities = responsibilities?.list?.map((li: any) => li.value)
 
         job.workExperience = {
             key: workExperience?.descriptor?.name,
-            experience: workExperience?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+            experience: workExperience?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
         }
         job.employmentInformation = {
             code: employmentInformation?.descriptor?.code,
             name: employmentInformation?.descriptor?.name,
             employmentInfo: {
-                code: employmentInformation?.descriptor?.list?.[0]?.descriptor?.code,
-                name: employmentInformation?.descriptor?.list?.[0]?.descriptor?.name,
-                value: employmentInformation?.descriptor?.list?.[0]?.value
+                code: employmentInformation?.list?.[0]?.descriptor?.code,
+                name: employmentInformation?.list?.[0]?.descriptor?.name,
+                value: employmentInformation?.list?.[0]?.value
             }
         }
         job.compensation = {
             code: compensation?.descriptor?.code,
             name: compensation?.descriptor?.name,
-            salaryInfo: compensation?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
+            salaryInfo: compensation?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
         }
 
         confirmedJobs.push(job);
@@ -522,9 +532,7 @@ export const buildStatusRequest = (input: any = {}) => {
         transactionId: input?.context?.transactionId,
     });
     const message = {
-        order: {
-            id: input?.applicationId
-        },
+        order_id: input?.applicationId
     }
     return { payload: { context, message } };
 }
@@ -537,9 +545,13 @@ export const buildOnStatusRequest = (input: any = {}) => {
 
     return { payload: { context, message } };
 }
-export const buildOnStatusResponse = (input: any = {}) => {
-    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context;
-    const context = { transactionId, bppId, bppUri };
+export const buildOnStatusResponse = (response: any = {}) => {
+    const input = response?.data?.responses?.[0];
+    if (!input)
+        return { status: 200 };
+
+    const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+    const context = { transactionId, messageId, bppId, bppUri };
 
     const provider = input?.message?.order?.provider;
     const items = input?.message?.order?.items;
@@ -578,7 +590,7 @@ export const buildOnStatusResponse = (input: any = {}) => {
                 ?.filter((tag: any) => tag?.descriptor?.name?.toLowerCase()?.includes('qualifications'))
                 ?.map((tag: any) => ({
                     category: tag?.descriptor?.name,
-                    qualification: tag?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+                    qualification: tag?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
                 }))
         };
 
@@ -588,25 +600,25 @@ export const buildOnStatusResponse = (input: any = {}) => {
         const employmentInformation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "employment-info");
         const compensation = item?.tags?.find((tag: any) => tag?.descriptor?.code == "salary-info");
 
-        job.responsibilities = responsibilities?.descriptor?.list?.map((li: any) => li.value)
+        job.responsibilities = responsibilities?.list?.map((li: any) => li.value)
 
         job.workExperience = {
             key: workExperience?.descriptor?.name,
-            experience: workExperience?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
+            experience: workExperience?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value }))
         }
         job.employmentInformation = {
             code: employmentInformation?.descriptor?.code,
             name: employmentInformation?.descriptor?.name,
             employmentInfo: {
-                code: employmentInformation?.descriptor?.list?.[0]?.descriptor?.code,
-                name: employmentInformation?.descriptor?.list?.[0]?.descriptor?.name,
-                value: employmentInformation?.descriptor?.list?.[0]?.value
+                code: employmentInformation?.list?.[0]?.descriptor?.code,
+                name: employmentInformation?.list?.[0]?.descriptor?.name,
+                value: employmentInformation?.list?.[0]?.value
             }
         }
         job.compensation = {
             code: compensation?.descriptor?.code,
             name: compensation?.descriptor?.name,
-            salaryInfo: compensation?.descriptor?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
+            salaryInfo: compensation?.list?.map((li: any) => ({ code: li?.descriptor?.code, name: li?.descriptor?.name, value: li?.value })),
         }
 
         confirmedJobs.push(job);

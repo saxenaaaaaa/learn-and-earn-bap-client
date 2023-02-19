@@ -6,14 +6,21 @@ export const buildContext = (input: any = {}) => {
   const context: MentoringContext = {
     domain: `${process.env.DOMAIN}${input?.category ?? "mentoring"}`,
     action: input.action ?? "",
-    bap_id: process.env.MENTORSHIP_BAP_ID || (input?.bppId ?? ""),
-    bap_uri: process.env.MENTORSHIP_BAP_URI || (input?.bppUri ?? ""),
+    bap_id: process.env.BAP_ID || "",
+    bap_uri: process.env.BAP_URI || "",
     timestamp: input.timestamp ?? moment().toISOString(),
+
     message_id: input?.messageId ?? uuid(),
     version: process.env.CORE_VERSION || (input?.core_version ?? ""),
     ttl: "PT10M", // ask Ajay for its significance
     transaction_id: input?.transactionId ?? uuid()
   };
+  if (input?.bppId) {
+    context.bpp_id = input?.bppId;
+  }
+  if (input?.bppUri) {
+    context.bpp_uri = input?.bppUri;
+  }
   return context;
 };
 
@@ -43,98 +50,57 @@ export const buildSearchRequest = (input: any = {}) => {
   return { payload: { context, message: { intent } } };
 };
 
-export const buildSearchResponse = (response: any = {}, input: any = {}) => {
-  const context = { transactionId: response?.context?.transaction_id };
-  const mentorshipProviders: any = [];
-  const responseMentorShipProviders: any =
-    response?.message?.catalog?.providers ?? [];
+export const buildSearchResponse = (response: any = {}, body: any = {}) => {
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
 
-  responseMentorShipProviders.forEach((provider: any) => {
-    let rawProviderObjects: any = {};
+  const { providers } = input.message?.catalog;
 
-    rawProviderObjects = {
-      id: provider?.id,
-      code: provider?.descriptor?.code,
-      name: provider?.descriptor?.name,
-      description: provider?.descriptor?.short_desc
-    };
+  const mentorshipProviders = providers?.map((provider: any) => ({
+    id: provider?.id,
+    code: provider?.descriptor?.code,
+    name: provider?.descriptor?.name,
+    description: provider?.descriptor?.short_desc,
 
-    const mentorships: any = [];
-    const responseMentorships: any = provider?.items ?? [];
+    mentorships: provider?.items?.map((item: any) => ({
+      id: item?.id,
+      code: item?.descriptor?.code,
+      name: item?.descriptor?.name,
+      description: item?.descriptor?.short_desc,
+      longDescription: item?.descriptor?.long_desc,
 
-    responseMentorships.forEach((mentorShip: any, index: any) => {
-      let rawMentorShipObject: any = {};
-
-      rawMentorShipObject = {
-        id: mentorShip?.id,
-        code: mentorShip?.descriptor?.code,
-        name: mentorShip?.descriptor?.name,
-        description: mentorShip?.descriptor?.short_desc,
-        longDescription: mentorShip?.descriptor?.long_desc,
-        imageLocations: mentorShip?.descriptor?.images,
-        available: mentorShip?.quantity?.available?.count,
-        allocated: mentorShip?.quantity?.allocated?.count,
-        price: mentorShip?.price?.value
-      };
-
-      rawMentorShipObject.categories = provider?.categories.map(
-        (category: any) => {
-          return {
-            id: category?.id,
-            code: category?.descriptor?.code,
-            name: category?.descriptor?.name
-          };
-        }
-      );
-
-      rawMentorShipObject.recommendedFor = mentorShip?.tags
-        .filter((elem: any) => elem.code === "recommended_for")
-        .map((elem: any) => ({
-          recommendationForCode: elem.list[0].code,
-          recommendationForName: elem.list[0].name
-        }));
-      rawMentorShipObject.mentorshipSessions = mentorShip?.fulfillment_ids.map(
-        (id: string) => {
-          let rawFulfillmentObj: any = {};
-          const fullfilementFound = provider?.fulfillments.find(
-            (elem: any) => elem.id === id
-          );
-          if (Object.keys(fullfilementFound).length) {
-            rawFulfillmentObj = {
-              id: fullfilementFound?.id,
-              language: fullfilementFound?.language[0],
-              timingStart: fullfilementFound?.time?.range?.start,
-              timingEnd: fullfilementFound?.time?.range?.end,
-              type: fullfilementFound?.type,
-              status: fullfilementFound?.tags.find(
-                (elem: any) => elem.code === "status"
-              ).list[0]?.name,
-              timezone: fullfilementFound?.tags.find(
-                (elem: any) => elem.code === "timeZone"
-              ).list[0]?.name,
-              mentor: {
-                id: fullfilementFound?.agent?.person?.id,
-                name: fullfilementFound?.agent?.person?.name,
-                gender: fullfilementFound?.agent?.person?.gender ?? "Male",
-                image:
-                  fullfilementFound?.agent?.person?.image ?? "image location",
-                rating: fullfilementFound?.agent?.person?.rating ?? "4.9"
-              }
-            };
+      imageLocations: item?.descriptor?.images?.map((image: any) => image?.url),
+      categories: provider?.categories?.filter((category: any) => item?.category_ids?.find((categoryId: any) => categoryId == category?.id))
+        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
+      available: item?.quantity?.available?.count,
+      allocated: item?.quantity?.allocated?.count,
+      price: item?.price?.value,
+      mentorshipSessions: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillmentId == fulfillment?.id))
+        ?.map((fulfillment: any) => ({
+          id: fulfillment?.id,
+          language: fulfillment?.language?.[0],
+          timingStart: fulfillment?.time?.range?.start,
+          timingEnd: fulfillment?.time?.range?.end,
+          type: fulfillment?.type,
+          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          mentor: {
+            id: fulfillment?.agent?.person?.id,
+            name: fulfillment?.agent?.person?.name,
+            gender: fulfillment?.agent?.person?.gender,
+            image: fulfillment?.agent?.person?.image,
+            rating: fulfillment?.agent?.person?.rating
           }
-          return rawFulfillmentObj;
-        }
-      );
+        })),
+      recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+    })),
+  }));
 
-      mentorships.push(rawMentorShipObject);
-      rawProviderObjects = {
-        ...rawProviderObjects,
-        mentorships
-      };
-    });
-    mentorshipProviders.push(rawProviderObjects);
-  });
-  return { context, mentorshipProviders };
+  return { data: { context, mentorshipProviders } };
 };
 
 export const buildSelectRequest = (input: any = {}) => {
@@ -147,105 +113,66 @@ export const buildSelectRequest = (input: any = {}) => {
 
   return { payload: { context, message } };
 };
-export const buildSelectResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
-  };
+export const buildSelectResponse = (response: any = {}, body: any = {}) => {
 
-  const { provider } = response?.message?.order;
-  const mentorshipProvider: any = {
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
+
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
+
+  const provider = input.message?.order?.provider;
+
+  const mentorshipProvider = {
     id: provider?.id,
     code: provider?.descriptor?.code,
     name: provider?.descriptor?.name,
-    description: provider?.descriptor?.short_desc
-  };
+    description: provider?.descriptor?.short_desc,
 
-  mentorshipProvider.mentorships = provider?.items.map((mentorship: any) => {
-    let mentorshipResponse: any = {
-      id: mentorship?.id,
-      code: mentorship?.descriptor?.code,
-      name: mentorship?.descriptor?.name,
-      description: mentorship?.descriptor?.short_desc,
-      longDescription: mentorship?.descriptor?.long_desc,
-      imageLocations: mentorship?.descriptor?.images,
-      categories: provider?.categories.map((category: any) => {
-        let categoryResponse: any = {
-          id: category?.id,
-          code: category?.descriptor?.code,
-          name: category?.descriptor?.name
-        };
-        return categoryResponse;
-      }),
-      available: mentorship?.quantity?.available?.count,
-      allocated: mentorship?.quantity?.allocated?.count,
-      price: mentorship?.price?.value
-    };
-    mentorshipResponse.mentorshipSessions = mentorship?.fulfillment_ids?.map(
-      (id: string) => {
-        let fullfilmentObj: any = {};
-        const fullfilementFound = provider?.fulfillments.find(
-          (fulfillment: any) => fulfillment.id === id
-        );
+    mentorships: provider?.items?.map((item: any) => ({
+      id: item?.id,
+      code: item?.descriptor?.code,
+      name: item?.descriptor?.name,
+      description: item?.descriptor?.short_desc,
+      longDescription: item?.descriptor?.long_desc,
 
-        if (Object.keys(fullfilementFound).length) {
-          fullfilmentObj = {
-            id: fullfilementFound?.id,
-            language: fullfilementFound?.language[0] ?? "",
-            timingStart: fullfilementFound?.time?.range?.start,
-            timingEnd: fullfilementFound?.time?.range?.end,
-            type: fullfilementFound?.type,
-            status: Object.keys(
-              fullfilementFound?.tags.find((tag: any) => tag.code === "status")
-            ).length
-              ? fullfilementFound?.tags.find(
-                  (tag: any) => tag.code === "status"
-                )?.list[0]?.name
-              : "",
-            timezone: Object.keys(
-              fullfilementFound?.tags.find(
-                (tag: any) => tag.code === "timeZone"
-              )
-            ).length
-              ? fullfilementFound?.tags.find(
-                  (tag: any) => tag.code === "timeZone"
-                )?.list[0]?.name
-              : "",
-            mentor: {
-              id: fullfilementFound?.agent?.person?.id,
-              name: fullfilementFound?.agent?.person?.name,
-              gender: "Male",
-              image: "image location",
-              rating: "4.9"
-            }
-          };
-        }
-        return fullfilmentObj;
-      }
-    );
+      imageLocations: item?.descriptor?.images?.map((image: any) => image?.url),
+      categories: provider?.categories?.filter((category: any) => item?.category_ids?.find((categoryId: any) => categoryId == category?.id))
+        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
+      available: item?.quantity?.available?.count,
+      allocated: item?.quantity?.allocated?.count,
+      price: item?.price?.value,
+      mentorshipSessions: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillmentId == fulfillment?.id))
+        ?.map((fulfillment: any) => ({
+          id: fulfillment?.id,
+          language: fulfillment?.language?.[0],
+          timingStart: fulfillment?.time?.range?.start,
+          timingEnd: fulfillment?.time?.range?.end,
+          type: fulfillment?.type,
+          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          mentor: {
+            id: fulfillment?.agent?.person?.id,
+            name: fulfillment?.agent?.person?.name,
+            gender: fulfillment?.agent?.person?.gender,
+            image: fulfillment?.agent?.person?.image,
+            rating: fulfillment?.agent?.person?.rating
+          }
+        })),
+      recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+    })),
+  }
 
-    mentorshipResponse.recommendedFor = mentorship?.tags
-      .filter((elem: any) => elem.code === "recommended_for")
-      .map((elem: any) => ({
-        recommendationForCode: elem.list[0].code,
-        recommendationForName: elem.list[0].name
-      }));
-
-    return mentorshipResponse;
-  });
-
-  return {
-    context,
-    mentorshipProvider
-  };
+  return { data: { context, mentorshipProvider } };
 };
 
 export const buildConfirmRequest = (input: any = {}) => {
   const context = buildContext({
     ...input?.context,
     category: "mentoring",
-    action: "search"
+    action: "confirm"
   });
 
   const message = {
@@ -266,56 +193,38 @@ export const buildConfirmRequest = (input: any = {}) => {
 
   return { payload: { context, message } };
 };
-export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
-  };
-  const { order } = response?.message ?? {};
-  const mentorshipApplicationId = order?.id;
-  const fulfillment = order?.fulfillments.length ? order?.fulfillments[0] : {};
-  const sessionJoinLinks = Object.keys(
-    fulfillment?.tags.find((tag: any) => tag.code === "joinLink")
-  ).length
-    ? fulfillment?.tags.find((tag: any) => tag.code === "joinLink").list[0]
-    : { code: "", name: "" };
 
-  const mentorshipSession: any = {
-    id: fulfillment?.id,
-    sessionJoinLinks: [
-      {
-        id: sessionJoinLinks.code,
-        link: sessionJoinLinks.name
-      }
-    ],
+export const buildConfirmResponse = (response: any = {}, body: any = {}) => {
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
 
-    language: fulfillment?.language[0],
-    timingStart: fulfillment?.time?.range?.start,
-    timingEnd: fulfillment?.time?.range?.end,
-    type: fulfillment?.type,
-    status: fulfillment?.tags.find((tag: any) => tag.code === "status")
-      ? fulfillment?.tags.find((tag: any) => tag.code === "status")?.list[0]
-          ?.name
-      : "Live",
-    timezone: fulfillment?.tags.find((tag: any) => tag.code === "timeZone")
-      ? fulfillment?.tags.find((tag: any) => tag.code === "timeZone")?.list[0]
-          ?.name
-      : "Asia/Calcutta",
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
+
+  const order = input?.message?.order;
+
+  const mentorshipSession = {
+    id: order?.id,
+    sessionJoinLinks: order?.fulfillments?.[0]?.tags?.find((fulfillment: any) => fulfillment?.code == 'joinLink')?.list?.map((li: any) => ({ id: li?.code, link: li?.name })),
+    language: order?.fulfillments?.[0]?.language?.[0],
+    timingStart: order?.fulfillments?.[0]?.time?.range?.start,
+    timingEnd: order?.fulfillments?.[0]?.time?.range?.ends,
+    type: order?.type,
+    status: order?.fulfillments?.[0]?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
+    timezone: order?.fulfillments?.[0]?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
     mentor: {
-      id: fulfillment?.agent?.person?.id,
-      name: fulfillment?.agent?.person?.name,
-      gender: "Male",
-      image: "image location",
-      rating: "4.9"
+      id: order?.fulfillments?.[0]?.agent?.person?.id,
+      name: order?.fulfillments?.[0]?.agent?.person?.name,
+      gender: order?.fulfillments?.[0]?.agent?.person?.gender,
+      image: order?.fulfillments?.[0]?.agent?.person?.image,
+      rating: order?.fulfillments?.[0]?.agent?.person?.rating
     }
-  };
+  }
 
-  return {
-    mentorshipApplicationId,
-    context,
-    mentorshipSession
-  };
+  return { data: { context, mentorshipSession } };
+
+
 };
 
 export const buildStatusRequest = (input: any = {}) => {
@@ -326,109 +235,69 @@ export const buildStatusRequest = (input: any = {}) => {
   });
 
   const message = {
-    order_id: { id: input?.mentorshipApplicationId }
+    order_id: input?.mentorshipApplicationId
   };
 
   return { payload: { context, message } };
 };
 
-export const buildStatusResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
-  };
-  const { order } = response?.message;
-  const mentorshipApplicationId = order?.id;
-  const mentorshipApplicationStatus = order?.state;
-  const { provider } = order;
-  const mentorshipProvider: any = {
+export const buildStatusResponse = (response: any = {}, body: any = {}) => {
+
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
+
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
+
+  const order = input.message?.order;
+  const provider = order?.provider;
+
+  const mentorshipApplicationId = order?.id
+  const mentorshipApplicationStatus = order?.id;
+
+  const mentorshipProvider = {
     id: provider?.id,
     code: provider?.descriptor?.code,
     name: provider?.descriptor?.name,
     description: provider?.descriptor?.short_desc,
-    mentorships: provider?.items.map((item: any) => {
-      const itemObj: any = {
-        id: item?.id,
-        code: item?.descriptor?.code,
-        name: item?.descriptor?.name,
-        description: item?.descriptor?.short_desc,
-        longDescription: item?.descriptor?.long_desc,
-        imageLocations: item?.descriptor?.images,
-        categories: item?.category_ids.map((categoryId: string) => {
-          const categoryFound = provider?.categories.find((category: any) => {
-            return category?.id.split(" ").join("-") === categoryId;
-          });
 
-          let categoryObj: any = {};
-          if (categoryFound) {
-            categoryObj = {
-              id: categoryFound?.id,
-              code: categoryFound?.descriptor?.code,
-              name: categoryFound?.descriptor?.name
-            };
+    mentorships: provider?.items?.map((item: any) => ({
+      id: item?.id,
+      code: item?.descriptor?.code,
+      name: item?.descriptor?.name,
+      description: item?.descriptor?.short_desc,
+      longDescription: item?.descriptor?.long_desc,
+
+      imageLocations: item?.descriptor?.images?.map((image: any) => image?.url),
+      categories: provider?.categories?.filter((category: any) => item?.category_ids?.find((categoryId: any) => categoryId == category?.id))
+        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
+      available: item?.quantity?.available?.count,
+      allocated: item?.quantity?.allocated?.count,
+      price: item?.price?.value,
+      mentorshipSessions: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillmentId == fulfillment?.id))
+        ?.map((fulfillment: any) => ({
+          id: fulfillment?.id,
+          language: fulfillment?.language?.[0],
+          timingStart: fulfillment?.time?.range?.start,
+          timingEnd: fulfillment?.time?.range?.end,
+          type: fulfillment?.type,
+          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          mentor: {
+            id: fulfillment?.agent?.person?.id,
+            name: fulfillment?.agent?.person?.name,
+            gender: fulfillment?.agent?.person?.gender,
+            image: fulfillment?.agent?.person?.image,
+            rating: fulfillment?.agent?.person?.rating
           }
-          return categoryObj;
-        }),
-        available: item?.quantity?.available?.count,
-        allocated: item?.quantity?.allocated?.count,
-        price: item?.price?.value,
-        mentorshipSessions: item?.fulfillment_ids.map((id: string) => {
-          let sessionObj: any = {};
-          const fullfilementFound = provider?.fulfillments.find(
-            (elem: any) => elem?.id === id
-          );
-          if (fullfilementFound) {
-            sessionObj = {
-              id: fullfilementFound?.id,
-              language: fullfilementFound?.language[0],
-              timingStart: fullfilementFound?.time?.range?.start,
-              timingEnd: fullfilementFound?.time?.range?.end,
-              type: fullfilementFound?.type,
-              status: fullfilementFound?.tags.find(
-                (tag: any) => tag.code === "status"
-              )
-                ? fullfilementFound?.tags.find(
-                    (tag: any) => tag.code === "status"
-                  ).list[0].name
-                : "",
-              timezone: fullfilementFound?.tags.find(
-                (tag: any) => tag.code === "timeZone"
-              )
-                ? fullfilementFound?.tags.find(
-                    (tag: any) => tag.code === "timeZone"
-                  ).list[0].name
-                : "",
-              mentor: {
-                id: fullfilementFound?.agent?.person?.id,
-                name: fullfilementFound?.agent?.person?.name,
-                gender: "Male",
-                image: "image location",
-                rating: "4.9"
-              }
-            };
-          }
+        })),
+      recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+    })),
+  }
 
-          return sessionObj;
-        }),
-        recommendedFor: item?.tags
-          .filter((elem: any) => elem.code === "recommended_for")
-          .map((elem: any) => ({
-            recommendationForCode: elem.list[0].code,
-            recommendationForName: elem.list[0].name
-          }))
-      };
-
-      return itemObj;
-    })
-  };
-
-  return {
-    context,
-    mentorshipApplicationId,
-    mentorshipApplicationStatus,
-    mentorshipProvider
-  };
+  return { data: { context, mentorshipApplicationId, mentorshipApplicationStatus, mentorshipProvider } };
 };
 
 export const buildCancelRequest = (input: any = {}) => {
@@ -445,23 +314,22 @@ export const buildCancelRequest = (input: any = {}) => {
       cancellation_reason_id: `${input?.mentorshipCancellationReasonId}`
     };
   }
-  if (input?.mentorshipCancellationReasonDescription) {
+  if (input?.mentorshipCancellationReason) {
     message = {
       ...message,
-      cancellation_reason_description:
-        input?.mentorshipCancellationReasonDescription
+      descriptor: { name: input?.mentorshipCancellationReason }
     };
   }
   return { payload: { context, message } };
 };
 export const buildCancelResponse = (response: any = {}, input: any = {}) => {
   const context = {
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
+    transactionId: response?.responses[0]?.context?.transaction_id,
+    bppId: response?.responses[0]?.context?.bpp_id,
+    bppUri: response?.responses[0]?.context?.bpp_uri
   };
 
-  const mentorshipApplicationId = response?.message?.order?.id;
+  const mentorshipApplicationId = response?.responses[0]?.message?.order?.id;
 
   return { context, mentorshipApplicationId };
 };
@@ -469,7 +337,7 @@ export const buildCancelResponse = (response: any = {}, input: any = {}) => {
 export const buildInitRequest = (input: any = {}) => {
   const context = buildContext({
     ...input.context,
-    action: "search",
+    action: "init",
     category: "mentoring"
   });
 
@@ -487,15 +355,15 @@ export const buildInitRequest = (input: any = {}) => {
 
   return { payload: { context, message } };
 };
-export const buildInitResponse = (response: any = {}, input: any = {}) => {
-  const context = {
-    ...input.context,
-    transactionId: response?.context?.transaction_id,
-    bppId: response?.context?.bpp_id,
-    bppUri: response?.context?.bpp_uri
-  };
+export const buildInitResponse = (response: any = {}, body: any = {}) => {
+  const input = response?.data?.responses?.[0];
+  if (!input)
+    return { status: 200 };
 
-  const mentorshipSessionId = response?.message?.order?.id;
+  const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
+  const context = { transactionId, messageId, bppId, bppUri };
 
-  return { context, mentorshipSessionId };
+  const mentorshipSessionId = input.message?.order?.id;
+
+  return { data: { context, mentorshipSessionId } };
 };

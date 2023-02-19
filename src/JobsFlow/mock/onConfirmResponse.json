@@ -1,316 +1,363 @@
 {
     "context": {
         "domain": "dsep:jobs",
-        "action": "on_confirm",
-        "location": {
-            "city": {
-                "code": "std:080"
-            },
-            "country": {
-                "code": "IND"
-            }
-        },
         "version": "1.0.0",
-        "bap_id": "examplebap.com",
-        "bap_uri": "https://examplebap.com",
-        "bpp_id": "affinidibpp.com",
-        "bpp_uri": "http://DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com",
-        "transaction_id": "a9aaecca-10b7-4d19-b640-b047a7c62195",
-        "message_id": "$3faf9bc5-6107-42a1-add3-c4af6fa3bad6",
-        "timestamp": "2022-10-11T09:55:41.161Z"
+        "action": "confirm",
+        "bap_id": "dsep-protocol.becknprotocol.io",
+        "bap_uri": "https://dsep-protocol-network.becknprotocol.io/",
+        "bpp_id": "affinidi.com.bpp",
+        "bpp_uri": "https://6vs8xnx5i7.execute-api.ap-south-1.amazonaws.com/dsep",
+        "transaction_id": "a9aaecca-10b7-4d19-b640-b047a7c60008",
+        "message_id": "1972d286-9c14-45b1-8a08-3ae467fe9d11",
+        "ttl": "PT10M",
+        "timestamp": "2023-02-16T06:53:38.129Z"
     },
-    "message": {
-        "order": {
-            "id": "11987539",
-            "provider": {
-                "descriptor": {
-                    "name": "Google India Pvt Ltd",
-                    "images": [
-                        {
-                            "url": "data:image/jpeg;base64,R0lGODlhEAAQAAAAAA******LOGO**OF**GOOGLE**********AAAQABAAAA...jIQA7",
-                            "size_type": "sm"
-                        }
-                    ]
-                },
-                "locations": [
-                    {
-                        "id": "1",
-                        "city": {
-                            "name": "Bangalore",
-                            "code": "std:080"
-                        },
-                        "state": {
-                            "name": "Karnataka"
-                        },
-                        "country": {
-                            "name": "India",
-                            "code": "IND"
-                        }
-                    },
-                    {
-                        "id": "1",
-                        "city": {
-                            "name": "Hyderabad",
-                            "code": "std:040"
-                        },
-                        "state": {
-                            "name": "Telangana"
-                        },
-                        "country": {
-                            "name": "India",
-                            "code": "IND"
-                        }
+    "responses": [
+        {
+            "context": {
+                "domain": "dsep:jobs",
+                "location": {
+                    "country": {
+                        "name": "India",
+                        "code": "IND"
                     }
-                ]
+                },
+                "action": "on_confirm",
+                "version": "1.0.0",
+                "bap_id": "dsep-protocol.becknprotocol.io",
+                "bap_uri": "https://dsep-protocol-network.becknprotocol.io/",
+                "bpp_id": "affinidi.com.bpp",
+                "bpp_uri": "https://6vs8xnx5i7.execute-api.ap-south-1.amazonaws.com/dsep",
+                "transaction_id": "a9aaecca-10b7-4d19-b640-b047a7c60008",
+                "message_id": "1972d286-9c14-45b1-8a08-3ae467fe9d11",
+                "timestamp": "2023-02-16T06:53:38.5759255+00:00",
+                "ttl": "P1M"
             },
-            "items": [
-                {
-                    "id": "1",
-                    "descriptor": {
-                        "name": "Software Engineering Manager II, Google Cloud",
-                        "long_desc": "Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems",
-                        "additional_desc": {
-                            "url": "https://g.co/kgs/XRj9sH",
-                            "content_type": "text/html"
-                        }
+            "message": {
+                "order": {
+                    "id": "1676530418413",
+                    "provider": {
+                        "descriptor": {
+                            "name": "Affinidi"
+                        },
+                        "fulfillments": [
+                            {
+                                "id": "1",
+                                "type": "remote",
+                                "tracking": false
+                            },
+                            {
+                                "id": "2",
+                                "type": "hybrid",
+                                "tracking": false
+                            },
+                            {
+                                "id": "3",
+                                "type": "Onsite",
+                                "tracking": false
+                            }
+                        ],
+                        "locations": [
+                            {
+                                "id": "1",
+                                "city": {
+                                    "name": "Bangalore"
+                                }
+                            }
+                        ]
                     },
-                    "location_ids": [
-                        "1",
-                        "2"
-                    ],
-                    "tags": [
+                    "items": [
                         {
+                            "id": "8A690F158A37965A2CC0E69EC8B360B2",
                             "descriptor": {
-                                "name": "Minimum Educational Qualifications",
-                                "list": [
-                                    {
-                                        "descriptor": {
-                                            "code": "degree",
-                                            "name": "Degree"
-                                        },
-                                        "value": "Bachelors",
-                                        "display": "none"
-                                    },
-                                    {
-                                        "value": "Bachelors or Equivalent Practical Experience"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "descriptor": {
-                                "name": "Preferred Educational Qualifications",
-                                "list": [
-                                    {
-                                        "descriptor": {
-                                            "code": "degree",
-                                            "name": "Degree"
-                                        },
-                                        "value": "Masters",
-                                        "display": "none"
-                                    },
-                                    {
-                                        "descriptor": {
-                                            "code": "degree",
-                                            "name": "Degree"
-                                        },
-                                        "value": "PhD",
-                                        "display": "none"
-                                    },
-                                    {
-                                        "value": "Master's degree or PhD in Computer Science or related technical field."
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "descriptor": {
-                                "name": "Work Experience",
-                                "list": [
-                                    {
-                                        "descriptor": {
-                                            "code": "exp-in-years",
-                                            "name": "Minimum Work Experience"
-                                        },
-                                        "value": "8 Years"
-                                    },
-                                    {
-                                        "descriptor": {
-                                            "name": "Software Development Experience"
-                                        },
-                                        "value": "5 Years"
-                                    },
-                                    {
-                                        "descriptor": {
-                                            "name": "Technical Leadership Experience"
-                                        },
-                                        "value": "3 Years"
-                                    },
-                                    {
-                                        "value": "3 years of experience working in a complex, matrixed organization"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "descriptor": {
-                                "name": "Responsibilities",
-                                "list": [
-                                    {
-                                        "value": "Set and communicate team priorities that support the broader organization's goals. Align strategy, processes, and decision-making across teams."
-                                    },
-                                    {
-                                        "value": "Set clear expectations with individuals based on their level and role and aligned to the broader organization's goals. Meet regularly with individuals to discuss performance and development and provide feedback and coaching"
-                                    },
-                                    {
-                                        "value": "Develop the mid-term technical vision and roadmap within the scope of your (often multiple) team(s). Evolve the roadmap to meet anticipated future requirements and infrastructure needs"
-                                    },
-                                    {
-                                        "value": "Design, guide and vet systems designs within the scope of the broader area, and write product or system development code to solve ambiguous problems."
-                                    },
-                                    {
-                                        "value": "Review code developed by other engineers and provide feedback to ensure best practices (e.g., style guidelines, checking code in, accuracy, testability, and efficiency)."
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "descriptor": {
-                                "code": "employment-info",
-                                "name": "Employment Information",
-                                "list": [
-                                    {
-                                        "descriptor": {
-                                            "code": "emp-duration-type",
-                                            "name": "Employment Duration Type"
-                                        },
-                                        "value": "Full Time"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "descriptor": {
-                                "code": "salary-info",
-                                "name": "Salary Compensation",
-                                "list": [
-                                    {
-                                        "descriptor": {
-                                            "name": "Salary Range"
-                                        },
-                                        "value": "35 LPA to 65 LPA"
-                                    },
-                                    {
-                                        "descriptor": {
-                                            "name": "Compensation Unit",
-                                            "code": "comp-unit"
-                                        },
-                                        "value": "LPA",
-                                        "display": "none"
-                                    },
-                                    {
-                                        "descriptor": {
-                                            "name": "Minimum Compensation",
-                                            "code": "min-comp"
-                                        },
-                                        "value": "35",
-                                        "display": "none"
-                                    },
-                                    {
-                                        "descriptor": {
-                                            "name": "Maximum Compensation",
-                                            "code": "max-comp"
-                                        },
-                                        "value": "65",
-                                        "display": "none"
-                                    },
-                                    {
-                                        "descriptor": {
-                                            "name": "Average Compensation",
-                                            "code": "avg-comp"
-                                        },
-                                        "value": "50",
-                                        "display": "none"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            ],
-            "fulfillments": [
-                {
-                    "id": "1",
-                    "customer": {
-                        "person": {
-                            "name": "John Doe",
-                            "languages": [
-                                {
-                                    "code": "ENG"
-                                },
-                                {
-                                    "code": "HIN"
-                                }
+                                "name": "Test manager",
+                                "long_desc": "We’re on a search for a Staff Mobile Developer with the following attributes: Critical Thinking- You are able to skillfully conceptualise, apply, analyse and evaluate information gathered from observation, experience or communication and use it as a guide to action Data-Driven attitude — You often propose solutions or make a point in a logical and objective manner, substantiated with accurate data and evidence Dealing with Ambiguity — You can effectively cope with change and uncertainty, and are comfortable when things are up in the air Goal-oriented — You are driven and can be counted on to exceed goals. You steadfastly push yourself and others to achieve results all the time Problem Solving — You can easily identify and solve complex problems in a methodological manner "
+                            },
+                            "fulfillment_ids": [
+                                "1",
+                                "2",
+                                "3"
                             ],
-                            "url": "https://linkedin.com/john-doe",
-                            "creds": [
-                                {
-                                    "url": "https://cbse.nic.in/link/to/college-marksheet.json",
-                                    "type": "application/vc+json"
-                                },
-                                {
-                                    "url": "https://drive.google.com/link/to/pass-certificate.json",
-                                    "type": "application/vc+json"
-                                },
-                                {
-                                    "url": "https://digilocker.com/link/to/python-skill-certificate.json",
-                                    "type": "application/vc+json"
-                                },
-                                {
-                                    "url": "https://drive.google.com/link/to/python-skill-certificate.pdf",
-                                    "type": "application/pdf"
-                                },
-                                {
-                                    "url": "https://drive.google.com/link/to/experience-certificate.pdf",
-                                    "type": "application/pdf"
-                                }
+                            "location_ids": [
+                                "1"
                             ],
-                            "skills": [
+                            "xinput": {
+                                "form": {
+                                    "url": ""
+                                }
+                            },
+                            "time": {
+                                "range": {
+                                    "start": "2023-01-03T13:23:01+00:00",
+                                    "end": "2023-02-03T13:23:01+00:00"
+                                }
+                            },
+                            "tags": [
                                 {
-                                    "name": "NodeJS"
+                                    "descriptor": {
+                                        "name": "Minimum Educational Qualifications"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "degree",
+                                                "code": "degree"
+                                            },
+                                            "value": "Bachelors"
+                                        },
+                                        {
+                                            "descriptor": {},
+                                            "value": "Bachelors or Equivalent Practical Experience"
+                                        }
+                                    ],
+                                    "display": true
                                 },
                                 {
-                                    "name": "React"
+                                    "descriptor": {
+                                        "name": "Preferred Educational Qualifications"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "degree",
+                                                "code": "degree"
+                                            },
+                                            "value": "Masters"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "degree",
+                                                "code": "degree"
+                                            },
+                                            "value": "PhD"
+                                        },
+                                        {
+                                            "descriptor": {},
+                                            "value": "Master's degree or PhD in Computer Science or related technical field."
+                                        }
+                                    ],
+                                    "display": true
                                 },
                                 {
-                                    "name": "Project Management"
+                                    "descriptor": {
+                                        "name": "Work Experience"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "Software Development Experienceegree",
+                                                "code": "Software Development Experienceegree"
+                                            },
+                                            "value": "3 years"
+                                        },
+                                        {
+                                            "descriptor": {},
+                                            "value": "2 years of Technical Leadership Experience"
+                                        },
+                                        {
+                                            "descriptor": {},
+                                            "value": "3 years of experience working in a complex, matrixed organization"
+                                        }
+                                    ],
+                                    "display": true
                                 },
                                 {
-                                    "name": "Enterprise Architecture"
+                                    "descriptor": {
+                                        "name": "Responsibilities"
+                                    },
+                                    "list": [
+                                        {
+                                            "value": "Build frontend experiences for our tools (Web, PWA and React Native) "
+                                        },
+                                        {
+                                            "value": "Articulate a long term technical direction and vision for building, maintaining, and scaling our web and mobile platforms"
+                                        },
+                                        {
+                                            "value": "Create trustworthy user experiences by building interfaces that are simple, easy to comprehend, performant and reliable using modern tools like React, React Native, Typescript, Node.js, Jest and Webpack."
+                                        },
+                                        {
+                                            "value": "Mentor and train other team members on design techniques and coding standards. "
+                                        },
+                                        {
+                                            "value": "Own all aspects of our front-end architecture "
+                                        },
+                                        {
+                                            "value": "Contribute to process improvements and build a high-performance engineering culture "
+                                        }
+                                    ],
+                                    "display": true
+                                },
+                                {
+                                    "descriptor": {
+                                        "name": "Employment Information",
+                                        "code": "employment-info"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "Employment Duration Type",
+                                                "code": "emp-duration-type"
+                                            },
+                                            "value": "FULL_TIME"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "Employment Duration Type",
+                                                "code": "emp-duration-type"
+                                            },
+                                            "value": ""
+                                        }
+                                    ],
+                                    "display": true
+                                },
+                                {
+                                    "descriptor": {
+                                        "name": "skill requirement",
+                                        "code": "Skills"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "code": "You have 8+ years of engineering experience, predominantly in shipping user-facing production features"
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You are an expert in React.js and React Native, ideally using TypeScript language extensions  "
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You have a good understanding of JavaScript Design Patterns "
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You have good experience writing front end test cases  "
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You’re familiar with current trends and best practices in front-end architecture, including performance, security and usability.  "
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You’re familiar with product and design lifecycles, and collaborating closely with designers, engineers, and product managers "
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You have experience with Test Driven Development and know when to apply it."
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You have experience working on AWS or other cloud stacks and Docker.  "
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You have experience building systems with high data protection requirements, anonymous data and data encryption. "
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You have experience with IaaC. "
+                                            }
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "code": "You have worked on building responsive UI using React Native. "
+                                            }
+                                        }
+                                    ],
+                                    "display": true
+                                },
+                                {
+                                    "descriptor": {
+                                        "name": "Salary Compensation",
+                                        "code": "salary-info"
+                                    },
+                                    "list": [
+                                        {
+                                            "descriptor": {
+                                                "name": "baseSalary"
+                                            },
+                                            "value": "60000"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "variableSalary"
+                                            },
+                                            "value": "60000"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "allowance"
+                                            },
+                                            "value": "60000"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "commission"
+                                            },
+                                            "value": "60000"
+                                        },
+                                        {
+                                            "descriptor": {
+                                                "name": "overtime"
+                                            },
+                                            "value": "8"
+                                        }
+                                    ],
+                                    "display": true
                                 }
                             ]
                         }
-                    },
-                    "state": {
-                        "descriptor": {
-                            "name": "Application under process",
-                            "code": "in-process"
+                    ],
+                    "fulfillments": [
+                        {
+                            "id": "1",
+                            "state": {
+                                "descriptor": {
+                                    "name": "Screening",
+                                    "code": "Screening"
+                                }
+                            },
+                            "customer": {
+                                "person": {
+                                    "name": "Sanjay",
+                                    "gender": "M",
+                                    "creds": [
+                                        {
+                                            "id": "claimId:af7e0b1b5c4858eb",
+                                            "type": "GenderData",
+                                            "url": "https://cloud-wallet-api.prod.affinity-project.org/api/v1/share/b8a2c0cbc5a02da03d2aecb59094672a8e0b16a1c845456bd18678529d6901df?key=beda347c431e02319bd31c63e5f5f5f5e14939efdb6697ce4d93c87eade27c47"
+                                        },
+                                        {
+                                            "id": "claimId:af7e0b1b5c4858eb",
+                                            "type": "ResumeVC",
+                                            "url": "https://cloud-wallet-api.prod.affinity-project.org/api/v1/share/b8a2c0cbc5a02da03d2aecb59094672a8e0b16a1c845456bd18678529d6901df?key=beda347c431e02319bd31c63e5f5f5f5e14939efdb6697ce4d93c87eade27c47"
+                                        }
+                                    ],
+                                    "tags": [
+                                        {
+                                            "display": true,
+                                            "list": [
+                                                {},
+                                                {}
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "tracking": false
                         }
-                    }
-                }
-            ],
-            "xinput": {
-                "form": {
-                    "url": "https://affinidi.com/path/to/application/form"
-                },
-                "required": true,
-                "data": {
-                    "resume": "data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...",
-                    "work-mode": "hybrid",
-                    "exp-years": "10",
-                    "sop": "I am interested in this job because my prior experience is highly relevant to this role."
+                    ],
+                    "type": "DEFAULT"
                 }
             }
         }
-    }
+    ]
 }

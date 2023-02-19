@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.14
+  version: 0.1.19
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -96,7 +96,6 @@ paths:
                                 state: Telangana
                                 country: India
                                 countryCode: IND
-                    
         '404':
           description: Job search request failed
           content:
@@ -244,7 +243,6 @@ paths:
                               name: Average Compensation
                               value: '50'
                         additionalFormUrl: https://affinidi.com/path/to/application/form
-                    
         '404':
           description: Job select request failed
           content:
@@ -316,6 +314,9 @@ paths:
                           - Project Management
                           - Enterprise Architecture
                   additionalFormData:
+                    submissionId:
+                      123456
+                    data:
                     - formInputKey: resume
                       formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                     - formInputKey: work-mode
@@ -445,6 +446,9 @@ paths:
                             - Enterprise Architecture
                     additionalFormUrl: "https://affinidi.com/path/to/application/form" 
                     additionalFormData:
+                      submissionId:
+                        123456
+                      data:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
@@ -453,7 +457,6 @@ paths:
                         formInputValue: '10'
                       - formInputKey: sop
                         formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
-                    
         '404':
           description: Job init request failed
           content:
@@ -522,7 +525,6 @@ paths:
                         - React
                         - Project Management
                         - Enterprise Architecture
-                  
       responses:
         '200':
           description: Job confirmation request sent to network
@@ -643,7 +645,11 @@ paths:
                             - React
                             - Project Management
                             - Enterprise Architecture
+                    additionalFormUrl: "https://affinidi.com/path/to/application/form"
                     additionalFormData:
+                      submissionId:
+                        123456
+                      data:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
@@ -696,7 +702,6 @@ paths:
                     transactionId: a9aaecca-10b7-4d19-b640-b047a7c62195
                     bppId: affinidibpp.com
                     bppUri: http://affinidibpp.com/DSEP-nlb-d3ed9a3f85596080.elb.ap-south-1.amazonaws.com
-                  
       responses:
         '200':
           description: Job status request sent to network
@@ -822,6 +827,9 @@ paths:
                           statusCode: application-accepted
                     additionalFormUrl: https://affinidi.com/path/to/application/form
                     additionalFormData:
+                      submissionId:
+                        123456
+                      data:
                       - formInputKey: resume
                         formInputValue: data:application/pdf;base64,JVBERi0xLjUKJd...c3RyZWFtCnjarVhLc9s2...
                       - formInputKey: work-mode
@@ -830,7 +838,6 @@ paths:
                         formInputValue: '10'
                       - formInputKey: sop
                         formInputValue: I am interested in this job because my prior experience is highly relevant to this role.
-                    
         '404':
           description: Job status request failed
           content:
@@ -1387,8 +1394,9 @@ paths:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
                 scholarshipProviders:
-                  - id: BX213573733
+                  - id: ZQU31169990
                     name: XYZ Education Foundation
+                    description: XYZ Education Foundation
                     scholarships:
                       - id: SCM_00420068
                         name: XYZ Foundation Undergraduation scholarship
@@ -1410,16 +1418,6 @@ paths:
                             name: Mary G
                             phone: '9876543210'
                             email: maryg@xyz.com
-                          academicQualifications:
-                            - code: gr
-                              name: Grade
-                              value: Grade 12
-                            - code: percentage_grade
-                              name: Percentage/Grade
-                              value: '50'
-                            - code: passing_year
-                              name: Passing Year
-                              value: '2021'
         '404':
           description: Scholarship search request failed
           content:
@@ -1457,12 +1455,13 @@ paths:
             schema:
               $ref: '#/components/schemas/SelectScholarship'
             example:
-              scholarshipProiderId: BX213573733
-              scholarshipId: SCM_00420068
+              scholarshipProiderId: ZQU31169990
+              scholarshipId: SCM_58741444
+              scholarshipDetailsId: DSEP_FUL_58741444
               context:
                 transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                bppId: https://xyzbpp.com/
-                bppUri: https://api.xyzbpp.com/v0/
+                bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
       responses:
         '200':
           description: Scholarship select request sent to network
@@ -1473,40 +1472,54 @@ paths:
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                scholarshipProviders:
-                  - id: BX213573733
-                    name: XYZ Education Foundation
-                    scholarships:
-                      - id: SCM_00420068
-                        name: XYZ Foundation Undergraduation scholarship
-                        description: XYZ Foundation Undergraduation scholarship
-                        amount:
-                          amount: 30000
-                          currency: INR
-                        category:
-                          id: DSEP_CAT_1
-                          name: Under Graduate
-                          code: ug
-                        scholarshipDetails:
-                          id: DSEP_FUL_01
-                          type: SCHOLARSHIP
-                          gender: Female
-                          applicationStartDate: '2022-12-01'
-                          applicationEndDate: '2022-12-31'
-                          supportContact:
-                            name: Mary G
-                            phone: '9876543210'
-                            email: maryg@xyz.com
-                          academicQualifications:
-                            - code: gr
-                              name: Grade
-                              value: Grade 12
-                            - code: percentage_grade
-                              name: Percentage/Grade
-                              value: '50'
-                            - code: passing_year
-                              name: Passing Year
-                              value: '2021'
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
+                scholarshipProvider:
+                  id: BX213573733
+                  name: XYZ Education Foundation
+                  scholarships:
+                  - id: SCM_00420068
+                    name: XYZ Foundation Undergraduation scholarship
+                    description: XYZ Foundation Undergraduation scholarship
+                    amount:
+                      amount: 30000
+                      currency: INR
+                    category:
+                      id: DSEP_CAT_1
+                      name: Under Graduate
+                      code: ug
+                    scholarshipDetails:
+                      id: DSEP_FUL_01
+                      type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 
+                      data: []
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: '<= 2000000'
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
         '404':
           description: Scholarship select request failed
           content:
@@ -1546,46 +1559,67 @@ paths:
             example:
               context:
                 transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                bppId: https://xyzbpp.com/
-                bppUri: https://api.xyzbpp.com/v0/
+                bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
               scholarshipProvider:
                 id: BX213573733
                 name: XYZ Education Foundation
-                categoryId: DSEP_CAT_1
                 scholarships:
-                  - id: SCM_00420068
-                    name: XYZ Foundation Undergraduation scholarship
-                    description: XYZ Foundation Undergraduation scholarship
-                    amount:
-                      amount: 30000
-                      currency: INR
-                    scholarshipDetails:
-                      id: DSEP_FUL_01
-                      type: SCHOLARSHIP
-                      scholarshipRequestor:
-                        id: candidate_101
-                        name: Jane D
-                        gender: Female
-                        scholarshipRequestorContact:
-                          address: AB apartment|Mumbai|Maharashtra
-                          addressFormat: addressLine1|city|state
-                        academicQualifications:
-                          - code: gr
-                            name: Grade
-                            value: Grade 12
-                          - code: percentage_grade
-                            name: Percentage/Grade
-                            value: '75'
-                          - code: passing_year
-                            name: Passing Year
-                            value: '2022'
-                        currentEducations:
-                          - code: ug
-                            name: Under Graduate
-                            value: BSc IT
-                          - code: academic_year
-                            name: Academic Year
-                            value: 2022-2023
+                - id: SCM_00420068
+                  name: XYZ Foundation Undergraduation scholarship
+                  description: XYZ Foundation Undergraduation scholarship
+                  amount:
+                    amount: 30000
+                    currency: INR
+                  categoryId: DSEP_CAT_1
+                  scholarshipDetails:
+                    id: DSEP_FUL_01
+                    type: SCHOLARSHIP
+                    applicationStartDate: '2022-12-01'
+                    applicationEndDate: '2022-12-31'
+                    supportContact:
+                      name: Mary G
+                      phone: '9876543210'
+                      email: maryg@xyz.com
+                    scholarshipRequestor:
+                      name: James
+                      phone: '498674'
+                      address: Mumbai
+                      needOfScholarship: higher education
+                      docUrl: ' http://abc.co/docs'
+                  additionalFormData:
+                    formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                    formMimeType: text/html
+                    submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                    data:
+                    - formInputKey: name
+                      formInputValue: James
+                    - formInputKey: phone
+                      formInputValue: 498674
+                    - formInputKey: address
+                      formInputValue: Mumbai
+                    - formInputKey: needOfScholarship
+                      formInputValue: higher education
+                    - formInputKey: docUrl
+                      formInputValue: http://abc.co/docs
+                  academicQualificationsCriteria: 
+                  - code: gr
+                    name: Grade
+                    value: Grade 12
+                  - code: percentage_grade
+                    name: Percentage/Grade
+                    value: '>= 50'
+                  - code: passing_year
+                    name: Passing Year
+                    value: 2021
+                  finStatusCriteria: 
+                  - code: family_income
+                    name: Family Income
+                    value: <= 2000000
+                  benefits: 
+                  - code: scholarship-amount
+                    name: Scholarship Amount
+                    value: Upto Rs.30000 per year
       responses:
         '200':
           description: Scholarship init request sent to network
@@ -1596,56 +1630,68 @@ paths:
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                  bppId: https://xyzbpp.com/
-                  bppUri: https://api.xyzbpp.com/v0/
-                scholarshipApplicationId: '123456'
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
                 scholarshipProvider:
                   id: BX213573733
                   name: XYZ Education Foundation
-                  categoryId: DSEP_CAT_1
+                  description: XYZ Education Foundation
                   scholarships:
-                    - id: SCM_00420068
-                      name: XYZ Foundation Undergraduation scholarship
-                      description: XYZ Foundation Undergraduation scholarship
-                      amount:
-                        amount: 30000
-                        currency: INR
-                      categoryId: DSEP_CAT_1
-                      additionalForm:
-                        url:   https://api.example-bpp.com/getForm?id=t8923y4ryu328473y4
-                        mime_type: text/html
-                      scholarshipDetails:
-                        id: DSEP_FUL_01
-                        type: SCHOLARSHIP
-                        scholarshipStatus:
-                          code: INIT
-                          description: Application initiated
-                          updatedAt: 2023-01-01 10:00:000
-                          updatedBy: candidate_101
-                        scholarshipRequestor:
-                          id: candidate_101
-                          name: Jane D
-                          gender: Female
-                          scholarshipRequestorContact:
-                            address: AB apartment|Mumbai|Maharashtra
-                            addressFormat: addressLine1|city|state
-                          academicQualifications:
-                            - code: gr
-                              name: Grade
-                              value: Grade 12
-                            - code: percentage_grade
-                              name: Percentage/Grade
-                              value: '75'
-                            - code: passing_year
-                              name: Passing Year
-                              value: '2022'
-                          currentEducations:
-                            - code: ug
-                              name: Under Graduate
-                              value: BSc IT
-                            - code: academic_year
-                              name: Academic Year
-                              value: 2022-2023
+                  - id: SCM_00420068
+                    name: XYZ Foundation Undergraduation scholarship
+                    description: XYZ Foundation Undergraduation scholarship
+                    categoryId: DSEP_CAT_1
+                    amount:
+                      amount: 30000
+                      currency: INR
+                    scholarshipDetails:
+                      id: DSEP_FUL_01
+                      type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
+                      scholarshipRequestor:
+                        name: James
+                        phone: '498674'
+                        address: Mumbai
+                        needOfScholarship: higher education
+                        docUrl: ' http://abc.co/docs'
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                      data:
+                      - formInputKey: name
+                        formInputValue: James
+                      - formInputKey: phone
+                        formInputValue: 498674
+                      - formInputKey: address
+                        formInputValue: Mumbai
+                      - formInputKey: needOfScholarship
+                        formInputValue: higher education
+                      - formInputKey: docUrl
+                        formInputValue: http://abc.co/docs
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: <= 2000000
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
         '404':
           description: Scholarship init request failed
           content:
@@ -1683,54 +1729,70 @@ paths:
             schema:
               $ref: '#/components/schemas/ConfirmScholarshipRequest'
             example:
-              context:
-                transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                bppId: https://xyzbpp.com/
-                bppUri: https://api.xyzbpp.com/v0/
-              scholarshipApplicationId: '123456'
-              scholarshipProvider:
-                id: BX213573733
-                name: XYZ Education Foundation
-                categoryId: DSEP_CAT_1
-                scholarships:
+                context:
+                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
+                scholarshipProvider:
+                  id: BX213573733
+                  name: XYZ Education Foundation
+                  description: XYZ Education Foundation
+                  scholarships:
                   - id: SCM_00420068
                     name: XYZ Foundation Undergraduation scholarship
                     description: XYZ Foundation Undergraduation scholarship
+                    categoryId: DSEP_CAT_1
                     amount:
                       amount: 30000
                       currency: INR
-                    categoryId: DSEP_CAT_1
-                    additionalForm:
-                      url: https://api.example-bpp.com/getForm?id=t8923y4ryu328473y4
-                      urmimeTypel: text/html
-                      submissionId: jhg84n0jhs8
                     scholarshipDetails:
                       id: DSEP_FUL_01
                       type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
                       scholarshipRequestor:
-                        id: candidate_101
-                        name: Jane D
-                        gender: Female
-                        scholarshipRequestorContact:
-                          address: AB apartment|Mumbai|Maharashtra
-                          addressFormat: addressLine1|city|state
-                        academicQualifications:
-                          - code: gr
-                            name: Grade
-                            value: Grade 12
-                          - code: percentage_grade
-                            name: Percentage/Grade
-                            value: '75'
-                          - code: passing_year
-                            name: Passing Year
-                            value: '2022'
-                        currentEducations:
-                          - code: ug
-                            name: Under Graduate
-                            value: BSc IT
-                          - code: academic_year
-                            name: Academic Year
-                            value: 2022-2023
+                        name: James
+                        phone: '498674'
+                        address: Mumbai
+                        needOfScholarship: higher education
+                        docUrl: ' http://abc.co/docs'
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                      data:
+                      - formInputKey: name
+                        formInputValue: James
+                      - formInputKey: phone
+                        formInputValue: 498674
+                      - formInputKey: address
+                        formInputValue: Mumbai
+                      - formInputKey: needOfScholarship
+                        formInputValue: higher education
+                      - formInputKey: docUrl
+                        formInputValue: http://abc.co/docs
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: <= 2000000
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
       responses:
         '200':
           description: Scholarship confirmation request sent to network
@@ -1741,26 +1803,70 @@ paths:
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                  bppId: https://xyzbpp.com/
-                  bppUri: https://api.xyzbpp.com/v0/
-                scholarshipApplicationId: '123456'
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
+                scholarshipApplicationId: APP_32620371
+                scholarshipApplicationStatus: ACTIVE
                 scholarshipProvider:
                   id: BX213573733
                   name: XYZ Education Foundation
+                  description: XYZ Education Foundation
                   scholarships:
-                    - id: SCM_00420068
-                      name: XYZ Foundation Undergraduation scholarship
-                      amount:
-                        amount: 30000
-                        currency: INR
-                      scholarshipDetails:
-                        id: DSEP_FUL_01
-                        type: SCHOLARSHIP
-                        scholarshipStatus:
-                          code: INPROGRESS
-                          description: Your application is under review
-                          updatedAt: 2023-01-01 11:00:000
-                          updatedBy: reviewer-1
+                  - id: SCM_00420068
+                    name: XYZ Foundation Undergraduation scholarship
+                    description: XYZ Foundation Undergraduation scholarship
+                    categoryId: DSEP_CAT_1
+                    amount:
+                      amount: 30000
+                      currency: INR
+                    scholarshipDetails:
+                      id: DSEP_FUL_01
+                      type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
+                      scholarshipRequestor:
+                        name: James
+                        phone: '498674'
+                        address: Mumbai
+                        needOfScholarship: higher education
+                        docUrl: ' http://abc.co/docs'
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                      data:
+                      - formInputKey: name
+                        formInputValue: James
+                      - formInputKey: phone
+                        formInputValue: 498674
+                      - formInputKey: address
+                        formInputValue: Mumbai
+                      - formInputKey: needOfScholarship
+                        formInputValue: higher education
+                      - formInputKey: docUrl
+                        formInputValue: http://abc.co/docs
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: <= 2000000
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
         '404':
           description: Scholarship confirm request failed
           content:
@@ -1798,7 +1904,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ScholarshipStatusRequest'
             example:
-              scholarshipApplicationId: '123456'
+              scholarshipApplicationId: 'APP_32620371'
               context:
                 transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
                 bppId: https://xyzbpp.com/
@@ -1813,27 +1919,70 @@ paths:
               example:
                 context:
                   transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                  bppId: https://xyzbpp.com/
-                  bppUri: https://api.xyzbpp.com/v0/
-                scholarshipApplicationId: '123456'
+                  bppId: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1
+                  bppUri: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public
+                scholarshipApplicationId: APP_32620371
+                scholarshipApplicationStatus: ACTIVE
                 scholarshipProvider:
                   id: BX213573733
                   name: XYZ Education Foundation
+                  description: XYZ Education Foundation
                   scholarships:
-                    - id: SCM_00420068
-                      name: XYZ Foundation Undergraduation scholarship
-                      description: XYZ Foundation Undergraduation scholarship
-                      amount:
-                        amount: 30000
-                        currency: INR
-                      scholarshipDetails:
-                        id: DSEP_FUL_01
-                        type: SCHOLARSHIP
-                        scholarshipStatus:
-                          code: INPROGRESS
-                          description: Your application is under review
-                          updatedAt: 2023-01-01 11:00:000
-                          updatedBy: reviewer-1
+                  - id: SCM_00420068
+                    name: XYZ Foundation Undergraduation scholarship
+                    description: XYZ Foundation Undergraduation scholarship
+                    categoryId: DSEP_CAT_1
+                    amount:
+                      amount: 30000
+                      currency: INR
+                    scholarshipDetails:
+                      id: DSEP_FUL_01
+                      type: SCHOLARSHIP
+                      applicationStartDate: '2022-12-01'
+                      applicationEndDate: '2022-12-31'
+                      supportContact:
+                        name: Mary G
+                        phone: '9876543210'
+                        email: maryg@xyz.com
+                      scholarshipRequestor:
+                        name: James
+                        phone: '498674'
+                        address: Mumbai
+                        needOfScholarship: higher education
+                        docUrl: ' http://abc.co/docs'
+                    additionalFormData:
+                      formUrl: https://proteanrc.centralindia.cloudapp.azure.com/dsep-bpp-1/public/getForm/a9aaecca-10b7-4d19-b640-022723112309/ba854d6184fa48eea36aab701486eee9
+                      formMimeType: text/html
+                      submissionId: 8203501c-8934-468c-b947-1d5317847e9a
+                      data:
+                      - formInputKey: name
+                        formInputValue: James
+                      - formInputKey: phone
+                        formInputValue: 498674
+                      - formInputKey: address
+                        formInputValue: Mumbai
+                      - formInputKey: needOfScholarship
+                        formInputValue: higher education
+                      - formInputKey: docUrl
+                        formInputValue: http://abc.co/docs
+                    academicQualificationsCriteria: 
+                    - code: gr
+                      name: Grade
+                      value: Grade 12
+                    - code: percentage_grade
+                      name: Percentage/Grade
+                      value: '>= 50'
+                    - code: passing_year
+                      name: Passing Year
+                      value: 2021
+                    finStatusCriteria: 
+                    - code: family_income
+                      name: Family Income
+                      value: <= 2000000
+                    benefits: 
+                    - code: scholarship-amount
+                      name: Scholarship Amount
+                      value: Upto Rs.30000 per year
         '404':
           description: Scholarship status request failed
           content:
@@ -2484,10 +2633,16 @@ components:
           items:
             $ref: '#/components/schemas/JobFulfillment' 
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     JobFulfillment:
       description: Schema for Job Fulfillment object
       type: object
@@ -2571,10 +2726,16 @@ components:
           type: string
           description: Additional form from job provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     initiatedJobs:
       description: Schema for initiated Job
       type: object
@@ -2698,10 +2859,16 @@ components:
           type: string
           description: Additional form from job provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     ConfirmedJob:
       description: Schema for confirmed Job
       type: object
@@ -2822,10 +2989,16 @@ components:
           type: string
           description: Additional form from job provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/JobAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/JobAdditionalFormData'
     JobStatusFulfillment:
       description: Schema for Job status Fulfillment object
       type: object
@@ -3318,6 +3491,9 @@ components:
         name:
           description: Scholarship provider name
           type: string
+        description:
+          description: Scholarship description
+          type: string
         scholarships:
           type: array
           items:
@@ -3389,9 +3565,6 @@ components:
         type:
           description: fulfillment type
           type: string
-        gender:
-          description: application end date
-          type: string
         applicationStartDate:
           description: application start date
           type: string
@@ -3400,27 +3573,99 @@ components:
           type: string
         supportContact:
           $ref: '#/components/schemas/SupportContact'
-        academicQualifications:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/AcademicQualification'
     SupportContact:
       description: Support contact
       type: object
       required:
-        - id
-        - name
-        - code
+        - phone
+        - email
       properties:
         name:
           description: contact person name
           type: string
         phone:
-          description: contact person name
+          description: contact person phone
           type: string
         email:
           description: contact person email
+          type: string
+    SelectScholarship:
+      description: Schema for scholarship selection
+      type: object
+      required:
+        - scholarshipProiderId
+        - scholarshipId
+        - context
+      properties:
+        scholarshipProiderId:
+          description: Scholarship provider id
+          type: string
+        scholarshipId:
+          description: Scholarship item id
+          type: string
+        scholarshipDetailsId:
+          description: Scholarship fulfillment id
+          type: string
+        context:
+          $ref: '#/components/schemas/Context'
+    SelectScholarshipResponse:
+      description: Schema for selected scholarship
+      type: object
+      required:
+        - context
+        - scholarshipProvider
+        - additionalFormData
+      properties:
+        context:
+          $ref: '#/components/schemas/Context'
+        scholarshipProvider:
+          $ref: '#/components/schemas/ScholarshipProvider'
+        additionalForm:
+          $ref: '#/components/schemas/ScholarshipAdditionalForm'
+        academicQualificationsCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+        finStatusCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FinancialStatus'
+        benefits:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Benefit'
+    ScholarshipAdditionalForm:
+      description: Scholarship additional form
+      type: object
+      required:
+        - formUrl
+      properties:
+        formUrl:
+          description: additional form url
+          type: string
+        formMimeType:
+          description: additional form mimeType
+          type: string
+        submissionId:
+          description: Id returned as part of xinupt form submission
+          type: string
+        data:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/ScholarshipAdditionalFormData'
+    ScholarshipAdditionalFormData:
+      description: Scholarship additional form data
+      type: object
+      properties:
+        formInputKey:
+          description: Additional form key
+          type: string
+        formInputValue:
+          description: Additional form value for key
           type: string
     AcademicQualification:
       description: Academic Qualification
@@ -3439,34 +3684,40 @@ components:
         value:
           description: Academic qualification value
           type: string
-    SelectScholarship:
-      description: Schema for scholarship selection
+    FinancialStatus:
+      description: Financial Status Criteria
       type: object
       required:
-        - scholarshipProiderId
-        - scholarshipId
-        - context
+        - code
+        - name
+        - value
       properties:
-        scholarshipProiderId:
+        code:
+          description: Academic qualification code
           type: string
-        scholarshipId:
+        name:
+          description: Academic qualification name
           type: string
-        context:
-          $ref: '#/components/schemas/Context'
-    SelectScholarshipResponse:
-      description: Schema for selected scholarship
+        value:
+          description: Academic qualification value
+          type: string
+    Benefit:
+      description: Benefits
       type: object
       required:
-        - context
-        - scholarshipProviders
+        - code
+        - name
+        - value
       properties:
-        context:
-          $ref: '#/components/schemas/Context'
-        scholarshipProviders:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/ScholarshipProvider'
+        code:
+          description: Academic qualification code
+          type: string
+        name:
+          description: Academic qualification name
+          type: string
+        value:
+          description: Academic qualification value
+          type: string
     InitScholarshipRequest:
       description: Schema for scholarship init
       type: object
@@ -3484,7 +3735,6 @@ components:
       required:
         - id
         - name
-        - categoryId
         - scholarships
       properties:
         id:
@@ -3493,8 +3743,8 @@ components:
         name:
           description: Scholarship provider name
           type: string
-        categoryId:
-          description: Scholarship category id
+        description:
+          description: Scholarship provider description
           type: string
         scholarships:
           type: array
@@ -3518,10 +3768,30 @@ components:
         description:
           description: Scholarship description
           type: string
+        categoryId:
+          description: Category Id
+          type: string
         amount:
           $ref: '#/components/schemas/ScholarshipAmount'
         scholarshipDetails:
           $ref: '#/components/schemas/InitScholarshipDetails'
+        additionalForm:
+          $ref: '#/components/schemas/ScholarshipAdditionalForm'
+        academicQualificationsCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+        finStatusCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FinancialStatus'
+        benefits:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Benefit'
     InitScholarshipDetails:
       description: Scholarship init details object
       type: object
@@ -3536,6 +3806,14 @@ components:
         type:
           description: scholarship type name
           type: string
+        applicationStartDate:
+          description: application start date
+          type: string
+        applicationEndDate:
+          description: application end date
+          type: string
+        supportContact:
+          $ref: '#/components/schemas/SupportContact'
         scholarshipRequestor:
           $ref: '#/components/schemas/InitScholarshipRequestor'
     InitScholarshipRequestor:
@@ -3545,49 +3823,23 @@ components:
         - id
         - name
         - gender
-        - academicQualifications
-        - currentEducations
-        - scholarshipRequestorContact
       properties:
-        id:
-          description: person id
-          type: string
         name:
-          description: person name
+          description: Requestor name
           type: string
-        gender:
-          description: person gender
+        phone:
+          description: Requestor phone
           type: string
-        scholarshipRequestorContact:
-          $ref: '#/components/schemas/ScholarshipRequestorContact'
-        academicQualifications:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/AcademicQualification'
-        currentEducations:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CurrentEducation'
-    CurrentEducation:
-      description: Current Education
-      type: object
-      required:
-        - code
-        - name
-        - value
-      properties:
-        code:
-          description: Current Education code
+        address:
+          description: Requestor address
           type: string
-        name:
-          description: Current Education name
+        needOfScholarship:
+          description: Purpose of scholarship
           type: string
-        value:
-          description: Current Education value
+        docUrl:
+          description: Additional document url
           type: string
-    ScholarshipRequestorContact:
+    ScholarshipRequestorContactDELETE:
       description: Scholarship Requestor Contact
       type: object
       required:
@@ -3605,13 +3857,10 @@ components:
       type: object
       required:
         - context
-        - scholarshipApplicationId
         - scholarshipProviders
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        scholarshipApplicationId:
-          type: string
         scholarshipProvider:
           $ref: '#/components/schemas/InitScholarshipResponseProvider'
     InitScholarshipResponseProvider:
@@ -3629,8 +3878,8 @@ components:
         name:
           description: Scholarship provider name
           type: string
-        categoryId:
-          description: Scholarship category id
+        descriptor:
+          description: Scholarship provider descriptor
           type: string
         scholarships:
           type: array
@@ -3654,32 +3903,30 @@ components:
         description:
           description: Scholarship description
           type: string
-        amount:
-          $ref: '#/components/schemas/ScholarshipAmount'
         categoryId:
           description: Scholarship category id
           type: string
-        additionalForm:
-          $ref: '#/components/schemas/ScholarshipAdditionalForm'
+        amount:
+          $ref: '#/components/schemas/ScholarshipAmount'
         scholarshipDetails:
           $ref: '#/components/schemas/InitResponseScholarshipDetails'
-    ScholarshipAdditionalForm:
-      description: Scholarship additional form
-      type: object
-      required:
-        - url
-        - mimeType
-        - submissionId
-      properties:
-        url:
-          description: additional form url
-          type: string
-        mimeType:
-          description: additional form mimeType
-          type: string
-        submissionId:
-          description: additional form submissionId
-          type: string
+        additionalForm:
+          $ref: '#/components/schemas/ScholarshipAdditionalForm'
+        academicQualificationsCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+        finStatusCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FinancialStatus'
+        benefits:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Benefit'
     InitResponseScholarshipDetails:
       description: Scholarship init response details object
       type: object
@@ -3694,42 +3941,25 @@ components:
         type:
           description: scholarship type name
           type: string
-        scholarshipStatus:
-          $ref: '#/components/schemas/ScholarshipStatus'
+        applicationStartDate:
+          description: application start date
+          type: string
+        applicationEndDate:
+          description: application end date
+          type: string
+        supportContact:
+          $ref: '#/components/schemas/SupportContact'
         scholarshipRequestor:
           $ref: '#/components/schemas/InitScholarshipRequestor'
-    ScholarshipStatus:
-      description: Scholarship status object
-      type: object
-      required:
-        - id
-        - type
-        - scholarshipRequestor
-      properties:
-        code:
-          description: code
-          type: string
-        description:
-          description: description
-          type: string
-        updatedAt:
-          description: updated at timestamp
-          type: string
-        updatedBy:
-          description: updated by
-          type: string
     ConfirmScholarshipRequest:
       description: Schema for scholarship confirm request
       type: object
       required:
         - context
-        - scholarshipApplicationId
         - scholarshipProviders
       properties:
         context:
           $ref: '#/components/schemas/Context'
-        scholarshipApplicationId:
-          type: string
         scholarshipProvider:
           $ref: '#/components/schemas/InitScholarshipResponseProvider'
     ConfirmScholarshipResponse:
@@ -3738,11 +3968,14 @@ components:
       required:
         - context
         - scholarshipApplicationId
+        - scholarshipApplicationStatus
         - scholarshipProviders
       properties:
         context:
           $ref: '#/components/schemas/Context'
         scholarshipApplicationId:
+          type: string
+        scholarshipApplicationStatus:
           type: string
         scholarshipProvider:
           $ref: '#/components/schemas/ConfirmScholarshipResponseProvider'
@@ -3759,6 +3992,9 @@ components:
           type: string
         name:
           description: Scholarship provider name
+          type: string
+        description:
+          description: Scholarship provider description
           type: string
         scholarships:
           type: array
@@ -3782,10 +4018,30 @@ components:
         description:
           description: Scholarship description
           type: string
+        categoryId:
+          description: Scholarship category id
+          type: string
         amount:
           $ref: '#/components/schemas/ScholarshipAmount'
         scholarshipDetails:
           $ref: '#/components/schemas/ConfirmResponseScholarshipDetails'
+        additionalForm:
+          $ref: '#/components/schemas/ScholarshipAdditionalForm'
+        academicQualificationsCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AcademicQualification'
+        finStatusCriteria:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FinancialStatus'
+        benefits:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/Benefit'
     ConfirmResponseScholarshipDetails:
       description: Scholarship confirm response details object
       type: object
@@ -3800,8 +4056,16 @@ components:
         type:
           description: scholarship type name
           type: string
-        scholarshipStatus:
-          $ref: '#/components/schemas/ScholarshipStatus'
+        applicationStartDate:
+          description: application start date
+          type: string
+        applicationEndDate:
+          description: application end date
+          type: string
+        supportContact:
+          $ref: '#/components/schemas/SupportContact'
+        scholarshipRequestor:
+          $ref: '#/components/schemas/InitScholarshipRequestor'
     ScholarshipStatusRequest:
       description: Schema for scholarship status request
       type: object
@@ -3820,11 +4084,14 @@ components:
       required:
         - context
         - scholarshipApplicationId
+        - scholarshipApplicationStatus
         - scholarshipProviders
       properties:
         context:
           $ref: '#/components/schemas/Context'
         scholarshipApplicationId:
+          type: string
+        scholarshipApplicationStatus:
           type: string
         scholarshipProvider:
           $ref: '#/components/schemas/ConfirmScholarshipResponseProvider'
@@ -3945,12 +4212,11 @@ components:
       type: object
       required:
         - courseId
-        - CourseProviderId
         - context
       properties:
         courseId:
           type: string
-        CourseProviderId:
+        courseProviderId:
           type: string
         context:
           $ref: '#/components/schemas/Context'
@@ -4012,13 +4278,42 @@ components:
         enrollmentEndDate:
           description: Enrollment End Date
           type: string
+        eligibility:
+          description: Course eligibility
+          type: array
+          items:
+            type: object
+            properties: 
+              name:
+                type: string
+              value:
+                type: string
+        courseHighlights:
+          description: Course highlights
+          type: array
+          items:
+            type: object
+            properties: 
+              name:
+                type: string
+              value:
+                type: string
+        prerequisites:
+          description: Course prerequisites
+          type: array
+          items:
+            type: object
+            properties: 
+              name:
+                type: string
+              value:
+                type: string
     InitCourse:
       description: Schema for Course initialization
       type: object
       required:
         - context
         - courseId
-        - CourseProviderId
         - applicantProfile
       properties:
         context:
@@ -4030,10 +4325,16 @@ components:
         applicantProfile:
           $ref: '#/components/schemas/CourseApplicantProfile' 
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/CourseAdditionalFormData'
     CourseApplicantProfile:
       description: Schema for course Fulfillment/applicant object
       type: object
@@ -4072,16 +4373,24 @@ components:
           $ref: '#/components/schemas/Context'
         course:
           $ref: '#/components/schemas/Course'
+        courseDetails:
+          $ref: '#/components/schemas/CourseDetails'
         applicantProfile:
           $ref: '#/components/schemas/CourseApplicantProfile' 
         additionalFormUrl:
           type: string
           description: Additional form from course provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/CourseAdditionalFormData'
     ConfirmCourseRequest:
       description: Schema for Course confirmation
       type: object
@@ -4098,12 +4407,7 @@ components:
         CourseProviderId:
           type: string
         applicantProfile:
-          $ref: '#/components/schemas/CourseApplicantProfile' 
-        additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'
+          $ref: '#/components/schemas/CourseApplicantProfile'
     ConfirmCourseResponse:
       description: Schema for confirmed course response
       type: object
@@ -4117,6 +4421,8 @@ components:
           $ref: '#/components/schemas/Context'
         applicationId:
           type: string
+        applicationState:
+          type: string
         course:
           $ref: '#/components/schemas/Course'
         applicantProfile:
@@ -4125,10 +4431,16 @@ components:
           type: string
           description: Additional form from course provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'  
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/CourseAdditionalFormData'  
     CourseStatusRequest:
       description: Schema for course status request
       type: object
@@ -4161,10 +4473,16 @@ components:
           type: string
           description: Additional form from course provider
         additionalFormData:
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/CourseAdditionalFormData'
+          type: object
+          properties:
+            submissionId:
+              description: Id returned as part of xinupt form submission
+              type: string
+            data:
+              type: array
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/CourseAdditionalFormData'
     Context:
       description: schema context object
       type: object
@@ -4251,3 +4569,4 @@ security:
 servers:
   - url: https://api.dsep.client.becknprotocol.io/v1
     variables: {}
+ 
