@@ -74,17 +74,18 @@ export const confirmTrainingService = async (body: any): Promise<any> => {
     if (trainingNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
       let res = await axios.post(
-        `${gatewayUrl}/search`,
+        `${gatewayUrl}/confirm`,
         confirmRequest.payload,
         { headers }
       );
-      confirmResponse = buildConfirmResponse(res?.data, body);
+      confirmResponse = buildConfirmResponse(res, body);
     } else {
-      confirmResponse = buildConfirmResponse(confirmTrainingResponse, body);
+      confirmResponse = buildConfirmResponse({ data: confirmTrainingResponse }, body);
     }
 
-    return { data: confirmResponse };
+    return confirmResponse;
   } catch (error) {
+    console.log(error);
     return { error: error, errorOccured: true };
   }
 };
