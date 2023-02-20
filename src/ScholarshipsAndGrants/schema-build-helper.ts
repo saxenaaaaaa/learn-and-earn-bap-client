@@ -22,7 +22,7 @@ export const buildContext = (input: any = {}) => {
     bpp_id: input?.bppId,
     bpp_uri: input?.bppUri,
     message_id: input?.messageId ?? uuid(),
-    ttl: "PT10M",
+
     timestamp: input.timestamp ?? moment().toISOString()
   };
   return context;
@@ -763,7 +763,10 @@ export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
             (key: string) => {
               return {
                 formInputKey: key,
-                formInputValue: scholarship?.xinput?.form?.data[key]
+                formInputValue:
+                  key === "phone"
+                    ? Number(scholarship?.xinput?.form?.data[key])
+                    : scholarship?.xinput?.form?.data[key]
               };
             }
           )
@@ -774,7 +777,10 @@ export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
             return {
               code: li?.descriptor?.code,
               name: li?.descriptor?.name,
-              value: li?.value
+              value:
+                li?.descriptor?.code === "passing_year"
+                  ? Number(li?.value)
+                  : li?.value
             };
           }),
 
@@ -846,12 +852,6 @@ export const buildStatusResponse = (res: any = {}, input: any = {}) => {
           amount: item?.price?.value,
           currency: item?.price?.currency
         },
-        // scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
-        //   ?.map((fulfillment: any) => ({
-        //     id: fulfillment?.id,
-        //     type: fulfillment?.type,
-
-        //   })),
 
         scholarshipDetails: response?.message?.order?.fulfillments?.map(
           (fulfillment: any) => ({
