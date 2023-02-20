@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.19
+  version: 0.1.20
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -3219,6 +3219,24 @@ components:
           type: string
         rating:
           description: Mentor rating - not listed in schema
+          type: string
+        aboutMentor:
+          description: About Mentor
+          type: string
+        professionalExperience:
+          description: Mentor professional experience ie Lead Developer | Technical Advisor - NexGen Innovations
+          type: string
+        qualification:
+          description: Mentor qualification
+          type: string
+        experience:
+          description: Mentor experience
+          type: string
+        totalMeetings:
+          description: Mentor total meetings
+          type: string
+        specialistIn:
+          description: Mentor specialization
           type: string
     SelectMentorshipRequest:
       description: Schema for mentorship selection request
