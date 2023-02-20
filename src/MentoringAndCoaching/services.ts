@@ -1,5 +1,6 @@
 import {
   buildSearchRequest,
+  buildOnSearchMergedResponse,
   buildSearchResponse,
   buildSelectRequest,
   buildSelectResponse,
@@ -24,6 +25,8 @@ import initMentorShipResponse from "./mocks/initMentorShipResponse.json";
 
 const gatewayUrl = "https://dsep-protocol-client.becknprotocol.io";
 const mentorshipNetwork = process.env.MENTORSHIP_NETWORK;
+const backendApiUrl = process.env.BACKEND_API_BASE_URL;
+
 const axios = axiosInstance.create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false
@@ -31,19 +34,19 @@ const axios = axiosInstance.create({
 });
 export const searchMentorShipService = async (body: any): Promise<any> => {
   try {
-    const searchRequest = buildSearchRequest(body);
-    console.log(JSON.stringify(searchRequest.payload));
+    const { payload, optional } = buildSearchRequest(body);
+    console.log(JSON.stringify(payload));
 
     let searchResponse: any = {};
     if (mentorshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
-      let res = await axios.post(
-        `${gatewayUrl}/search`,
-        searchRequest.payload,
-        { headers }
-      );
-
-      searchResponse = buildSearchResponse(res, body);
+      const searchRes = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      const itemRes = await Promise.all([
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/saved/${optional.user.email}`, { headers }) : null,
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
+      ]).then(res => res).catch(err => null);
+      const res = { searchRes, itemRes };
+      searchResponse = buildOnSearchMergedResponse(res, body);
     } else {
       searchResponse = buildSearchResponse({ data: searchMentorShipResp }, body);
     }

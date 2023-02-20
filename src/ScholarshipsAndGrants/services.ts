@@ -2,6 +2,7 @@ import axiosInstance from "axios";
 import https from "https";
 import {
   buildSearchRequest,
+  buildOnSearchMergedResponse,
   buildSearchResponse,
   buildInitRequest,
   buildInitResponse,
@@ -20,6 +21,7 @@ import selectScholarshipResponse from "./mocks/selectScholarshipResponse.json";
 
 const gatewayUrl = "https://dsep-protocol-client.becknprotocol.io";
 const scholarshipNetwork = process.env.SCHOLARSHIP_NETWORK;
+const backendApiUrl = process.env.BACKEND_API_BASE_URL;
 
 const axios = axiosInstance.create({
   httpsAgent: new https.Agent({
@@ -29,18 +31,19 @@ const axios = axiosInstance.create({
 
 export const searchScholarshipService = async (body: any): Promise<any> => {
   try {
-    const searchRequest = buildSearchRequest(body);
-    console.log(JSON.stringify(searchRequest.payload));
+    const { payload, optional } = buildSearchRequest(body);
+    console.log(JSON.stringify(payload));
 
     let searchResponse: any = {};
     if (scholarshipNetwork !== "local") {
       const headers = { "Content-Type": "application/JSON" };
-      let res = await axios.post(
-        `${gatewayUrl}/search`,
-        searchRequest.payload,
-        { headers }
-      );
-      searchResponse = buildSearchResponse(res, body);
+      const searchRes = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      const itemRes = await Promise.all([
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/saved/${optional.user.email}`, { headers }) : null,
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
+      ]).then(res => res).catch(err => null);
+      const res = { searchRes, itemRes };
+      searchResponse = buildOnSearchMergedResponse(res, body);
     } else {
       searchResponse = buildSearchResponse(
         { data: searchScholarshipResponse },
