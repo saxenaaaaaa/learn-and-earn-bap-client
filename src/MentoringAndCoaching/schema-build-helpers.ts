@@ -92,7 +92,12 @@ export const buildSearchResponse = (response: any = {}, body: any = {}) => {
             name: fulfillment?.agent?.person?.name,
             gender: fulfillment?.agent?.person?.gender,
             image: fulfillment?.agent?.person?.image,
-            rating: fulfillment?.agent?.person?.rating
+            rating: fulfillment?.agent?.person?.rating,
+            aboutMentor: item?.tags?.find((tag: any) => tag?.descriptor?.code == "about_mentor")?.list?.find((li: any) => li?.descriptor?.code == "about_mentor")?.descriptor?.name,
+            qualification: item?.tags?.find((tag: any) => tag?.descriptor?.code == "qualification")?.list?.find((li: any) => li?.descriptor?.code == "qualification")?.descriptor?.name,
+            experience: item?.tags?.find((tag: any) => tag?.descriptor?.code == "professional_experience")?.list?.find((li: any) => li?.descriptor?.code == "professional_experience")?.descriptor?.name,
+            totalMeetings: item?.tags?.find((tag: any) => tag?.descriptor?.code == "total_meetings")?.list?.find((li: any) => li?.descriptor?.code == "total_meetings")?.descriptor?.name,
+            specialisation: item?.tags?.find((tag: any) => tag?.descriptor?.code == "specialist_in")?.list?.find((li: any) => li?.descriptor?.code == "specialist_in")?.descriptor?.name,
           }
         })),
       recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
@@ -157,7 +162,12 @@ export const buildSelectResponse = (response: any = {}, body: any = {}) => {
             name: fulfillment?.agent?.person?.name,
             gender: fulfillment?.agent?.person?.gender,
             image: fulfillment?.agent?.person?.image,
-            rating: fulfillment?.agent?.person?.rating
+            rating: fulfillment?.agent?.person?.rating,
+            aboutMentor: item?.tags?.find((tag: any) => tag?.descriptor?.code == "about_mentor")?.list?.find((li: any) => li?.descriptor?.code == "about_mentor")?.descriptor?.name,
+            qualification: item?.tags?.find((tag: any) => tag?.descriptor?.code == "qualification")?.list?.find((li: any) => li?.descriptor?.code == "qualification")?.descriptor?.name,
+            experience: item?.tags?.find((tag: any) => tag?.descriptor?.code == "professional_experience")?.list?.find((li: any) => li?.descriptor?.code == "professional_experience")?.descriptor?.name,
+            totalMeetings: item?.tags?.find((tag: any) => tag?.descriptor?.code == "total_meetings")?.list?.find((li: any) => li?.descriptor?.code == "total_meetings")?.descriptor?.name,
+            specialisation: item?.tags?.find((tag: any) => tag?.descriptor?.code == "specialist_in")?.list?.find((li: any) => li?.descriptor?.code == "specialist_in")?.descriptor?.name,
           }
         })),
       recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
@@ -289,7 +299,12 @@ export const buildStatusResponse = (response: any = {}, body: any = {}) => {
             name: fulfillment?.agent?.person?.name,
             gender: fulfillment?.agent?.person?.gender,
             image: fulfillment?.agent?.person?.image,
-            rating: fulfillment?.agent?.person?.rating
+            rating: fulfillment?.agent?.person?.rating,
+            aboutMentor: item?.tags?.find((tag: any) => tag?.descriptor?.code == "about_mentor")?.list?.find((li: any) => li?.descriptor?.code == "about_mentor")?.descriptor?.name,
+            qualification: item?.tags?.find((tag: any) => tag?.descriptor?.code == "qualification")?.list?.find((li: any) => li?.descriptor?.code == "qualification")?.descriptor?.name,
+            experience: item?.tags?.find((tag: any) => tag?.descriptor?.code == "professional_experience")?.list?.find((li: any) => li?.descriptor?.code == "professional_experience")?.descriptor?.name,
+            totalMeetings: item?.tags?.find((tag: any) => tag?.descriptor?.code == "total_meetings")?.list?.find((li: any) => li?.descriptor?.code == "total_meetings")?.descriptor?.name,
+            specialisation: item?.tags?.find((tag: any) => tag?.descriptor?.code == "specialist_in")?.list?.find((li: any) => li?.descriptor?.code == "specialist_in")?.descriptor?.name,
           }
         })),
       recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
@@ -363,7 +378,53 @@ export const buildInitResponse = (response: any = {}, body: any = {}) => {
   const { transaction_id: transactionId, message_id: messageId, bpp_id: bppId, bpp_uri: bppUri }: any = input?.context ?? {};
   const context = { transactionId, messageId, bppId, bppUri };
 
-  const mentorshipSessionId = input.message?.order?.id;
+  const provider = input.message?.order?.provider;
 
-  return { data: { context, mentorshipSessionId } };
+  const mentorshipProvider = {
+    id: provider?.id,
+    code: provider?.descriptor?.code,
+    name: provider?.descriptor?.name,
+    description: provider?.descriptor?.short_desc,
+
+    mentorships: provider?.items?.map((item: any) => ({
+      id: item?.id,
+      code: item?.descriptor?.code,
+      name: item?.descriptor?.name,
+      description: item?.descriptor?.short_desc,
+      longDescription: item?.descriptor?.long_desc,
+
+      imageLocations: item?.descriptor?.images?.map((image: any) => image?.url),
+      categories: provider?.categories?.filter((category: any) => item?.category_ids?.find((categoryId: any) => categoryId == category?.id))
+        ?.map((category: any) => ({ id: category?.id, code: category?.descriptor?.code, name: category?.descriptor?.name })),
+      available: item?.quantity?.available?.count,
+      allocated: item?.quantity?.allocated?.count,
+      price: item?.price?.value,
+      mentorshipSessions: provider?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillmentId: any) => fulfillmentId == fulfillment?.id))
+        ?.map((fulfillment: any) => ({
+          id: fulfillment?.id,
+          language: fulfillment?.language?.[0],
+          timingStart: fulfillment?.time?.range?.start,
+          timingEnd: fulfillment?.time?.range?.end,
+          type: fulfillment?.type,
+          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          mentor: {
+            id: fulfillment?.agent?.person?.id,
+            name: fulfillment?.agent?.person?.name,
+            gender: fulfillment?.agent?.person?.gender,
+            image: fulfillment?.agent?.person?.image,
+            rating: fulfillment?.agent?.person?.rating,
+            aboutMentor: item?.tags?.find((tag: any) => tag?.descriptor?.code == "about_mentor")?.list?.find((li: any) => li?.descriptor?.code == "about_mentor")?.descriptor?.name,
+            qualification: item?.tags?.find((tag: any) => tag?.descriptor?.code == "qualification")?.list?.find((li: any) => li?.descriptor?.code == "qualification")?.descriptor?.name,
+            experience: item?.tags?.find((tag: any) => tag?.descriptor?.code == "professional_experience")?.list?.find((li: any) => li?.descriptor?.code == "professional_experience")?.descriptor?.name,
+            totalMeetings: item?.tags?.find((tag: any) => tag?.descriptor?.code == "total_meetings")?.list?.find((li: any) => li?.descriptor?.code == "total_meetings")?.descriptor?.name,
+            specialisation: item?.tags?.find((tag: any) => tag?.descriptor?.code == "specialist_in")?.list?.find((li: any) => li?.descriptor?.code == "specialist_in")?.descriptor?.name,
+          }
+        })),
+      recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+    })),
+  }
+
+  return { data: { context, mentorshipProvider } };
 };
