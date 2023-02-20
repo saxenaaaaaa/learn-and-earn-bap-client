@@ -199,10 +199,14 @@ export const buildSelectResponse = (res: any = {}, input: any = {}) => {
           amount: item?.price?.value,
           currency: item?.price?.currency
         },
-        additionalForm: {
-          url: item?.xinput?.form?.url,
-          mime_type: item?.xinput?.form?.mime_type
+
+        additionalFormData: {
+          formUrl: item?.xinput?.form?.url,
+          formMimeType: item?.xinput?.form?.mime_type,
+          submissionId: item?.xinput?.form?.submission_id,
+          data: Object.keys(item?.xinput?.form?.data ?? {}).map((key: string) => { return { formInputKey: key, formInputValue: item?.xinput?.form?.data[key] }; })
         },
+
         academicQualifications: item.tags
           ?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
           ?.list?.map((li: any) => ({
@@ -362,11 +366,10 @@ export const buildInitRequest = (input: any = {}) => {
                 name: scholarship?.additionalFormData?.data.find(
                   (elem: any) => elem?.formInputKey === "name"
                 )?.formInputValue,
-                phone: `${
-                  scholarship?.additionalFormData?.data.find(
-                    (elem: any) => elem?.formInputKey === "phone"
-                  )?.formInputValue
-                }`,
+                phone: `${scholarship?.additionalFormData?.data.find(
+                  (elem: any) => elem?.formInputKey === "phone"
+                )?.formInputValue
+                  }`,
                 address: scholarship?.additionalFormData?.data.find(
                   (elem: any) => elem?.formInputKey === "address"
                 )?.formInputValue,
@@ -637,11 +640,10 @@ export const buildConfirmRequest = (input: any = {}) => {
                 name: scholarship?.additionalFormData?.data.find(
                   (elem: any) => elem?.formInputKey === "name"
                 )?.formInputValue,
-                phone: `${
-                  scholarship?.additionalFormData?.data.find(
-                    (elem: any) => elem?.formInputKey === "phone"
-                  )?.formInputValue
-                }`,
+                phone: `${scholarship?.additionalFormData?.data.find(
+                  (elem: any) => elem?.formInputKey === "phone"
+                )?.formInputValue
+                  }`,
                 address: scholarship?.additionalFormData?.data.find(
                   (elem: any) => elem?.formInputKey === "address"
                 )?.formInputValue,
