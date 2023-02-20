@@ -24,6 +24,11 @@ export const buildContext = (input: any = {}) => {
   return context;
 };
 
+export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}) => {
+  let savedAppliedResult = response?.itemRes ? await buildSavedAppliedCategoryResponse(response.itemRes[0], response.itemRes[1]) : null;
+  return buildSearchResponse(response.searchRes, body, savedAppliedResult);
+}
+
 export const buildSearchRequest = (input: any = {}) => {
   const context = buildContext({
     action: "search",
@@ -31,6 +36,7 @@ export const buildSearchRequest = (input: any = {}) => {
   });
 
   const intent: any = {};
+  const optional: any = {};
 
   if (input?.sessionTitle?.key) {
     intent.item = {
@@ -47,10 +53,14 @@ export const buildSearchRequest = (input: any = {}) => {
     };
   }
 
-  return { payload: { context, message: { intent } } };
+  if (input?.loggedInUserEmail) {
+    optional.user = { "email": input?.loggedInUserEmail };
+  }
+
+  return { payload: { context, message: { intent } }, optional };
 };
 
-export const buildSearchResponse = (response: any = {}, body: any = {}) => {
+export const buildSearchResponse = (response: any = {}, body: any = {}, savedAppliedResult?: any) => {
   const input = response?.data?.responses?.[0];
   if (!input)
     return { status: 200 };
@@ -71,6 +81,8 @@ export const buildSearchResponse = (response: any = {}, body: any = {}) => {
       name: item?.descriptor?.name,
       description: item?.descriptor?.short_desc,
       longDescription: item?.descriptor?.long_desc,
+      userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] ? true : false,
+      // userAppliedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] ? true : false,
 
       imageLocations: item?.descriptor?.images?.map((image: any) => image?.url),
       categories: provider?.categories?.filter((category: any) => item?.category_ids?.find((categoryId: any) => categoryId == category?.id))
@@ -87,6 +99,8 @@ export const buildSearchResponse = (response: any = {}, body: any = {}) => {
           type: fulfillment?.type,
           status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
           timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id][fulfillment?.id] ? true : false,
+          userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.saved[fulfillment?.id] ? true : false,
           mentor: {
             id: fulfillment?.agent?.person?.id,
             name: fulfillment?.agent?.person?.name,
@@ -102,6 +116,30 @@ export const buildSearchResponse = (response: any = {}, body: any = {}) => {
 
   return { data: { context, mentorshipProviders } };
 };
+
+export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appliedResponse: any = {}) => {
+  const savedInput = savedResponse?.data?.mentorships;
+  const appliedInput = appliedResponse?.data?.mentorships;
+
+  const mentorMap: any = {
+    saved: {}, applied: {}
+  };
+
+  if (savedResponse?.data) {
+    savedInput.forEach(({ mentorship_id, mentorshipSession_id}: any) => {
+      // mentorMap['saved'][mentorship_id] = true;
+      mentorMap['saved'][mentorship_id][mentorshipSession_id] = true;
+    });
+  }
+
+  if (appliedResponse?.data) {
+    appliedInput.forEach(({ mentorship_id, mentorshipSession_id }: any) => {
+      mentorMap['applied'][mentorship_id][mentorshipSession_id] = true;
+    });
+  }
+
+  return mentorMap;
+}
 
 export const buildSelectRequest = (input: any = {}) => {
   const context = buildContext({

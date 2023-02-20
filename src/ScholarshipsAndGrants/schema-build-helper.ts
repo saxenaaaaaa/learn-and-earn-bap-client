@@ -33,6 +33,7 @@ export const buildSearchRequest = (input: any = {}) => {
   const message: any = {
     intent: { item: {}, provider: {} }
   };
+  const optional: any = {};
 
   const fulfillment: any = {
     customer: {
@@ -83,6 +84,11 @@ export const buildSearchRequest = (input: any = {}) => {
       });
     });
   }
+
+  if (input?.loggedInUserEmail) {
+    optional.user = { "email": input?.loggedInUserEmail };
+  }
+
   message.intent.provider = {
     categories: input?.categories?.map((category: any) => ({
       descriptor: { code: category?.code }
@@ -93,9 +99,15 @@ export const buildSearchRequest = (input: any = {}) => {
     message.intent.fulfillment = fulfillment;
   }
 
-  return { payload: { context, message } };
+  return { payload: { context, message }, optional };
 };
-export const buildSearchResponse = (res: any = {}, body: any = {}) => {
+
+export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}) => {
+  let savedAppliedResult = response?.itemRes ? await buildSavedAppliedCategoryResponse(response.itemRes[0], response.itemRes[1]) : null;
+  return buildSearchResponse(response.searchRes, body, savedAppliedResult);
+}
+
+export const buildSearchResponse = (res: any = {}, body: any = {}, savedAppliedResult?: any) => {
   const response = res?.data?.responses?.[0];
   if (!response) return { status: 200 };
 
@@ -113,6 +125,8 @@ export const buildSearchResponse = (res: any = {}, body: any = {}) => {
         id: item?.id,
         name: item?.descriptor?.name,
         description: item?.descriptor?.long_desc,
+        userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] ? true : false,
+        userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.saved[item?.id] ? true : false,
         amount: {
           amount: item?.price?.value,
           currency: item?.price?.currency
@@ -159,6 +173,29 @@ export const buildSearchResponse = (res: any = {}, body: any = {}) => {
 
   return { data: { context, scholarshipProviders } };
 };
+
+export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appliedResponse: any = {}) => {
+  const savedInput = savedResponse?.data?.scholarships;
+  const appliedInput = appliedResponse?.data?.scholarships;
+
+  const scholarshipMap: any = {
+    saved: {}, applied: {}
+  };
+
+  if (savedResponse?.data) {
+    savedInput.forEach(({ scholarship_id }: any) => {
+      scholarshipMap['saved'][scholarship_id] = true;
+    });
+  }
+
+  if (appliedResponse?.data) {
+    appliedInput.forEach(({ scholarship_id }: any) => {
+      scholarshipMap['applied'][scholarship_id] = true;
+    });
+  }
+
+  return scholarshipMap;
+}
 
 export const buildSelectRequest = (input: any = {}) => {
   const payload = {
@@ -362,11 +399,10 @@ export const buildInitRequest = (input: any = {}) => {
                 name: scholarship?.additionalFormData?.data.find(
                   (elem: any) => elem?.formInputKey === "name"
                 )?.formInputValue,
-                phone: `${
-                  scholarship?.additionalFormData?.data.find(
-                    (elem: any) => elem?.formInputKey === "phone"
-                  )?.formInputValue
-                }`,
+                phone: `${scholarship?.additionalFormData?.data.find(
+                  (elem: any) => elem?.formInputKey === "phone"
+                )?.formInputValue
+                  }`,
                 address: scholarship?.additionalFormData?.data.find(
                   (elem: any) => elem?.formInputKey === "address"
                 )?.formInputValue,
@@ -637,11 +673,10 @@ export const buildConfirmRequest = (input: any = {}) => {
                 name: scholarship?.additionalFormData?.data.find(
                   (elem: any) => elem?.formInputKey === "name"
                 )?.formInputValue,
-                phone: `${
-                  scholarship?.additionalFormData?.data.find(
-                    (elem: any) => elem?.formInputKey === "phone"
-                  )?.formInputValue
-                }`,
+                phone: `${scholarship?.additionalFormData?.data.find(
+                  (elem: any) => elem?.formInputKey === "phone"
+                )?.formInputValue
+                  }`,
                 address: scholarship?.additionalFormData?.data.find(
                   (elem: any) => elem?.formInputKey === "address"
                 )?.formInputValue,
