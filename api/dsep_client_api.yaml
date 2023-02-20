@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.19
+  version: 0.1.21
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -19,6 +19,8 @@ paths:
             examples:
               Search with all parameters:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   title:
                     key: Engineering Manager
                   company:
@@ -31,14 +33,20 @@ paths:
                       code: Flutter
               Search by job title:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   title:
                     key: Engineering Manager
               Search by company name:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   company:
                     name: Google India
               Search by company name in multiple locations :
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   company:
                     name: Google India
                     locations:
@@ -46,12 +54,16 @@ paths:
                       - city: Pune
               Search by cities:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   company:
                     locations:
                       - city: Hyderabad
                       - city: Pune
               Search by skills:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   skills:
                     - name: Python
                       code: Flutter
@@ -78,6 +90,8 @@ paths:
                               size: sm
                         jobs:
                           - jobId: '1'
+                            userSavedItem: false
+                            userAppliedItem: false
                             role: Software Engineering Manager II, Google Cloud
                             description: Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems
                             additionalDesc:
@@ -877,16 +891,22 @@ paths:
             examples:
               Search by session title and mentor name:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   sessionTitle:
                     key: Management
                   mentor:
                     name: joffin
               Search by session title:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   sessionTitle:
                     key: Management
               Search by mentor name:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   mentor:
                     name: joffin
       responses:
@@ -906,6 +926,8 @@ paths:
                     description: ShikshalokamOrgSeven
                     mentorships:
                       - id: 63e6065223df082856936335
+                        userSavedItem: false
+                        userAppliedItem: false
                         code: Class Room Management Level 1
                         name: Class Room Management Level 1
                         description: A level 1 session on class room management for state schools and colleges.
@@ -929,10 +951,16 @@ paths:
                             timezone: Asia/Calcutta
                             mentor:
                               id: 63e5fa8762820fd9e6be9e21
-                              name: joffin Mentor Twelve
+                              name: John Doe
                               gender: Male
                               image: image location
                               rating: '4.9'
+                              aboutMentor: With a career spanning multiple decades, this mentor is a true veteran of their industry. They have seen it all, and have a wealth of stories and insights to share. They are passionate about passing on their knowledge and experience to others, and take great pride in helping others achieve their goals. Whether you're a newcomer to the industry or a seasoned pro, this mentor is an invaluable source of wisdom and guidance.
+                              professionalExperience: Senior Consultant | Director of R&D - FutureTech Labs
+                              qualification: M.Tech from NID Ahmedabad
+                              experience: 13 Years
+                              totalMeetings: 124+
+                              specialisation: Machine Learning
                         recommendedFor:
                           - recommendationForCode: deo
                             recommendationForName: District education officer
@@ -1020,10 +1048,16 @@ paths:
                           timezone: Asia/Calcutta
                           mentor:
                             id: 63e5fa8762820fd9e6be9e21
-                            name: joffin Mentor Twelve
+                            name: John Doe
                             gender: Male
                             image: image location
                             rating: '4.9'
+                            aboutMentor: With a career spanning multiple decades, this mentor is a true veteran of their industry. They have seen it all, and have a wealth of stories and insights to share. They are passionate about passing on their knowledge and experience to others, and take great pride in helping others achieve their goals. Whether you're a newcomer to the industry or a seasoned pro, this mentor is an invaluable source of wisdom and guidance.
+                            professionalExperience: Senior Consultant | Director of R&D - FutureTech Labs
+                            qualification: M.Tech from NID Ahmedabad
+                            experience: 13 Years
+                            totalMeetings: 124+
+                            specialisation: Machine Learning
                       recommendedFor:
                         - recommendationForCode: deo
                           recommendationForName: District education officer
@@ -1164,10 +1198,16 @@ paths:
                   timezone: Asia/Calcutta
                   mentor:
                     id: 63e5fa8762820fd9e6be9e21
-                    name: joffin Mentor Twelve
+                    name: John Doe
                     gender: Male
                     image: image location
                     rating: '4.9'
+                    aboutMentor: With a career spanning multiple decades, this mentor is a true veteran of their industry. They have seen it all, and have a wealth of stories and insights to share. They are passionate about passing on their knowledge and experience to others, and take great pride in helping others achieve their goals. Whether you're a newcomer to the industry or a seasoned pro, this mentor is an invaluable source of wisdom and guidance.
+                    professionalExperience: Senior Consultant | Director of R&D - FutureTech Labs
+                    qualification: M.Tech from NID Ahmedabad
+                    experience: 13 Years
+                    totalMeetings: 124+
+                    specialisation: Machine Learning
         '404':
           description: Mentorship confirm request failed
           content:
@@ -1254,10 +1294,16 @@ paths:
                           timezone: Asia/Calcutta
                           mentor:
                             id: 63e5fa8762820fd9e6be9e21
-                            name: joffin Mentor Twelve
+                            name: John Doe
                             gender: Male
                             image: image location
                             rating: '4.9'
+                            aboutMentor: With a career spanning multiple decades, this mentor is a true veteran of their industry. They have seen it all, and have a wealth of stories and insights to share. They are passionate about passing on their knowledge and experience to others, and take great pride in helping others achieve their goals. Whether you're a newcomer to the industry or a seasoned pro, this mentor is an invaluable source of wisdom and guidance.
+                            professionalExperience: Senior Consultant | Director of R&D - FutureTech Labs
+                            qualification: M.Tech from NID Ahmedabad
+                            experience: 13 Years
+                            totalMeetings: 124+
+                            specialisation: Machine Learning
                       recommendedFor:
                         - recommendationForCode: deo
                           recommendationForName: District education officer
@@ -1366,20 +1412,30 @@ paths:
             examples:
               Search by scholarship name:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   name: Undergraduation scholarship
               Search by gender criteria:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   gender: Female
               Search by by financial income criteria:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   finStatus:
                     family_income: '200000'
               Search by by caste criteria:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   casteCategory:
                     - caste: SC
               Search by categories for female students:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   categories:
                     - code: ug
                   gender: Female
@@ -1399,6 +1455,8 @@ paths:
                     description: XYZ Education Foundation
                     scholarships:
                       - id: SCM_00420068
+                        userSavedItem: false
+                        userAppliedItem: false
                         name: XYZ Foundation Undergraduation scholarship
                         description: XYZ Foundation Undergraduation scholarship
                         amount:
@@ -2022,12 +2080,18 @@ paths:
             examples:
               Search by category:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   category: SCHOOL
               Search by provider:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   provider: AICTE
               Search by category with course mode:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   provider: AICTE
                   deepSearch:
                     - searchCriteria: Course Description Meta Data
@@ -2036,9 +2100,13 @@ paths:
                           value: regular
               Search by course name:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   searchTitle: python
               Search by instructor name:
                 value:
+                  loggedInUserEmail:
+                    test.user@xyz.com
                   searchTitle: Prof Kannan Moudgalya
       responses:
         '200':
@@ -2256,7 +2324,12 @@ components:
     SearchJob:
       description: Schema for Job search object
       type: object
+      required:
+        - loggedInUserEmail
       properties:
+        loggedInUserEmail:
+          description: loggedin user email to get user items
+          type: string
         title:
           type: object
           properties: 
@@ -2353,6 +2426,12 @@ components:
       properties:
         jobId:
           type: string
+        userSavedItem:
+          description: Flag to identify if user has saved this item earlier
+          type: boolean
+        userAppliedItem:
+          description: Flag to identify if user has applied for this item
+          type: boolean
         role:
           type: string
           description: Job role (Job name)
@@ -3030,7 +3109,12 @@ components:
     SearchMentorshipRequest:
       description: Schema for Mentorship search object
       type: object
+      required:
+        - loggedInUserEmail
       properties:
+        loggedInUserEmail:
+          description: loggedin user email to get user items
+          type: string
         sessionTitle:
           type: object
           properties: 
@@ -3094,6 +3178,12 @@ components:
         id:
           description: Mentorship id / item id
           type: string
+        userSavedItem:
+          description: Flag to identify if user has saved this item earlier
+          type: boolean
+        userAppliedItem:
+          description: Flag to identify if user has applied for this item
+          type: boolean
         code:
           description: Mentorship code
           type: string
@@ -3219,6 +3309,24 @@ components:
           type: string
         rating:
           description: Mentor rating - not listed in schema
+          type: string
+        aboutMentor:
+          description: About Mentor
+          type: string
+        professionalExperience:
+          description: Mentor professional experience ie Lead Developer | Technical Advisor - NexGen Innovations
+          type: string
+        qualification:
+          description: Mentor qualification
+          type: string
+        experience:
+          description: Mentor experience
+          type: string
+        totalMeetings:
+          description: Mentor total meetings
+          type: string
+        specialisation:
+          description: Mentor specialisation
           type: string
     SelectMentorshipRequest:
       description: Schema for mentorship selection request
@@ -3439,7 +3547,12 @@ components:
     SearchScholarship:
       description: Schema for Scholarship search object
       type: object
+      required:
+        - loggedInUserEmail
       properties:
+        loggedInUserEmail:
+          description: loggedin user email to get user items
+          type: string
         name:
           type: string
         categories:
@@ -3510,6 +3623,12 @@ components:
         id:
           description: Scholarship id / item id
           type: string
+        userSavedItem:
+          description: Flag to identify if user has saved this item earlier
+          type: boolean
+        userAppliedItem:
+          description: Flag to identify if user has applied for this item
+          type: boolean
         name:
           description: Scholarship name
           type: string
@@ -4098,7 +4217,12 @@ components:
     SearchCourseRequest:
       description: Schema for Course search object
       type: object
+      required:
+        - loggedInUserEmail
       properties:
+        loggedInUserEmail:
+          description: loggedin user email to get user items
+          type: string
         category:
           description: Course category name ie School
           type: string
@@ -4159,6 +4283,12 @@ components:
         id:
           description: Course id / item id
           type: string
+        userSavedItem:
+          description: Flag to identify if user has saved this item earlier
+          type: boolean
+        userAppliedItem:
+          description: Flag to identify if user has applied for this item
+          type: boolean
         name:
           description: Course name
           type: string
