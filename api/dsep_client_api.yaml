@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.21
+  version: 0.1.22
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -90,9 +90,9 @@ paths:
                               size: sm
                         jobs:
                           - jobId: '1'
+                            role: Software Engineering Manager II, Google Cloud
                             userSavedItem: false
                             userAppliedItem: false
-                            role: Software Engineering Manager II, Google Cloud
                             description: Like Google's own ambitions, the work of a Software Engineer (SWE) goes way beyond just Search. SWE Managers have not only the technical expertise to take on and provide technical leadership to major projects, but also manage a team of engineers. You not only optimize your own code but make sure engineers are able to optimize theirs. As a SWE Manager you manage your project goals, contribute to product strategy and help develop your team. SWE teams work all across the company, in areas such as information retrieval, artificial intelligence, natural language processing, distributed computing, large-scale system design, networking, security, data compression, user interface design; the list goes on and is growing every day. Operating with scale and speed, our exceptional software engineers are just getting started -- and as a manager, you guide the way.Google Cloud accelerates organizations’ ability to digitally transform their business with the best infrastructure, platform, industry solutions and expertise. We deliver enterprise-grade solutions that leverage Google’s cutting-edge technology – all on the cleanest cloud in the industry. Customers in more than 200 countries and territories turn to Google Cloud as their trusted partner to enable growth and solve their most critical business problems
                             additionalDesc:
                               url: https://g.co/kgs/XRj9sH
@@ -926,10 +926,10 @@ paths:
                     description: ShikshalokamOrgSeven
                     mentorships:
                       - id: 63e6065223df082856936335
-                        userSavedItem: false
-                        userAppliedItem: false
                         code: Class Room Management Level 1
                         name: Class Room Management Level 1
+                        userSavedItem: false
+                        userAppliedItem: false
                         description: A level 1 session on class room management for state schools and colleges.
                         longDescription: A level 1 session on class room management for state schools and colleges.
                         imageLocations:
@@ -1117,12 +1117,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InitMentorshipResponse'
-              example:
-                mentorshipSessionId: 2494098b-a2e8-4d29-8791-1b708c458cb5
-                context:
-                  transactionId: bdb5ba09-2241-4f00-b434-73466cd06228
-                  bppId: dev.elevate-apis.shikshalokam.org/bpp
-                  bppUri: https://dev.elevate-apis.shikshalokam.org/bpp
         '404':
           description: Mentorship init request failed
           content:
@@ -1455,9 +1449,9 @@ paths:
                     description: XYZ Education Foundation
                     scholarships:
                       - id: SCM_00420068
+                        name: XYZ Foundation Undergraduation scholarship
                         userSavedItem: false
                         userAppliedItem: false
-                        name: XYZ Foundation Undergraduation scholarship
                         description: XYZ Foundation Undergraduation scholarship
                         amount:
                           amount: 30000
@@ -2426,15 +2420,15 @@ components:
       properties:
         jobId:
           type: string
+        role:
+          type: string
+          description: Job role (Job name)
         userSavedItem:
           description: Flag to identify if user has saved this item earlier
           type: boolean
         userAppliedItem:
           description: Flag to identify if user has applied for this item
           type: boolean
-        role:
-          type: string
-          description: Job role (Job name)
         description:
           type: string
           description: Job description
@@ -3178,18 +3172,18 @@ components:
         id:
           description: Mentorship id / item id
           type: string
-        userSavedItem:
-          description: Flag to identify if user has saved this item earlier
-          type: boolean
-        userAppliedItem:
-          description: Flag to identify if user has applied for this item
-          type: boolean
         code:
           description: Mentorship code
           type: string
         name:
           description: Mentorship name
           type: string
+        userSavedItem:
+          description: Flag to identify if user has saved this item earlier
+          type: boolean
+        userAppliedItem:
+          description: Flag to identify if user has applied for this item
+          type: boolean
         description:
           description: Mentorship description
           type: string
@@ -3373,14 +3367,13 @@ components:
       description: Schema for Mentorship init request
       type: object
       required:
-        - mentorshipSessionId
         - context
+        - mentorshipProvider
       properties:
-        mentorshipSessionId:
-          description: Mentorship session id
-          type: string
         context:
           $ref: '#/components/schemas/Context'
+        mentorshipProvider:
+          $ref: '#/components/schemas/MentorshipProvider'
     ConfirmMentorshipRequest:
       description: Schema for Mentorship confirmation request
       type: object
@@ -3623,15 +3616,15 @@ components:
         id:
           description: Scholarship id / item id
           type: string
+        name:
+          description: Scholarship name
+          type: string
         userSavedItem:
           description: Flag to identify if user has saved this item earlier
           type: boolean
         userAppliedItem:
           description: Flag to identify if user has applied for this item
           type: boolean
-        name:
-          description: Scholarship name
-          type: string
         description:
           description: Scholarship description
           type: string
@@ -4283,15 +4276,15 @@ components:
         id:
           description: Course id / item id
           type: string
+        name:
+          description: Course name
+          type: string
         userSavedItem:
           description: Flag to identify if user has saved this item earlier
           type: boolean
         userAppliedItem:
           description: Flag to identify if user has applied for this item
           type: boolean
-        name:
-          description: Course name
-          type: string
         description:
           description: Course description
           type: string
