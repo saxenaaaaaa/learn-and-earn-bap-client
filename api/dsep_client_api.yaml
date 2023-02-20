@@ -929,10 +929,16 @@ paths:
                             timezone: Asia/Calcutta
                             mentor:
                               id: 63e5fa8762820fd9e6be9e21
-                              name: joffin Mentor Twelve
+                              name: John Doe
                               gender: Male
                               image: image location
                               rating: '4.9'
+                              aboutMentor: With a career spanning multiple decades, this mentor is a true veteran of their industry. They have seen it all, and have a wealth of stories and insights to share. They are passionate about passing on their knowledge and experience to others, and take great pride in helping others achieve their goals. Whether you're a newcomer to the industry or a seasoned pro, this mentor is an invaluable source of wisdom and guidance.
+                              professionalExperience: Senior Consultant | Director of R&D - FutureTech Labs
+                              qualification: M.Tech from NID Ahmedabad
+                              experience: 13 Years
+                              totalMeetings: 124+
+                              specialisation: Machine Learning
                         recommendedFor:
                           - recommendationForCode: deo
                             recommendationForName: District education officer
@@ -1020,10 +1026,16 @@ paths:
                           timezone: Asia/Calcutta
                           mentor:
                             id: 63e5fa8762820fd9e6be9e21
-                            name: joffin Mentor Twelve
+                            name: John Doe
                             gender: Male
                             image: image location
                             rating: '4.9'
+                            aboutMentor: With a career spanning multiple decades, this mentor is a true veteran of their industry. They have seen it all, and have a wealth of stories and insights to share. They are passionate about passing on their knowledge and experience to others, and take great pride in helping others achieve their goals. Whether you're a newcomer to the industry or a seasoned pro, this mentor is an invaluable source of wisdom and guidance.
+                            professionalExperience: Senior Consultant | Director of R&D - FutureTech Labs
+                            qualification: M.Tech from NID Ahmedabad
+                            experience: 13 Years
+                            totalMeetings: 124+
+                            specialisation: Machine Learning
                       recommendedFor:
                         - recommendationForCode: deo
                           recommendationForName: District education officer
@@ -1164,10 +1176,16 @@ paths:
                   timezone: Asia/Calcutta
                   mentor:
                     id: 63e5fa8762820fd9e6be9e21
-                    name: joffin Mentor Twelve
+                    name: John Doe
                     gender: Male
                     image: image location
                     rating: '4.9'
+                    aboutMentor: With a career spanning multiple decades, this mentor is a true veteran of their industry. They have seen it all, and have a wealth of stories and insights to share. They are passionate about passing on their knowledge and experience to others, and take great pride in helping others achieve their goals. Whether you're a newcomer to the industry or a seasoned pro, this mentor is an invaluable source of wisdom and guidance.
+                    professionalExperience: Senior Consultant | Director of R&D - FutureTech Labs
+                    qualification: M.Tech from NID Ahmedabad
+                    experience: 13 Years
+                    totalMeetings: 124+
+                    specialisation: Machine Learning
         '404':
           description: Mentorship confirm request failed
           content:
@@ -1254,10 +1272,16 @@ paths:
                           timezone: Asia/Calcutta
                           mentor:
                             id: 63e5fa8762820fd9e6be9e21
-                            name: joffin Mentor Twelve
+                            name: John Doe
                             gender: Male
                             image: image location
                             rating: '4.9'
+                            aboutMentor: With a career spanning multiple decades, this mentor is a true veteran of their industry. They have seen it all, and have a wealth of stories and insights to share. They are passionate about passing on their knowledge and experience to others, and take great pride in helping others achieve their goals. Whether you're a newcomer to the industry or a seasoned pro, this mentor is an invaluable source of wisdom and guidance.
+                            professionalExperience: Senior Consultant | Director of R&D - FutureTech Labs
+                            qualification: M.Tech from NID Ahmedabad
+                            experience: 13 Years
+                            totalMeetings: 124+
+                            specialisation: Machine Learning
                       recommendedFor:
                         - recommendationForCode: deo
                           recommendationForName: District education officer
@@ -3235,8 +3259,8 @@ components:
         totalMeetings:
           description: Mentor total meetings
           type: string
-        specialistIn:
-          description: Mentor specialization
+        specialisation:
+          description: Mentor specialisation
           type: string
     SelectMentorshipRequest:
       description: Schema for mentorship selection request
