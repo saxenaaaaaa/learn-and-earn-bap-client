@@ -24,7 +24,8 @@ export const isAcknowledged = (input: any = {}) => {
 
 export const buildSearchRequest = (input: any = {}) => {
     const context = buildContext({ category: 'jobs', action: 'search' });
-    const intent: any = {}
+    const intent: any = {};
+    const optional: any = {};
     if (input?.title?.key) {
         intent.item = { "descriptor": { "name": input?.title?.key } }
     }
@@ -42,12 +43,16 @@ export const buildSearchRequest = (input: any = {}) => {
         }
     }
 
+    if (input?.loggedInUserEmail) {
+        optional.user = { "email": input?.loggedInUserEmail };
+    }
+
     if (input?.skills?.length) {
         intent.fulfillment = { customer: { person: { skills: input?.skills } } };
     }
 
     const message = { intent: intent };
-    return { payload: { context, message } };
+    return { payload: { context, message }, optional };
 }
 
 export const buildSearchResponse = (input: any = {}, body: any = {}) => {
@@ -64,7 +69,12 @@ export const buildOnSearchRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnSearchResponse = (response: any = {}, body: any = {}) => {
+export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}) => {
+    let savedAppliedResult = response?.itemRes ? await buildSavedAppliedJobResonse(response.itemRes[0], response.itemRes[1]) : null;
+    return buildOnSearchResponse(response.searchRes, body, savedAppliedResult);
+}
+
+export const buildOnSearchResponse = (response: any = {}, body: any = {}, savedAppliedResult?: any) => {
     const input = response?.data?.responses?.[0];
     if (!input)
         return { status: 200 };
@@ -87,6 +97,8 @@ export const buildOnSearchResponse = (response: any = {}, body: any = {}) => {
                 role: item?.descriptor?.name,
                 description: item?.descriptor?.long_desc,
                 additionalDesc: { url: item?.descriptor?.additional_desc?.url, contentType: item?.descriptor?.additional_desc?.content_type },
+                userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] ? true : false,
+                userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.saved[item?.id] ? true : false,
                 locations: provider?.locations
                     ?.filter((location: any) => item?.location_ids?.find((id: any) => id == location?.id))
                     ?.map((location: any) => ({
@@ -102,6 +114,29 @@ export const buildOnSearchResponse = (response: any = {}, body: any = {}) => {
     });
 
     return { data: { context, jobProviderPlatform, jobResults } };
+}
+
+export const buildSavedAppliedJobResonse = (savedResponse: any = {}, appliedResponse: any = {}) => {
+    const savedInput = savedResponse?.data?.jobs;
+    const appliedInput = appliedResponse?.data?.jobs;
+
+    const jobMap: any = {
+        saved: {}, applied: {}
+    };
+
+    if (savedResponse?.data) {
+        savedInput.forEach(({ job_id }: any) => {
+            jobMap['saved'][job_id.job_id] = true;
+        });
+    }
+
+    if (appliedResponse?.data) {
+        appliedInput.forEach(({ job_id }: any) => {
+            jobMap['applied'][job_id.job_id] = true;
+        });
+    }
+
+    return jobMap;
 }
 
 export const buildSelectRequest = (input: any = {}) => {

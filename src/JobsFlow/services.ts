@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import https from 'https';
 import {
   buildSelectRequest,
+  buildOnSearchMergedResponse,
   buildOnSearchResponse,
   buildSearchResponse,
   buildOnSearchRequest,
@@ -30,6 +31,7 @@ import onStatusResponse from './mock/onStatusResponse.json'
 dotenv.config();
 const gatewayUrl = process.env.GATEWAY_URL || "";
 const jobNetwork = process.env.JOB_NETWORK;
+const backendApiUrl = process.env.BACKEND_API_BASE_URL;
 
 const axios = axiosInstance.create({
   httpsAgent: new https.Agent({
@@ -39,16 +41,20 @@ const axios = axiosInstance.create({
 
 export async function searchJob(body: any): Promise<any> {
   try {
-    const { payload } = buildSearchRequest(body);
+    const { payload, optional } = buildSearchRequest(body);
     console.log(JSON.stringify(payload));
 
     let response: any = { data: onSearchResponse };
     if (jobNetwork != 'local') {
       const headers = { "Content-Type": "application/JSON" };
-      const res = await axios.post(`${gatewayUrl}/search`, payload, { headers });
-      response = res;
+      const searchRes = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      const itemRes = await Promise.all([
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/saved/${optional.user.email}`, { headers }) : null,
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
+      ]).then(res => res).catch(err => null);
+      response = { searchRes, itemRes };
     }
-    return buildOnSearchResponse(response, body);
+    return buildOnSearchMergedResponse(response, body);
   } catch (error) {
     return { error: JSON.stringify(error), errorOccured: true };
   }
