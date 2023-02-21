@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.1.22
+  version: 0.1.23
   title: DSEP Client API
   description: Client API to manage DSEP categories.
 paths:
@@ -928,8 +928,6 @@ paths:
                       - id: 63e6065223df082856936335
                         code: Class Room Management Level 1
                         name: Class Room Management Level 1
-                        userSavedItem: false
-                        userAppliedItem: false
                         description: A level 1 session on class room management for state schools and colleges.
                         longDescription: A level 1 session on class room management for state schools and colleges.
                         imageLocations:
@@ -943,6 +941,8 @@ paths:
                         price: 0
                         mentorshipSessions:
                           - id: 2494098b-a2e8-4d29-8791-1b708c458cb5
+                            userSavedItem: false
+                            userAppliedItem: false
                             language: English
                             timingStart: '2023-02-19T23:23:16'
                             timingEnd: '2023-02-20T01:23:16'
@@ -3178,12 +3178,6 @@ components:
         name:
           description: Mentorship name
           type: string
-        userSavedItem:
-          description: Flag to identify if user has saved this item earlier
-          type: boolean
-        userAppliedItem:
-          description: Flag to identify if user has applied for this item
-          type: boolean
         description:
           description: Mentorship description
           type: string
@@ -3249,6 +3243,12 @@ components:
         id:
           description: Session Fulfillments Id
           type: string
+        userSavedItem:
+          description: Flag to identify if user has saved this item earlier
+          type: boolean
+        userAppliedItem:
+          description: Flag to identify if user has applied for this item
+          type: boolean
         language:
           description: Session language
           type: string
