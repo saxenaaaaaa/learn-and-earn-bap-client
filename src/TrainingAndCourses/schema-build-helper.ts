@@ -27,6 +27,7 @@ export const buildSearchRequest = (input: any = {}) => {
   let item: any = {};
   let provider: any = {};
   let category: any = {};
+  const optional: any = {};
   if (input?.category) {
     category = {
       descriptor: {
@@ -79,11 +80,19 @@ export const buildSearchRequest = (input: any = {}) => {
       category
     };
   }
+  if (input?.loggedInUserEmail) {
+    optional.user = { "email": input?.loggedInUserEmail };
+  }
 
-  return { payload: { context, message } };
+  return { payload: { context, message }, optional };
 };
 
-export const buildSearchResponse = (response: any = {}, body: any = {}) => {
+export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}) => {
+  let savedAppliedResult = response?.itemRes ? await buildSavedAppliedCategoryResponse(response.itemRes[0], response.itemRes[1]) : null;
+  return buildSearchResponse(response.searchRes, body, savedAppliedResult);
+}
+
+export const buildSearchResponse = (response: any = {}, body: any = {}, savedAppliedResult?: any) => {
   const input = response?.data?.responses?.[0];
   if (!input)
     return { status: 200 };
@@ -103,6 +112,8 @@ export const buildSearchResponse = (response: any = {}, body: any = {}) => {
         id: item?.id,
         name: item?.descriptor?.name,
         description: item?.descriptor?.long_desc,
+        userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] ? true : false,
+        userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.saved[item?.id] ? true : false,
         imageLocations: item?.descriptor?.images.map(
           (img: any) => img?.url || ""
         ),
@@ -121,6 +132,29 @@ export const buildSearchResponse = (response: any = {}, body: any = {}) => {
   });
   return { data: { context, courses } };
 };
+
+export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appliedResponse: any = {}) => {
+  const savedInput = savedResponse?.data?.courses;
+  const appliedInput = appliedResponse?.data?.courses;
+
+  const mentorMap: any = {
+    saved: {}, applied: {}
+  };
+
+  if (savedResponse?.data) {
+    savedInput.forEach(({ course_id }: any) => {
+      mentorMap['saved'][course_id.course_id] = true;
+    });
+  }
+
+  if (appliedResponse?.data) {
+    appliedInput.forEach(({ _id }: any) => {
+      mentorMap['applied'][_id] = true;
+    });
+  }
+
+  return mentorMap;
+}
 
 export const buildInitRequest = (input: any = {}) => {
   const context = buildContext({
