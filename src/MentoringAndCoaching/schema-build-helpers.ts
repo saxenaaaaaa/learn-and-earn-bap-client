@@ -97,8 +97,8 @@ export const buildSearchResponse = (response: any = {}, body: any = {}, savedApp
           timingStart: fulfillment?.time?.range?.start,
           timingEnd: fulfillment?.time?.range?.end,
           type: fulfillment?.type,
-          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
-          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          status: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "status")?.list?.[0]?.descriptor?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "timeZone")?.list?.[0]?.descriptor?.name,
           mentor: {
             id: fulfillment?.agent?.person?.id,
             name: fulfillment?.agent?.person?.name,
@@ -107,13 +107,13 @@ export const buildSearchResponse = (response: any = {}, body: any = {}, savedApp
             rating: fulfillment?.agent?.person?.rating,
             aboutMentor: item?.tags?.find((tag: any) => tag?.descriptor?.code == "about_mentor")?.list?.find((li: any) => li?.descriptor?.code == "about_mentor")?.descriptor?.name,
             qualification: item?.tags?.find((tag: any) => tag?.descriptor?.code == "qualification")?.list?.find((li: any) => li?.descriptor?.code == "qualification")?.descriptor?.name,
-            experience: item?.tags?.find((tag: any) => tag?.descriptor?.code == "professional_experience")?.list?.find((li: any) => li?.descriptor?.code == "professional_experience")?.descriptor?.name,
+            experience: item?.tasg?.find((tag: any) => tag?.descriptor?.code == "professional_experience")?.list?.find((li: any) => li?.descriptor?.code == "professional_experience")?.descriptor?.name,
             totalMeetings: item?.tags?.find((tag: any) => tag?.descriptor?.code == "total_meetings")?.list?.find((li: any) => li?.descriptor?.code == "total_meetings")?.descriptor?.name,
             specialisation: item?.tags?.find((tag: any) => tag?.descriptor?.code == "specialist_in")?.list?.find((li: any) => li?.descriptor?.code == "specialist_in")?.descriptor?.name,
           }
         })),
       recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
-        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.descriptor?.code, recommendationForName: li?.descriptor?.name })),
     })),
   }));
 
@@ -190,8 +190,8 @@ export const buildSelectResponse = (response: any = {}, body: any = {}) => {
           timingStart: fulfillment?.time?.range?.start,
           timingEnd: fulfillment?.time?.range?.end,
           type: fulfillment?.type,
-          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
-          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          status: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "status")?.list?.[0]?.descriptor?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "timeZone")?.list?.[0]?.descriptor?.name,
           mentor: {
             id: fulfillment?.agent?.person?.id,
             name: fulfillment?.agent?.person?.name,
@@ -205,8 +205,8 @@ export const buildSelectResponse = (response: any = {}, body: any = {}) => {
             specialisation: item?.tags?.find((tag: any) => tag?.descriptor?.code == "specialist_in")?.list?.find((li: any) => li?.descriptor?.code == "specialist_in")?.descriptor?.name,
           }
         })),
-      recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
-        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+      recommendedFor: item?.tags?.find((tag: any) => tag?.descriptor?.code == "recommended_for")
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.descriptor?.code, recommendationForName: li?.descriptor?.name })),
     })),
   }
 
@@ -252,13 +252,13 @@ export const buildConfirmResponse = (response: any = {}, body: any = {}) => {
   const mentorshipApplicationId = order?.id;
   const mentorshipSession = {
     id: order?.fulfillments?.[0]?.id,
-    sessionJoinLinks: order?.fulfillments?.[0]?.tags?.find((fulfillment: any) => fulfillment?.code == 'joinLink')?.list?.map((li: any) => ({ id: li?.code, link: li?.name })),
+    sessionJoinLinks: order?.fulfillments?.[0]?.tags?.find((tag: any) => tag?.descriptor?.code == 'joinLink')?.list?.map((li: any) => ({ id: li?.descriptor?.code, link: li?.descriptor?.name })),
     language: order?.fulfillments?.[0]?.language?.[0],
     timingStart: order?.fulfillments?.[0]?.time?.range?.start,
-    timingEnd: order?.fulfillments?.[0]?.time?.range?.ends,
-    type: order?.type,
-    status: order?.fulfillments?.[0]?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
-    timezone: order?.fulfillments?.[0]?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+    timingEnd: order?.fulfillments?.[0]?.time?.range?.end,
+    type: order?.fulfillments?.[0]?.type,
+    status: order?.fulfillments?.[0]?.tags?.find((tag: any) => tag?.descriptor?.code == "status")?.list?.[0]?.descriptor?.name,
+    timezone: order?.fulfillments?.[0]?.tags?.find((tag: any) => tag?.descriptor?.code == "timeZone")?.list?.[0]?.descriptor?.name,
     mentor: {
       id: order?.fulfillments?.[0]?.agent?.person?.id,
       name: order?.fulfillments?.[0]?.agent?.person?.name,
@@ -328,8 +328,8 @@ export const buildStatusResponse = (response: any = {}, body: any = {}) => {
           timingStart: fulfillment?.time?.range?.start,
           timingEnd: fulfillment?.time?.range?.end,
           type: fulfillment?.type,
-          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
-          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          status: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "status")?.list?.[0]?.descriptor?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "timeZone")?.list?.[0]?.descriptor?.name,
           mentor: {
             id: fulfillment?.agent?.person?.id,
             name: fulfillment?.agent?.person?.name,
@@ -343,8 +343,8 @@ export const buildStatusResponse = (response: any = {}, body: any = {}) => {
             specialisation: item?.tags?.find((tag: any) => tag?.descriptor?.code == "specialist_in")?.list?.find((li: any) => li?.descriptor?.code == "specialist_in")?.descriptor?.name,
           }
         })),
-      recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
-        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+      recommendedFor: item?.tags?.find((tag: any) => tag?.descriptor?.code == "recommended_for")
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.descriptor?.code, recommendationForName: li?.descriptor?.name })),
     })),
   }
 
@@ -442,8 +442,8 @@ export const buildInitResponse = (response: any = {}, body: any = {}) => {
           timingStart: fulfillment?.time?.range?.start,
           timingEnd: fulfillment?.time?.range?.end,
           type: fulfillment?.type,
-          status: fulfillment?.tags?.find((tag: any) => tag?.code == "status")?.list?.[0]?.name,
-          timezone: fulfillment?.tags?.find((tag: any) => tag?.code == "timeZone")?.list?.[0]?.name,
+          status: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "status")?.list?.[0]?.descriptor?.name,
+          timezone: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "timeZone")?.list?.[0]?.descriptor?.name,
           mentor: {
             id: fulfillment?.agent?.person?.id,
             name: fulfillment?.agent?.person?.name,
@@ -457,8 +457,8 @@ export const buildInitResponse = (response: any = {}, body: any = {}) => {
             specialisation: item?.tags?.find((tag: any) => tag?.descriptor?.code == "specialist_in")?.list?.find((li: any) => li?.descriptor?.code == "specialist_in")?.descriptor?.name,
           }
         })),
-      recommendedFor: item?.tags?.find((tag: any) => tag?.code == "recommended_for")
-        ?.list?.map((li: any) => ({ recommendationForCode: li?.code, recommendationForName: li?.name })),
+      recommendedFor: item?.tags?.find((tag: any) => tag?.descriptor?.code == "recommended_for")
+        ?.list?.map((li: any) => ({ recommendationForCode: li?.descriptor?.code, recommendationForName: li?.descriptor?.name })),
     })),
   }
 
