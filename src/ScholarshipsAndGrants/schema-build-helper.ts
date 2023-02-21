@@ -160,10 +160,10 @@ export const buildSearchResponse = (res: any = {}, body: any = {}, savedAppliedR
             )?.time?.timestamp,
             supportContact: fulfillment?.contact,
             academicQualifications: fulfillment?.customer?.person?.tags
-              ?.find((tag: any) => tag?.code == "academic_qualifications")
+              ?.find((tag: any) => tag?.descriptor?.code == "academic_qualifications")
               ?.list?.map((li: any) => ({
-                code: li?.code,
-                name: li?.name,
+                code: li?.descriptor?.code,
+                name: li?.descriptor?.name,
                 value: li?.value
               }))
           }))
@@ -244,13 +244,38 @@ export const buildSelectResponse = (res: any = {}, input: any = {}) => {
           data: Object.keys(item?.xinput?.form?.data ?? {}).map((key: string) => { return { formInputKey: key, formInputValue: item?.xinput?.form?.data[key] }; })
         },
 
-        academicQualifications: item.tags
+        academicQualifications: item?.tags
           ?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
           ?.list?.map((li: any) => ({
             code: li?.descriptor?.code,
             name: li?.descriptor?.name,
             value: li?.value
           })),
+
+        academicQualificationsCriteria: item?.tags
+          ?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
+          ?.list?.map((li: any) => ({
+            code: li?.descriptor?.code,
+            name: li?.descriptor?.name,
+            value: li?.value
+          })),
+
+        finStatusCriteria: item?.tags
+          ?.find((tag: any) => tag?.descriptor?.code == "fin_status")
+          ?.list?.map((li: any) => ({
+            code: li?.descriptor?.code,
+            name: li?.descriptor?.name,
+            value: li?.value
+          })),
+
+        benefits: item?.tags
+          ?.find((tag: any) => tag?.descriptor?.code == "benefits")
+          ?.list?.map((li: any) => ({
+            code: li?.descriptor?.code,
+            name: li?.descriptor?.name,
+            value: li?.value
+          })),
+
         categories: response?.message?.order?.categories
           ?.filter((category: any) =>
             item.category_ids?.find(
@@ -274,12 +299,12 @@ export const buildSelectResponse = (res: any = {}, input: any = {}) => {
             applicationEndDate: fulfillment.stops?.find(
               (stop: any) => stop?.type == "APPLICATION-END"
             )?.time?.timestamp,
-            supportContact: fulfillment?.contact,
+            supportContact: { name: fulfillment?.customer?.person?.name, ...(fulfillment?.contact ?? {}) },
             academicQualifications: fulfillment?.customer?.person?.tags
-              ?.find((tag: any) => tag?.code == "edu_qual")
+              ?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
               ?.list?.map((li: any) => ({
-                code: li?.code,
-                name: li?.name,
+                code: li?.descriptor?.code,
+                name: li?.descriptor?.name,
                 value: li?.value
               }))
           })
