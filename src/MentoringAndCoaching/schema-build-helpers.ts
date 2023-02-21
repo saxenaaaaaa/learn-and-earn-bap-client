@@ -214,8 +214,9 @@ export const buildConfirmResponse = (response: any = {}, body: any = {}) => {
 
   const order = input?.message?.order;
 
+  const mentorshipApplicationId = order?.id;
   const mentorshipSession = {
-    id: order?.id,
+    id: order?.fulfillments?.[0]?.id,
     sessionJoinLinks: order?.fulfillments?.[0]?.tags?.find((fulfillment: any) => fulfillment?.code == 'joinLink')?.list?.map((li: any) => ({ id: li?.code, link: li?.name })),
     language: order?.fulfillments?.[0]?.language?.[0],
     timingStart: order?.fulfillments?.[0]?.time?.range?.start,
@@ -232,7 +233,7 @@ export const buildConfirmResponse = (response: any = {}, body: any = {}) => {
     }
   }
 
-  return { data: { context, mentorshipSession } };
+  return { data: { context, mentorshipApplicationId, mentorshipSession } };
 
 
 };
@@ -264,7 +265,7 @@ export const buildStatusResponse = (response: any = {}, body: any = {}) => {
   const provider = order?.provider;
 
   const mentorshipApplicationId = order?.id
-  const mentorshipApplicationStatus = order?.id;
+  const mentorshipApplicationStatus = order?.state;
 
   const mentorshipProvider = {
     id: provider?.id,
