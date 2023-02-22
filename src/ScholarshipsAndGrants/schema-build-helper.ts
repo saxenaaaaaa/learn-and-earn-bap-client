@@ -2,6 +2,7 @@ import moment from "moment";
 import { v4 as uuid } from "uuid";
 import { IScholarshipNetworkContext } from "./schema";
 export const buildContext = (input: any = {}) => {
+  console.log("input", input);
   const context: IScholarshipNetworkContext = {
     domain: `${process.env.DOMAIN}${input?.category ?? "scholarships"}`,
     location: {
@@ -502,7 +503,7 @@ export const buildInitResponse = (response: any = {}, input: any = {}) => {
   const actualResponse = response?.responses[0];
 
   const context = {
-    transactionId: actualResponse?.context?.message_id,
+    transactionId: actualResponse?.context?.transaction_id,
     bppId: actualResponse?.context?.bpp_id,
     bppUri: actualResponse?.context?.bpp_uri
   };
@@ -776,7 +777,7 @@ export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
 
   const actualResponse = response?.responses[0];
   const context = {
-    transactionId: actualResponse?.context?.message_id,
+    transactionId: actualResponse?.context?.transaction_id,
     bppId: actualResponse?.context?.bpp_id,
     bppUri: actualResponse?.context?.bpp_uri
   };
