@@ -175,8 +175,8 @@ export const buildSearchResponse = (res: any = {}, body: any = {}, savedAppliedR
 };
 
 export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appliedResponse: any = {}) => {
-  const savedInput = savedResponse?.data?.scholarships;
-  const appliedInput = appliedResponse?.data?.scholarships;
+  const savedInput = savedResponse?.data?.scholarship;
+  const appliedInput = appliedResponse?.data?.scholarship;
 
   const scholarshipMap: any = {
     saved: {}, applied: {}

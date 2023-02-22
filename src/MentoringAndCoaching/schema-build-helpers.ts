@@ -97,8 +97,8 @@ export const buildSearchResponse = (response: any = {}, body: any = {}, savedApp
           timingStart: fulfillment?.time?.range?.start,
           timingEnd: fulfillment?.time?.range?.end,
           type: fulfillment?.type,
-          userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id][fulfillment?.id] ? true : false,
-          userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.saved[fulfillment?.id] ? true : false,
+          userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] && savedAppliedResult?.saved[item?.id][fulfillment?.id] ? true : false,
+          userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.applied[item?.id] && savedAppliedResult?.applied[item?.id][fulfillment?.id] ? true : false,
           status: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "status")?.list?.[0]?.descriptor?.name,
           timezone: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "timeZone")?.list?.[0]?.descriptor?.name,
           mentor: {
@@ -123,23 +123,30 @@ export const buildSearchResponse = (response: any = {}, body: any = {}, savedApp
 };
 
 export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appliedResponse: any = {}) => {
-  const savedInput = savedResponse?.data?.mentorships;
-  const appliedInput = appliedResponse?.data?.mentorships;
+  const savedInput = savedResponse?.data?.mentorship;
+  const appliedInput = appliedResponse?.data?.mentorship;
 
   const mentorMap: any = {
     saved: {}, applied: {}
   };
 
   if (savedResponse?.data) {
-    savedInput.forEach(({ mentorship_id, mentorshipSession_id}: any) => {
-      // mentorMap['saved'][mentorship_id] = true;
-      mentorMap['saved'][mentorship_id][mentorshipSession_id] = true;
+    savedInput.forEach(({ mentorship_id, mentorshipSession_id }: any) => {
+      mentorMap['saved'][mentorship_id] = true;
+      if (mentorshipSession_id) {
+        mentorMap['saved'][mentorship_id] = {};
+        mentorMap['saved'][mentorship_id][mentorshipSession_id] = true;
+      }
     });
   }
 
   if (appliedResponse?.data) {
     appliedInput.forEach(({ mentorship_id, mentorshipSession_id }: any) => {
-      mentorMap['applied'][mentorship_id][mentorshipSession_id] = true;
+      mentorMap['applied'][mentorship_id] = true;
+      if (mentorshipSession_id) {
+        mentorMap['applied'][mentorship_id] = {};
+        mentorMap['applied'][mentorship_id][mentorshipSession_id] = true;
+      }
     });
   }
 
