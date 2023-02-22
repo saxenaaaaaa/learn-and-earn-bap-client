@@ -82,7 +82,7 @@ export const buildSearchResponse = (response: any = {}, body: any = {}, savedApp
       description: item?.descriptor?.short_desc,
       longDescription: item?.descriptor?.long_desc,
       userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] ? true : false,
-      userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.saved[item?.id] ? true : false,
+      // userAppliedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] ? true : false,
 
       imageLocations: item?.descriptor?.images?.map((image: any) => image?.url),
       categories: provider?.categories?.filter((category: any) => item?.category_ids?.find((categoryId: any) => categoryId == category?.id))
@@ -97,6 +97,8 @@ export const buildSearchResponse = (response: any = {}, body: any = {}, savedApp
           timingStart: fulfillment?.time?.range?.start,
           timingEnd: fulfillment?.time?.range?.end,
           type: fulfillment?.type,
+          userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id][fulfillment?.id] ? true : false,
+          userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.saved[fulfillment?.id] ? true : false,
           status: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "status")?.list?.[0]?.descriptor?.name,
           timezone: fulfillment?.tags?.find((tag: any) => tag?.descriptor?.code == "timeZone")?.list?.[0]?.descriptor?.name,
           mentor: {
@@ -121,22 +123,23 @@ export const buildSearchResponse = (response: any = {}, body: any = {}, savedApp
 };
 
 export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appliedResponse: any = {}) => {
-  const savedInput = savedResponse?.data?.mentorship;
-  const appliedInput = appliedResponse?.data?.mentorship;
+  const savedInput = savedResponse?.data?.mentorships;
+  const appliedInput = appliedResponse?.data?.mentorships;
 
   const mentorMap: any = {
     saved: {}, applied: {}
   };
 
   if (savedResponse?.data) {
-    savedInput.forEach(({ _id }: any) => {
-      mentorMap['saved'][_id] = true;
+    savedInput.forEach(({ mentorship_id, mentorshipSession_id}: any) => {
+      // mentorMap['saved'][mentorship_id] = true;
+      mentorMap['saved'][mentorship_id][mentorshipSession_id] = true;
     });
   }
 
   if (appliedResponse?.data) {
-    appliedInput.forEach(({ _id }: any) => {
-      mentorMap['applied'][_id] = true;
+    appliedInput.forEach(({ mentorship_id, mentorshipSession_id }: any) => {
+      mentorMap['applied'][mentorship_id][mentorshipSession_id] = true;
     });
   }
 

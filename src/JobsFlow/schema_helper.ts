@@ -126,13 +126,13 @@ export const buildSavedAppliedJobResonse = (savedResponse: any = {}, appliedResp
 
     if (savedResponse?.data) {
         savedInput.forEach(({ job_id }: any) => {
-            jobMap['saved'][job_id.job_id] = true;
+            jobMap['saved'][job_id] = true;
         });
     }
 
     if (appliedResponse?.data) {
         appliedInput.forEach(({ job_id }: any) => {
-            jobMap['applied'][job_id.job_id] = true;
+            jobMap['applied'][job_id] = true;
         });
     }
 

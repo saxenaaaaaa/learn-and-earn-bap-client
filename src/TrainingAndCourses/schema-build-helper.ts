@@ -143,13 +143,13 @@ export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appli
 
   if (savedResponse?.data) {
     savedInput.forEach(({ course_id }: any) => {
-      mentorMap['saved'][course_id.course_id] = true;
+      mentorMap['saved'][course_id] = true;
     });
   }
 
   if (appliedResponse?.data) {
-    appliedInput.forEach(({ _id }: any) => {
-      mentorMap['applied'][_id] = true;
+    appliedInput.forEach(({ course_id }: any) => {
+      mentorMap['applied'][course_id] = true;
     });
   }
 

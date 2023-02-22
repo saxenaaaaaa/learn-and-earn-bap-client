@@ -175,8 +175,8 @@ export const buildSearchResponse = (res: any = {}, body: any = {}, savedAppliedR
 };
 
 export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appliedResponse: any = {}) => {
-  const savedInput = savedResponse?.data?.scholarship;
-  const appliedInput = appliedResponse?.data?.scholarship;
+  const savedInput = savedResponse?.data?.scholarships;
+  const appliedInput = appliedResponse?.data?.scholarships;
 
   const scholarshipMap: any = {
     saved: {}, applied: {}
@@ -184,13 +184,13 @@ export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appli
 
   if (savedResponse?.data) {
     savedInput.forEach(({ scholarship_id }: any) => {
-      scholarshipMap['saved'][scholarship_id._id] = true;
+      scholarshipMap['saved'][scholarship_id] = true;
     });
   }
 
   if (appliedResponse?.data) {
-    appliedInput.forEach(({ _id }: any) => {
-      scholarshipMap['applied'][_id] = true;
+    appliedInput.forEach(({ scholarship_id }: any) => {
+      scholarshipMap['applied'][scholarship_id] = true;
     });
   }
 
