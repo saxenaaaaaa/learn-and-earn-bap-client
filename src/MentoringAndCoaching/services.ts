@@ -46,7 +46,7 @@ export const searchMentorShipService = async (body: any): Promise<any> => {
         optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
       ]).then(res => res).catch(err => null);
       const res = { searchRes, itemRes };
-      searchResponse = buildOnSearchMergedResponse(res, body);
+      searchResponse = buildSearchResponse(searchRes, body, itemRes?.[0]?.data?.mentorship, itemRes?.[1]?.data?.mentorship);
     } else {
       searchResponse = buildSearchResponse({ data: searchMentorShipResp }, body);
     }
