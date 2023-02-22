@@ -22,7 +22,7 @@ export const buildContext = (input: any = {}) => {
     bpp_id: input?.bppId,
     bpp_uri: input?.bppUri,
     message_id: input?.messageId ?? uuid(),
-    ttl: "PT10M",
+
     timestamp: input.timestamp ?? moment().toISOString()
   };
   return context;
@@ -160,10 +160,10 @@ export const buildSearchResponse = (res: any = {}, body: any = {}, savedAppliedR
             )?.time?.timestamp,
             supportContact: fulfillment?.contact,
             academicQualifications: fulfillment?.customer?.person?.tags
-              ?.find((tag: any) => tag?.code == "academic_qualifications")
+              ?.find((tag: any) => tag?.descriptor?.code == "academic_qualifications")
               ?.list?.map((li: any) => ({
-                code: li?.code,
-                name: li?.name,
+                code: li?.descriptor?.code,
+                name: li?.descriptor?.name,
                 value: li?.value
               }))
           }))
@@ -236,17 +236,46 @@ export const buildSelectResponse = (res: any = {}, input: any = {}) => {
           amount: item?.price?.value,
           currency: item?.price?.currency
         },
-        additionalForm: {
-          url: item?.xinput?.form?.url,
-          mime_type: item?.xinput?.form?.mime_type
+
+        additionalFormData: {
+          formUrl: item?.xinput?.form?.url,
+          formMimeType: item?.xinput?.form?.mime_type,
+          submissionId: item?.xinput?.form?.submission_id,
+          data: Object.keys(item?.xinput?.form?.data ?? {}).map((key: string) => { return { formInputKey: key, formInputValue: item?.xinput?.form?.data[key] }; })
         },
-        academicQualifications: item.tags
+
+        academicQualifications: item?.tags
           ?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
           ?.list?.map((li: any) => ({
             code: li?.descriptor?.code,
             name: li?.descriptor?.name,
             value: li?.value
           })),
+
+        academicQualificationsCriteria: item?.tags
+          ?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
+          ?.list?.map((li: any) => ({
+            code: li?.descriptor?.code,
+            name: li?.descriptor?.name,
+            value: li?.value
+          })),
+
+        finStatusCriteria: item?.tags
+          ?.find((tag: any) => tag?.descriptor?.code == "fin_status")
+          ?.list?.map((li: any) => ({
+            code: li?.descriptor?.code,
+            name: li?.descriptor?.name,
+            value: li?.value
+          })),
+
+        benefits: item?.tags
+          ?.find((tag: any) => tag?.descriptor?.code == "benefits")
+          ?.list?.map((li: any) => ({
+            code: li?.descriptor?.code,
+            name: li?.descriptor?.name,
+            value: li?.value
+          })),
+
         categories: response?.message?.order?.categories
           ?.filter((category: any) =>
             item.category_ids?.find(
@@ -270,12 +299,12 @@ export const buildSelectResponse = (res: any = {}, input: any = {}) => {
             applicationEndDate: fulfillment.stops?.find(
               (stop: any) => stop?.type == "APPLICATION-END"
             )?.time?.timestamp,
-            supportContact: fulfillment?.contact,
+            supportContact: { name: fulfillment?.customer?.person?.name, ...(fulfillment?.contact ?? {}) },
             academicQualifications: fulfillment?.customer?.person?.tags
-              ?.find((tag: any) => tag?.code == "edu_qual")
+              ?.find((tag: any) => tag?.descriptor?.code == "edu_qual")
               ?.list?.map((li: any) => ({
-                code: li?.code,
-                name: li?.name,
+                code: li?.descriptor?.code,
+                name: li?.descriptor?.name,
                 value: li?.value
               }))
           })
@@ -798,7 +827,10 @@ export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
             (key: string) => {
               return {
                 formInputKey: key,
-                formInputValue: scholarship?.xinput?.form?.data[key]
+                formInputValue:
+                  key === "phone"
+                    ? Number(scholarship?.xinput?.form?.data[key])
+                    : scholarship?.xinput?.form?.data[key]
               };
             }
           )
@@ -809,7 +841,10 @@ export const buildConfirmResponse = (response: any = {}, input: any = {}) => {
             return {
               code: li?.descriptor?.code,
               name: li?.descriptor?.name,
-              value: li?.value
+              value:
+                li?.descriptor?.code === "passing_year"
+                  ? Number(li?.value)
+                  : li?.value
             };
           }),
 
@@ -881,12 +916,6 @@ export const buildStatusResponse = (res: any = {}, input: any = {}) => {
           amount: item?.price?.value,
           currency: item?.price?.currency
         },
-        // scholarshipDetails: response?.message?.order?.fulfillments?.filter((fulfillment: any) => item?.fulfillment_ids?.find((fulfillment_id: any) => fulfillment_id == fulfillment?.id))
-        //   ?.map((fulfillment: any) => ({
-        //     id: fulfillment?.id,
-        //     type: fulfillment?.type,
-
-        //   })),
 
         scholarshipDetails: response?.message?.order?.fulfillments?.map(
           (fulfillment: any) => ({
