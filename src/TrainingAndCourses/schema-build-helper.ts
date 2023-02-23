@@ -89,10 +89,10 @@ export const buildSearchRequest = (input: any = {}) => {
 
 export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}) => {
   let savedAppliedResult = response?.itemRes ? await buildSavedAppliedCategoryResponse(response.itemRes[0], response.itemRes[1]) : null;
-  return buildSearchResponse(response.searchRes, body, savedAppliedResult);
+  return buildSearchResponse(response.searchRes, body, response?.itemRes?.[0]?.data?.courses, response?.itemRes?.[1]?.data?.courses);
 }
 
-export const buildSearchResponse = (response: any = {}, body: any = {}, savedAppliedResult?: any) => {
+export const buildSearchResponse = (response: any = {}, body: any = {}, savedItems = [], appliedItems = []) => {
   const input = response?.data?.responses?.[0];
   if (!input)
     return { status: 200 };
@@ -112,8 +112,8 @@ export const buildSearchResponse = (response: any = {}, body: any = {}, savedApp
         id: item?.id,
         name: item?.descriptor?.name,
         description: item?.descriptor?.long_desc,
-        userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] ? true : false,
-        userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.saved[item?.id] ? true : false,
+        userSavedItem: !!(savedItems?.find((savedItem: any) => savedItem?.course_id == item?.id)),
+        userAppliedItem: !!(appliedItems?.find((appliedItem: any) => appliedItem?.course_id == item?.id)),
         imageLocations: item?.descriptor?.images.map(
           (img: any) => img?.url || ""
         ),
