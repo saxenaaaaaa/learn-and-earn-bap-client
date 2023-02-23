@@ -70,11 +70,10 @@ export const buildOnSearchRequest = (input: any = {}) => {
 }
 
 export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}) => {
-    let savedAppliedResult = response?.itemRes ? await buildSavedAppliedJobResonse(response.itemRes[0], response.itemRes[1]) : null;
-    return buildOnSearchResponse(response.searchRes, body, savedAppliedResult);
+    return buildOnSearchResponse(response.searchRes, body, response?.itemRes?.[0]?.data?.jobs, response?.itemRes?.[1]?.data?.jobs);
 }
 
-export const buildOnSearchResponse = (response: any = {}, body: any = {}, savedAppliedResult?: any) => {
+export const buildOnSearchResponse = (response: any = {}, body: any = {}, savedItems = [], appliedItems = []) => {
     const input = response?.data?.responses?.[0];
     if (!input)
         return { status: 200 };
@@ -97,8 +96,8 @@ export const buildOnSearchResponse = (response: any = {}, body: any = {}, savedA
                 role: item?.descriptor?.name,
                 description: item?.descriptor?.long_desc,
                 additionalDesc: { url: item?.descriptor?.additional_desc?.url, contentType: item?.descriptor?.additional_desc?.content_type },
-                userSavedItem: savedAppliedResult?.saved && savedAppliedResult?.saved[item?.id] ? true : false,
-                userAppliedItem: savedAppliedResult?.applied && savedAppliedResult?.saved[item?.id] ? true : false,
+                userSavedItem: !!(savedItems?.find((savedItem: any) => savedItem?.job_id == item?.id)),
+                userAppliedItem: !!(appliedItems?.find((appliedItem: any) => appliedItem?.job_id == item?.id)),
                 locations: provider?.locations
                     ?.filter((location: any) => item?.location_ids?.find((id: any) => id == location?.id))
                     ?.map((location: any) => ({
