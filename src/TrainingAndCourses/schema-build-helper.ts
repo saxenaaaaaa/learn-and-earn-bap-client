@@ -1,5 +1,6 @@
 import moment from "moment";
 import { v4 as uuid } from "uuid";
+import { searchJobWithCourseCategory, searchJobWithCourseName, searchJobWithCourseProvider } from "../JobsFlow/services";
 import { ITrainingNetworkContext } from "./schema";
 export const buildContext = (input: any = {}) => {
   const context: ITrainingNetworkContext = {
@@ -87,12 +88,157 @@ export const buildSearchRequest = (input: any = {}) => {
   return { payload: { context, message }, optional };
 };
 
-export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}) => {
-  let savedAppliedResult = response?.itemRes ? await buildSavedAppliedCategoryResponse(response.itemRes[0], response.itemRes[1]) : null;
-  return buildSearchResponse(response.searchRes, body, response?.itemRes?.[0]?.data?.courses, response?.itemRes?.[1]?.data?.courses);
+export const buildSearchRequestWithJobTitle = (jobSearchInput: any) => {
+  const context = buildContext({ action: "search", category: "courses" });
+  const message: any = {
+    intent: {}
+  };
+  let item: any = {};
+  let provider: any = {};
+  let category: any = {};
+  const optional: any = {};
+  if (jobSearchInput?.title?.key) {
+    // category = {
+    //   descriptor: {
+    //     name: jobSearchInput?.title?.key
+    //   }
+    // };
+    // provider = {
+    //   descriptor: {
+    //     name: jobSearchInput?.title?.key
+    //   }
+    // };
+    item = {
+      descriptor: {
+        name: jobSearchInput?.title?.key
+      }
+    };
+  }
+  if (Object.keys(item).length) {
+    message.intent = {
+      ...message.intent,
+      item
+    };
+  }
+  if (Object.keys(provider).length) {
+    message.intent = {
+      ...message.intent,
+      provider
+    };
+  }
+  if (Object.keys(category).length) {
+    message.intent = {
+      ...message.intent,
+      category
+    };
+  }
+  if (jobSearchInput?.loggedInUserEmail) {
+    optional.user = { "email": jobSearchInput?.loggedInUserEmail };
+  }
+
+  return { payload: { context, message }, optional };
 }
 
-export const buildSearchResponse = (response: any = {}, body: any = {}, savedItems = [], appliedItems = []) => {
+export const buildSearchRequestWithJobRole = (jobRole?: any) => {
+  const context = buildContext({ action: "search", category: "courses" });
+  const message: any = {
+    intent: {}
+  };
+  let item: any = {};
+  let provider: any = {};
+  let category: any = {};
+  const optional: any = {};
+  if (jobRole) {
+    // category = {
+    //   descriptor: {
+    //     name: jobRole
+    //   }
+    // };
+    // provider = {
+    //   descriptor: {
+    //     name: jobRole
+    //   }
+    // };
+    item = {
+      descriptor: {
+        name: jobRole
+      }
+    };
+  }
+  if (Object.keys(item).length) {
+    message.intent = {
+      ...message.intent,
+      item
+    };
+  }
+  if (Object.keys(provider).length) {
+    message.intent = {
+      ...message.intent,
+      provider
+    };
+  }
+  if (Object.keys(category).length) {
+    message.intent = {
+      ...message.intent,
+      category
+    };
+  }
+  return { payload: { context, message }, optional };
+}
+
+export const buildSearchRequestWithJobSkill = (skill: any) => {
+  const context = buildContext({ action: "search", category: "courses" });
+  const message: any = {
+    intent: {}
+  };
+  let item: any = {};
+  let provider: any = {};
+  let category: any = {};
+  const optional: any = {};
+  if (skill?.code ?? skill?.name) {
+    // category = {
+    //   descriptor: {
+    //     name: skill?.code ?? skill?.name
+    //   }
+    // };
+    // provider = {
+    //   descriptor: {
+    //     name: skill?.code ?? skill?.name
+    //   }
+    // };
+    item = {
+      descriptor: {
+        name: skill?.code ?? skill?.name
+      }
+    };
+  }
+  if (Object.keys(item).length) {
+    message.intent = {
+      ...message.intent,
+      item
+    };
+  }
+  if (Object.keys(provider).length) {
+    message.intent = {
+      ...message.intent,
+      provider
+    };
+  }
+  if (Object.keys(category).length) {
+    message.intent = {
+      ...message.intent,
+      category
+    };
+  }
+  return { payload: { context, message }, optional };
+}
+
+export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}, isJobSearchQuery: boolean = false) => {
+  let savedAppliedResult = response?.itemRes ? await buildSavedAppliedCategoryResponse(response.itemRes[0], response.itemRes[1]) : null;
+  return buildSearchResponse(response.searchRes, body, response?.itemRes?.[0]?.data?.courses, response?.itemRes?.[1]?.data?.courses, isJobSearchQuery);
+}
+
+export const buildSearchResponse = async (response: any = {}, body: any = {}, savedItems = [], appliedItems = [], isJobSearchQuery: boolean = false) => {
   const input = response?.data?.responses?.[0];
   if (!input)
     return { status: 200 };
@@ -130,8 +276,51 @@ export const buildSearchResponse = (response: any = {}, body: any = {}, savedIte
       });
     });
   });
-  return { data: { context, courses } };
+  const enrichedCourses = isJobSearchQuery ? courses : await enrichCoursesWithRelevantJobs(courses);
+  // console.log("non enriched courses : ", courses);
+  console.log("enriched course : ", enrichedCourses);
+  return { data: { context, courses: enrichedCourses } };
 };
+
+export async function enrichCoursesWithRelevantJobs(courses: any) {
+  
+  const enrichedCourses = [];
+  for(let course of courses) {
+    let jobsForCourse = await Promise.all([
+      searchJobWithCourseName(course),
+      searchJobWithCourseProvider(course),
+      searchJobWithCourseCategory(course)
+    ]).then((res => res)).catch(error=> null);
+    enrichedCourses.push({
+      ...course,
+      myOutput: jobsForCourse
+    })
+  }
+  
+
+
+
+  // const enrichedCourses = await Promise.all(
+  //   courses.map((course: any) => {
+  //     return searchJobWithCourseName(course)
+  //   })
+  //   // searchJobWithCourseName(courses[0])
+  // ).then(res => {
+  //   console.log("value of res = ", res);
+  //   let temp:any[]=[];
+  //   let i=0;
+  //   courses.forEach((course: any) => {
+  //     temp.push({
+  //       ...course,
+  //       myOutput: res[i]
+  //     })
+  //     i=i+1;
+  //   })
+  //   return temp;
+  // }).catch(error =>null);
+  console.log("These are enriched courses - > ", enrichedCourses);
+  return enrichedCourses;
+}
 
 export const buildSavedAppliedCategoryResponse = (savedResponse: any = {}, appliedResponse: any = {}) => {
   const savedInput = savedResponse?.data?.courses;

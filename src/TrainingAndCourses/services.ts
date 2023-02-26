@@ -1,4 +1,5 @@
 import axios from "axios";
+import dotenv from "dotenv";
 import {
   buildSearchRequest,
   buildOnSearchMergedResponse,
@@ -10,18 +11,25 @@ import {
   buildStatusRequest,
   buildStatusResponse,
   buildSelectRequest,
-  buildSelectResponse
+  buildSelectResponse,
+  enrichCoursesWithRelevantJobs,
+  buildSearchRequestWithJobTitle,
+  buildSearchRequestWithJobRole,
+  buildSearchRequestWithJobSkill
 } from "./schema-build-helper";
 import searchTrainingResponse from "./mocks/searchTrainingResponse.json";
 import initTrainingResponse from "./mocks/initTrainingResponse.json";
 import confirmTrainingResponse from "./mocks/confirmTrainingResponse.json";
 import selectTrainingResponse from "./mocks/selectTrainingResponse.json";
-
+dotenv.config();
 const gatewayUrl = process.env.GATEWAY_URL;
 const trainingNetwork = process.env.TRAINING_NETWORK;
 const backendApiUrl = process.env.BACKEND_API_BASE_URL;
 
 export const searchTrainingService = async (body: any): Promise<any> => {
+  // const gatewayUrl = process.env.GATEWAY_URL;
+  // const trainingNetwork = process.env.TRAINING_NETWORK;
+  // const backendApiUrl = process.env.BACKEND_API_BASE_URL;
   try {
     const { payload, optional } = buildSearchRequest(body);
     console.log(JSON.stringify(payload));
@@ -35,7 +43,13 @@ export const searchTrainingService = async (body: any): Promise<any> => {
         optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
       ]).then(res => res).catch(err => null);
       const res = { searchRes, itemRes };
-      searchResponse = buildOnSearchMergedResponse(res, body);
+      console.log("Calling buildOnSearchMergedResponse");
+      searchResponse = await buildOnSearchMergedResponse(res, body);
+      console.log("returned search Response : ",await searchResponse.json);
+      // let courses = searchResponse.data.courses;
+      // let enrichedCourses = await enrichCoursesWithRelevantJobs(courses)
+      // searchResponse.data.courses = enrichedCourses;
+      console.log("returned search Response : ",searchResponse);
     } else {
       searchResponse = buildSearchResponse({ data: searchTrainingResponse }, body);
     }
@@ -46,6 +60,120 @@ export const searchTrainingService = async (body: any): Promise<any> => {
     return { error: error, errorOccured: true };
   }
 };
+
+export const searchCoursesWithJobTitle = async (body: any): Promise<any> => {
+  // const gatewayUrl = process.env.GATEWAY_URL;
+  // const trainingNetwork = process.env.TRAINING_NETWORK;
+  // const backendApiUrl = process.env.BACKEND_API_BASE_URL;
+  console.log("Called for courses with gateway url : ", gatewayUrl);
+  try {
+    const { payload, optional } = buildSearchRequestWithJobTitle(body);
+    console.log(JSON.stringify(payload));
+
+    let searchResponse: any = {};
+    if (trainingNetwork !== "local") {
+      const headers = { "Content-Type": "application/JSON" };
+      const searchRes = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      const itemRes = await Promise.all([
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/saved/${optional.user.email}`, { headers }) : null,
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
+      ]).then(res => res).catch(err => null);
+      const res = { searchRes, itemRes };
+      console.log("Calling buildOnSearchMergedResponse");
+      searchResponse = await buildOnSearchMergedResponse(res, body, true);
+      console.log("returned search Response : ",await searchResponse.json);
+      // let courses = searchResponse.data.courses;
+      // let enrichedCourses = await enrichCoursesWithRelevantJobs(courses)
+      // searchResponse.data.courses = enrichedCourses;
+      console.log("returned search Response : ",searchResponse);
+    } else {
+      searchResponse = buildSearchResponse({ data: searchTrainingResponse }, body, [], [], true);
+    }
+
+    return searchResponse;
+  } catch (error: any) {
+    console.log(error);
+    return { error: error, errorOccured: true };
+  }
+};
+
+export const searchCoursesWithJobRole = async (body: any): Promise<any> => {
+  // const gatewayUrl = process.env.GATEWAY_URL;
+  // const trainingNetwork = process.env.TRAINING_NETWORK;
+  // const backendApiUrl = process.env.BACKEND_API_BASE_URL;
+  console.log("Called for courses with gateway url : ", gatewayUrl);
+  try {
+    const { payload, optional } = buildSearchRequestWithJobRole(body.jobRole);
+    console.log(JSON.stringify(payload));
+
+    let searchResponse: any = {};
+    if (trainingNetwork !== "local") {
+      const headers = { "Content-Type": "application/JSON" };
+      const searchRes = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      const itemRes = await Promise.all([
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/saved/${optional.user.email}`, { headers }) : null,
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
+      ]).then(res => res).catch(err => null);
+      const res = { searchRes, itemRes };
+      console.log("Calling buildOnSearchMergedResponse");
+      searchResponse = await buildOnSearchMergedResponse(res, body, true);
+      // console.log("returned search Response : ",await searchResponse.json);
+      // let courses = searchResponse.data.courses;
+      // let enrichedCourses = await enrichCoursesWithRelevantJobs(courses)
+      // searchResponse.data.courses = enrichedCourses;
+      console.log("returned search Response : ",searchResponse);
+    } else {
+      searchResponse = buildSearchResponse({ data: searchTrainingResponse }, body, [], [], true);
+    }
+
+    return searchResponse;
+  } catch (error: any) {
+    console.log(error);
+    return { error: error, errorOccured: true };
+  }
+};
+
+export const searchCoursesWithJobSkill = async (body: any): Promise<any> => {
+  // const gatewayUrl = process.env.GATEWAY_URL;
+  // const trainingNetwork = process.env.TRAINING_NETWORK;
+  // const backendApiUrl = process.env.BACKEND_API_BASE_URL;
+  console.log("Called for courses with gateway url : ", `${gatewayUrl}`);
+  try {
+    const { payload, optional } = buildSearchRequestWithJobSkill(body.skill);
+    console.log(JSON.stringify(payload));
+
+    let searchResponse: any = {};
+    if (trainingNetwork !== "local") {
+      const headers = { "Content-Type": "application/JSON" };
+      const searchRes = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      const itemRes = await Promise.all([
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/saved/${optional.user.email}`, { headers }) : null,
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
+      ]).then(res => res).catch(err => null);
+      const res = { searchRes, itemRes };
+      console.log("Calling buildOnSearchMergedResponse");
+      searchResponse = await buildOnSearchMergedResponse(res, body, true);
+      console.log("returned search Response : ",await searchResponse.json);
+      // let courses = searchResponse.data.courses;
+      // let enrichedCourses = await enrichCoursesWithRelevantJobs(courses)
+      // searchResponse.data.courses = enrichedCourses;
+      console.log("returned search Response : ",searchResponse);
+    } else {
+      searchResponse = buildSearchResponse({ data: searchTrainingResponse }, body, [], [], true);
+    }
+
+    return searchResponse;
+  } catch (error: any) {
+    console.log(error);
+    return { error: error, errorOccured: true };
+  }
+};
+
+
+    
+    
+
+
 
 export const initTrainingService = async (body: any): Promise<any> => {
   try {

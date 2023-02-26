@@ -1,6 +1,7 @@
 
 import moment from "moment";
 import { v4 as uuid } from "uuid";
+import { searchCoursesWithJobRole, searchCoursesWithJobSkill, searchCoursesWithJobTitle } from "../TrainingAndCourses/services";
 export const buildContext = (input: any = {}) => {
     return {
         domain: process.env.DOMAIN + input?.category,
@@ -20,6 +21,42 @@ export const buildContext = (input: any = {}) => {
 
 export const isAcknowledged = (input: any = {}) => {
     return (input?.message?.ack?.status === "ACK")
+}
+
+export const buildSearchRequestForJobWithCourseName = (course: any) => {
+    const context = buildContext({ category: 'jobs', action: 'search' });
+    const intent: any = {};
+    const optional: any = {};
+
+    intent.item = { "descriptor": { "name": course.name } }
+    intent.fulfillment = { customer: { person: { skills: [{code: course.name}] } } };
+
+    const message = { intent: intent };
+    return { payload: { context, message }, optional };
+}
+
+export const buildSearchRequestForJobWithCourseCategory = (course: any) => {
+    const context = buildContext({ category: 'jobs', action: 'search' });
+    const intent: any = {};
+    const optional: any = {};
+    if(course.category?.name) {
+        intent.item = { "descriptor": { "name": course.category?.name } };
+        intent.fulfillment = { customer: { person: { skills: [{ code: course.category?.name }] } } };
+    }
+    const message = { intent: intent };
+    return { payload: { context, message }, optional };
+}
+
+export const buildSearchRequestForJobWithCourseProvider = (course: any) => {
+    const context = buildContext({ category: 'jobs', action: 'search' });
+    const intent: any = {};
+    const optional: any = {};
+    if(course.provider?.description ?? course.provider?.name) {
+        intent.item = { "descriptor": { "name": course.provider?.description ?? course.provider?.name } }
+        intent.fulfillment = { customer: { person: { skills: [{code: course.provider?.description ?? course.provider?.name}] } } };
+    }
+    const message = { intent: intent };
+    return { payload: { context, message }, optional };
 }
 
 export const buildSearchRequest = (input: any = {}) => {
@@ -69,11 +106,11 @@ export const buildOnSearchRequest = (input: any = {}) => {
     return { payload: { context, message } };
 }
 
-export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}) => {
-    return buildOnSearchResponse(response.searchRes, body, response?.itemRes?.[0]?.data?.jobs, response?.itemRes?.[1]?.data?.jobs);
+export const buildOnSearchMergedResponse = async (response: any = {}, body: any = {}, isCourseSearchQuery: boolean = false) => {
+    return buildOnSearchResponse(response.searchRes, body, response?.itemRes?.[0]?.data?.jobs, response?.itemRes?.[1]?.data?.jobs, isCourseSearchQuery);
 }
 
-export const buildOnSearchResponse = (response: any = {}, body: any = {}, savedItems = [], appliedItems = []) => {
+export const buildOnSearchResponse = async (response: any = {}, body: any = {}, savedItems = [], appliedItems = [], isCourseSearchQuery: boolean = false) => {
     const input = response?.data?.responses?.[0];
     if (!input)
         return { status: 200 };
@@ -111,8 +148,67 @@ export const buildOnSearchResponse = (response: any = {}, body: any = {}, savedI
             })),
         });
     });
+    console.log("JobResults returned are : ", JSON.stringify(jobResults));
+    const enrichedJobResults = (isCourseSearchQuery ? jobResults : await enrichJobResultsWithCourseData([jobResults[0]], body));
+    console.log("Enriched job results : ", JSON.stringify(enrichedJobResults));
+    return { data: { context, jobProviderPlatform, enrichedJobResults } };
+}
 
-    return { data: { context, jobProviderPlatform, jobResults } };
+export async function enrichJobResultsWithCourseData(jobResults: any, jobSearchInput: any = {}) {
+
+    let coursesWithSkills:any = {};
+    let coursesWithTitle: any = {};
+    if (jobSearchInput?.skills?.length) {
+        for(let skill of jobSearchInput?.skills) {
+            console.log("Called for skills.");
+            let coursesWithSkill = await searchCoursesWithJobSkill({skill: skill});
+            coursesWithSkills[skill.code as keyof typeof coursesWithSkills] = coursesWithSkill;
+        }
+    }
+    if (jobSearchInput?.title?.key) {
+        console.log("called for jobtitle");
+        coursesWithTitle = await searchCoursesWithJobTitle(jobSearchInput);
+    }
+    const enrichedJobResults = [];
+    for(let jobResult of jobResults) {
+        let enrichedJobs = [];
+        let enrichedJobResult;
+        // console.log("Job Result : ", JSON.stringify(jobResult));
+        for(let job of jobResult.jobs) {
+            // console.log("Job is : ", JSON.stringify(job));
+            let enrichedJob: any = {};
+            let coursesWithRoles: any = [];
+            if(job.role) {
+                const roles = job.role.split(" ");
+                for(let role of roles) {
+                    console.log("called for jobrole : ", role);
+                    coursesWithRoles.push({
+                        role: role,
+                        courses: await searchCoursesWithJobRole({jobRole: role})
+                    })
+                }
+                // console.log("called for jobrole : ", job.role);
+                // coursesWithRole = await searchCoursesWithJobRole({jobRole: job.role});
+                // console.log("Courses with role : ", coursesWithRole);
+            }
+            enrichedJob = {
+                ...job,
+                courses: {
+                    coursesWithSkills: coursesWithSkills,
+                    coursesWithTitle: coursesWithTitle,
+                    coursesWithRole: coursesWithRoles
+                }
+            }
+            enrichedJobs.push(enrichedJob);
+        }
+        enrichedJobResult = {
+            ...jobResult,
+        }
+        enrichedJobResult.jobs = enrichedJobs;
+        enrichedJobResults.push(enrichedJobResult);
+    }
+    console.log("Enriched job results returning : ", enrichedJobResults);
+    return enrichedJobResults;
 }
 
 export const buildSavedAppliedJobResonse = (savedResponse: any = {}, appliedResponse: any = {}) => {

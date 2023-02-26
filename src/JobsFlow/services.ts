@@ -21,7 +21,10 @@ import {
   buildOnConfirmResponse,
   buildStatusRequest,
   buildOnStatusResponse,
-  buildOnStatusRequest
+  buildOnStatusRequest,
+  buildSearchRequestForJobWithCourseName,
+  buildSearchRequestForJobWithCourseCategory,
+  buildSearchRequestForJobWithCourseProvider
 } from "./schema_helper";
 import onSelectResponse from './mock/onSelectResponse.json'
 import onSearchResponse from './mock/onSearchResponse.json'
@@ -41,6 +44,7 @@ const axios = axiosInstance.create({
 
 export async function searchJob(body: any): Promise<any> {
   try {
+    console.log("Called for job with gateway url : ", `${gatewayUrl}`);
     const { payload, optional } = buildSearchRequest(body);
     console.log(JSON.stringify(payload));
 
@@ -54,7 +58,73 @@ export async function searchJob(body: any): Promise<any> {
       ]).then(res => res).catch(err => null);
       response = { searchRes, itemRes };
     }
-    return buildOnSearchMergedResponse(response, body);
+    return await buildOnSearchMergedResponse(response, body);
+  } catch (error) {
+    return { error: JSON.stringify(error), errorOccured: true };
+  }
+}
+
+export async function searchJobWithCourseProvider(course: any): Promise<any> {
+  try {
+    const { payload, optional } = buildSearchRequestForJobWithCourseProvider(course);
+    console.log("Payload for course provider request : ", payload);
+    console.log(JSON.stringify(payload));
+
+    let response: any = { data: onSearchResponse };
+    if (jobNetwork != 'local') {
+      const headers = { "Content-Type": "application/JSON" };
+      const searchRes = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      const itemRes = await Promise.all([
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/saved/${optional.user.email}`, { headers }) : null,
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
+      ]).then(res => res).catch(err => null);
+      response = { searchRes, itemRes };
+    }
+    return buildOnSearchMergedResponse(response, true);
+  } catch (error) {
+    return { error: JSON.stringify(error), errorOccured: true };
+  }
+}
+
+export async function searchJobWithCourseCategory(course: any): Promise<any> {
+  try {
+    const { payload, optional } = buildSearchRequestForJobWithCourseCategory(course);
+    console.log("Payload for course category request : ", payload);
+    console.log(JSON.stringify(payload));
+
+    let response: any = { data: onSearchResponse };
+    if (jobNetwork != 'local') {
+      const headers = { "Content-Type": "application/JSON" };
+      const searchRes = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      const itemRes = await Promise.all([
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/saved/${optional.user.email}`, { headers }) : null,
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
+      ]).then(res => res).catch(err => null);
+      response = { searchRes, itemRes };
+    }
+    return buildOnSearchMergedResponse(response, true);
+  } catch (error) {
+    return { error: JSON.stringify(error), errorOccured: true };
+  }
+}
+
+export async function searchJobWithCourseName(course: any): Promise<any> {
+  try {
+    const { payload, optional } = buildSearchRequestForJobWithCourseName(course);
+   
+    console.log(JSON.stringify(payload));
+
+    let response: any = { data: onSearchResponse };
+    if (jobNetwork != 'local') {
+      const headers = { "Content-Type": "application/JSON" };
+      const searchRes = await axios.post(`${gatewayUrl}/search`, payload, { headers });
+      const itemRes = await Promise.all([
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/saved/${optional.user.email}`, { headers }) : null,
+        optional?.user?.email ? axios.get(`${backendApiUrl}/user/item/applied/${optional.user.email}`, { headers }) : null
+      ]).then(res => res).catch(err => null);
+      response = { searchRes, itemRes };
+    }
+    return buildOnSearchMergedResponse(response, true);
   } catch (error) {
     return { error: JSON.stringify(error), errorOccured: true };
   }
