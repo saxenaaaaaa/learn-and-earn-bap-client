@@ -44,7 +44,7 @@ const axios = axiosInstance.create({
 
 export async function searchJob(body: any): Promise<any> {
   try {
-    console.log("Called for job with gateway url : ", `${gatewayUrl}`);
+    // console.log("Called for job with gateway url : ", `${gatewayUrl}`);
     const { payload, optional } = buildSearchRequest(body);
     console.log(JSON.stringify(payload));
 
@@ -67,7 +67,7 @@ export async function searchJob(body: any): Promise<any> {
 export async function searchJobWithCourseProvider(course: any): Promise<any> {
   try {
     const { payload, optional } = buildSearchRequestForJobWithCourseProvider(course);
-    console.log("Payload for course provider request : ", payload);
+    // console.log("Payload for course provider request : ", payload);
     console.log(JSON.stringify(payload));
 
     let response: any = { data: onSearchResponse };
@@ -80,7 +80,7 @@ export async function searchJobWithCourseProvider(course: any): Promise<any> {
       ]).then(res => res).catch(err => null);
       response = { searchRes, itemRes };
     }
-    return buildOnSearchMergedResponse(response, true);
+    return buildOnSearchMergedResponse(response, {}, true);
   } catch (error) {
     return { error: JSON.stringify(error), errorOccured: true };
   }
@@ -89,7 +89,7 @@ export async function searchJobWithCourseProvider(course: any): Promise<any> {
 export async function searchJobWithCourseCategory(course: any): Promise<any> {
   try {
     const { payload, optional } = buildSearchRequestForJobWithCourseCategory(course);
-    console.log("Payload for course category request : ", payload);
+    // console.log("Payload for course category request : ", payload);
     console.log(JSON.stringify(payload));
 
     let response: any = { data: onSearchResponse };
@@ -102,7 +102,7 @@ export async function searchJobWithCourseCategory(course: any): Promise<any> {
       ]).then(res => res).catch(err => null);
       response = { searchRes, itemRes };
     }
-    return buildOnSearchMergedResponse(response, true);
+    return buildOnSearchMergedResponse(response, {}, true);
   } catch (error) {
     return { error: JSON.stringify(error), errorOccured: true };
   }
@@ -124,7 +124,7 @@ export async function searchJobWithCourseName(course: any): Promise<any> {
       ]).then(res => res).catch(err => null);
       response = { searchRes, itemRes };
     }
-    return buildOnSearchMergedResponse(response, true);
+    return buildOnSearchMergedResponse(response, {}, true);
   } catch (error) {
     return { error: JSON.stringify(error), errorOccured: true };
   }

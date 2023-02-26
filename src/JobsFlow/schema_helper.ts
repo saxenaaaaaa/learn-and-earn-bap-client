@@ -148,25 +148,26 @@ export const buildOnSearchResponse = async (response: any = {}, body: any = {}, 
             })),
         });
     });
-    console.log("JobResults returned are : ", JSON.stringify(jobResults));
+    // console.log("JobResults returned are : ", JSON.stringify(jobResults));
+    // console.log("ISCOURSESEARCHQUERY : ", isCourseSearchQuery);
     const enrichedJobResults = (isCourseSearchQuery ? jobResults : await enrichJobResultsWithCourseData([jobResults[0]], body));
-    console.log("Enriched job results : ", JSON.stringify(enrichedJobResults));
-    return { data: { context, jobProviderPlatform, enrichedJobResults } };
+    // console.log("Enriched job results : ", JSON.stringify(enrichedJobResults));
+    return { data: { context, jobProviderPlatform, jobResults: enrichedJobResults } };
 }
 
 export async function enrichJobResultsWithCourseData(jobResults: any, jobSearchInput: any = {}) {
 
-    let coursesWithSkills:any = {};
+    let coursesWithSkills:any = [];
     let coursesWithTitle: any = {};
     if (jobSearchInput?.skills?.length) {
         for(let skill of jobSearchInput?.skills) {
-            console.log("Called for skills.");
+            // console.log("Called for skills.");
             let coursesWithSkill = await searchCoursesWithJobSkill({skill: skill});
-            coursesWithSkills[skill.code as keyof typeof coursesWithSkills] = coursesWithSkill;
+            coursesWithSkills.push(coursesWithSkill);
         }
     }
     if (jobSearchInput?.title?.key) {
-        console.log("called for jobtitle");
+        // console.log("called for jobtitle");
         coursesWithTitle = await searchCoursesWithJobTitle(jobSearchInput);
     }
     const enrichedJobResults = [];
@@ -181,23 +182,22 @@ export async function enrichJobResultsWithCourseData(jobResults: any, jobSearchI
             if(job.role) {
                 const roles = job.role.split(" ");
                 for(let role of roles) {
-                    console.log("called for jobrole : ", role);
-                    coursesWithRoles.push({
-                        role: role,
-                        courses: await searchCoursesWithJobRole({jobRole: role})
-                    })
+                    // console.log("called for jobrole : ", role);
+                    coursesWithRoles.push(await searchCoursesWithJobRole({jobRole: role}));
                 }
                 // console.log("called for jobrole : ", job.role);
                 // coursesWithRole = await searchCoursesWithJobRole({jobRole: job.role});
                 // console.log("Courses with role : ", coursesWithRole);
             }
+            let courses:any[] = [
+                coursesWithTitle,
+                ...coursesWithSkills,
+                ...coursesWithRoles
+            ]
+            courses = courses.filter(course => course.data != null)
             enrichedJob = {
                 ...job,
-                courses: {
-                    coursesWithSkills: coursesWithSkills,
-                    coursesWithTitle: coursesWithTitle,
-                    coursesWithRole: coursesWithRoles
-                }
+                recommendedCoursesData: courses
             }
             enrichedJobs.push(enrichedJob);
         }
@@ -207,7 +207,7 @@ export async function enrichJobResultsWithCourseData(jobResults: any, jobSearchI
         enrichedJobResult.jobs = enrichedJobs;
         enrichedJobResults.push(enrichedJobResult);
     }
-    console.log("Enriched job results returning : ", enrichedJobResults);
+    // console.log("Enriched job results returning : ", enrichedJobResults);
     return enrichedJobResults;
 }
 

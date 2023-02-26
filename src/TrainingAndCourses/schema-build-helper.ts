@@ -276,9 +276,10 @@ export const buildSearchResponse = async (response: any = {}, body: any = {}, sa
       });
     });
   });
+  // console.log("ISJOBSEARCHQUERY : ", isJobSearchQuery);
   const enrichedCourses = isJobSearchQuery ? courses : await enrichCoursesWithRelevantJobs(courses);
   // console.log("non enriched courses : ", courses);
-  console.log("enriched course : ", enrichedCourses);
+  // console.log("enriched course : ", enrichedCourses);
   return { data: { context, courses: enrichedCourses } };
 };
 
@@ -293,32 +294,9 @@ export async function enrichCoursesWithRelevantJobs(courses: any) {
     ]).then((res => res)).catch(error=> null);
     enrichedCourses.push({
       ...course,
-      myOutput: jobsForCourse
+      recommendedJobsData: jobsForCourse
     })
   }
-  
-
-
-
-  // const enrichedCourses = await Promise.all(
-  //   courses.map((course: any) => {
-  //     return searchJobWithCourseName(course)
-  //   })
-  //   // searchJobWithCourseName(courses[0])
-  // ).then(res => {
-  //   console.log("value of res = ", res);
-  //   let temp:any[]=[];
-  //   let i=0;
-  //   courses.forEach((course: any) => {
-  //     temp.push({
-  //       ...course,
-  //       myOutput: res[i]
-  //     })
-  //     i=i+1;
-  //   })
-  //   return temp;
-  // }).catch(error =>null);
-  console.log("These are enriched courses - > ", enrichedCourses);
   return enrichedCourses;
 }
 
